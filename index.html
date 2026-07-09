@@ -1,15 +1,99 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="d04083b3-0633-4dee-a410-4e7420c11fe9" type="text/javascript" async></script>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-D90VNGY0XX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <!-- Cookie Consent Banner (self‑hosted, free) -->
+<style>
+    #cookie-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--bg-card, #16161f);
+        border-top: 1px solid var(--border, #252535);
+        color: var(--text, #e8e8f0);
+        padding: 1rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        z-index: 10000;
+        font-size: 0.9rem;
+        box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
+        transition: transform 0.3s ease;
+    }
+    #cookie-banner.hidden {
+        transform: translateY(100%);
+    }
+    .cookie-btn {
+        background: var(--accent-gold, #d4a853);
+        color: #000;
+        border: none;
+        padding: 0.6rem 1.4rem;
+        border-radius: 30px;
+        cursor: pointer;
+        font-weight: 600;
+        font-family: var(--font-sans, 'Inter', sans-serif);
+        transition: background 0.3s;
+    }
+    .cookie-btn:hover { background: #c0943a; }
+    .cookie-btn.decline {
+        background: transparent;
+        border: 1px solid var(--border, #252535);
+        color: var(--text, #e8e8f0);
+    }
+    .cookie-btn.decline:hover { background: var(--bg-card-hover, #1c1c28); }
+</style>
 
-  gtag('config', 'G-D90VNGY0XX');
+<div id="cookie-banner">
+    <span>🍪 This website uses cookies to analyze traffic and improve your experience. See our <a href="#" style="color:var(--accent-gold)">Privacy Policy</a>.</span>
+    <div style="display:flex; gap:0.5rem;">
+        <button class="cookie-btn decline" onclick="setCookieConsent(false)">Decline</button>
+        <button class="cookie-btn" onclick="setCookieConsent(true)">Accept</button>
+    </div>
+</div>
+
+<script>
+    // Check if consent already given
+    (function() {
+        const consent = getCookie('cookie-consent');
+        if (consent === 'accepted') {
+            document.getElementById('cookie-banner').classList.add('hidden');
+            loadGoogleAnalytics();
+        } else if (consent === 'declined') {
+            document.getElementById('cookie-banner').classList.add('hidden');
+        }
+    })();
+
+    function setCookieConsent(accepted) {
+        const value = accepted ? 'accepted' : 'declined';
+        document.cookie = 'cookie-consent=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+        document.getElementById('cookie-banner').classList.add('hidden');
+        if (accepted) {
+            loadGoogleAnalytics();
+        }
+    }
+
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? match[2] : null;
+    }
+
+    // Load Google Analytics only after consent (replace with your own GA tag)
+    function loadGoogleAnalytics() {
+        // Google Analytics gtag snippet
+        var script = document.createElement('script');
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-D90VNGY0XX'; // 🔴 Your GA4 measurement ID
+        script.async = true;
+        document.head.appendChild(script);
+
+        script.onload = function() {
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-D90VNGY0XX'); // 🔴 Your GA4 measurement ID
+        };
+    }
 </script>
 
     <meta charset="UTF-8">
