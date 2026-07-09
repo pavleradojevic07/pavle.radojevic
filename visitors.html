@@ -133,16 +133,6 @@
         .country-name { font-weight: 600; }
         .country-visitors { margin-left: auto; font-weight: 700; color: var(--accent-gold); }
 
-        .last-visitor {
-            text-align: center;
-            margin: 1.5rem 0;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-        .last-visitor strong {
-            color: var(--text);
-        }
-
         .contact-footer {
             text-align:center; padding:2rem 1rem 2.5rem; border-top:1px solid var(--border);
             background:var(--bg);
@@ -171,29 +161,28 @@
     </style>
 </head>
 <body>
+    <!-- Tracking script -->
     <script>
-// Visitor tracking via Cloudflare Worker
-(function() {
-  const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/statistics.json'; // 🔴 Replace with your worker URL
-  
-  const data = {
-    browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
-             navigator.userAgent.includes('Chrome') ? 'Chrome' :
-             navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
-    os: navigator.platform || 'Unknown',
-    device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
-    referrer: document.referrer || 'Direct',
-    page: window.location.pathname
-  };
-  
-  fetch(`${WORKER_URL}/track`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  }).catch(() => {}); // Silent fail if worker is down
-})();
-</script>
-    <!-- Cookie Consent Banner (self‑hosted, free) -->
+    (function() {
+      const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev';
+      const data = {
+        browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
+                 navigator.userAgent.includes('Chrome') ? 'Chrome' :
+                 navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
+        os: navigator.platform || 'Unknown',
+        device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+        referrer: document.referrer || 'Direct',
+        page: window.location.pathname
+      };
+      fetch(`${WORKER_URL}/track`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(() => {});
+    })();
+    </script>
+
+    <!-- Cookie Consent Banner -->
     <style>
         #cookie-banner {
             position: fixed; bottom: 0; left: 0; right: 0;
@@ -219,7 +208,7 @@
     </style>
 
     <div id="cookie-banner">
-        <span>🍪 This website uses cookies to analyze traffic and improve your experience. See our <a href="#" style="color:var(--accent-gold)">Privacy Policy</a>.</span>
+        <span>🍪 This website uses cookies to analyze traffic and improve your experience.</span>
         <div style="display:flex; gap:0.5rem;">
             <button class="cookie-btn decline" onclick="setCookieConsent(false)">Decline</button>
             <button class="cookie-btn" onclick="setCookieConsent(true)">Accept</button>
@@ -236,23 +225,17 @@
                 document.getElementById('cookie-banner').classList.add('hidden');
             }
         })();
-
         function setCookieConsent(accepted) {
             const value = accepted ? 'accepted' : 'declined';
             document.cookie = 'cookie-consent=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
             document.getElementById('cookie-banner').classList.add('hidden');
-            if (accepted) {
-                loadGoogleAnalytics();
-            }
+            if (accepted) { loadGoogleAnalytics(); }
         }
-
         function getCookie(name) {
             const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
             return match ? match[2] : null;
         }
-
         function loadGoogleAnalytics() {
-            // 🔴 Replace BOTH occurrences of 'G-XXXXXXXXXX' with your real GA4 Measurement ID
             var script = document.createElement('script');
             script.src = 'https://www.googletagmanager.com/gtag/js?id=G-544848773';
             script.async = true;
@@ -283,19 +266,14 @@
             <h1 style="font-family:var(--font-display); font-size:2.5rem; text-align:center; margin-bottom:0.5rem;">Visitor Map</h1>
             <p style="text-align:center; color:var(--text-secondary); margin-bottom:2rem;">Real‑time insights into where my website visitors come from.</p>
 
-            <!-- Statistics cards -->
             <div class="stats-grid" id="statsContainer">
-                <div class="stat-card"><div class="stat-value" id="totalVisitors">0</div><div class="stat-label">Total Visitors</div></div>
-                <div class="stat-card"><div class="stat-value" id="visitorsToday">0</div><div class="stat-label">Today</div></div>
-                <div class="stat-card"><div class="stat-value" id="countriesCount">0</div><div class="stat-label">Countries</div></div>
-                <div class="stat-card"><div class="stat-value" id="citiesCount">0</div><div class="stat-label">Cities</div></div>
-                <div class="stat-card"><div class="stat-value" id="avgSession">0m 00s</div><div class="stat-label">Avg Session</div></div>
-                <div class="stat-card"><div class="stat-value" id="returningVisitors">0%</div><div class="stat-label">Returning</div></div>
-                <div class="stat-card"><div class="stat-value" id="liveVisitors">0</div><div class="stat-label">Live</div></div>
-            </div>
-
-            <div class="last-visitor">
-                <strong>Last visitor:</strong> <span id="lastVisitorInfo">—</span>
+                <div class="stat-card"><div class="stat-value" id="totalVisitors">—</div><div class="stat-label">Total Visitors</div></div>
+                <div class="stat-card"><div class="stat-value" id="visitorsToday">—</div><div class="stat-label">Today</div></div>
+                <div class="stat-card"><div class="stat-value" id="countriesCount">—</div><div class="stat-label">Countries</div></div>
+                <div class="stat-card"><div class="stat-value" id="citiesCount">—</div><div class="stat-label">Cities</div></div>
+                <div class="stat-card"><div class="stat-value" id="avgSession">—</div><div class="stat-label">Avg Session</div></div>
+                <div class="stat-card"><div class="stat-value" id="returningVisitors">—</div><div class="stat-label">Returning</div></div>
+                <div class="stat-card"><div class="stat-value" id="liveVisitors">—</div><div class="stat-label">Live</div></div>
             </div>
 
             <div class="map-container" id="mapContainer"></div>
@@ -308,7 +286,6 @@
     <footer class="contact-footer">
         <h4>Get in Touch</h4>
         <div class="contact-links">
-            <!-- 🔴 Update these with your real contact links -->
             <a href="mailto:pavle.radojevic07@gmail.com" class="contact-link email-link">✉️ Email</a>
             <a href="https://instagram.com/pavle.radojevic" target="_blank" rel="noopener" class="contact-link">📷 Instagram</a>
             <a href="https://linkedin.com/in/pavle-radojevic-3677b4255/" target="_blank" rel="noopener" class="contact-link">💼 LinkedIn</a>
@@ -319,21 +296,9 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // 🔴 Replace this URL with your deployed Apps Script web app URL
-        const APP_SCRIPT_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/track';
+        // ✅ Correct URL — points to /statistics.json
+        const APP_SCRIPT_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/statistics.json';
 
-        // Static fallback data (used if the fetch fails or returns nothing)
-        const fallbackData = {
-            totalVisitors: 0,
-            visitorsToday: 0,
-            countries: [],
-            cities: [],
-            avgSession: '0m 00s',
-            returningVisitors: '0%',
-            liveVisitors: 0
-        };
-
-        // Initialize Leaflet map
         const map = L.map('mapContainer', {
             center: [48, 10],
             zoom: 3,
@@ -346,16 +311,10 @@
         const tilesLight = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 });
 
         const currentTheme = document.documentElement.getAttribute('data-theme');
-        if (currentTheme === 'dark') {
-            tilesDark.addTo(map);
-        } else {
-            tilesLight.addTo(map);
-        }
+        if (currentTheme === 'dark') { tilesDark.addTo(map); } else { tilesLight.addTo(map); }
 
-        // Store the country layer globally so we can update it later
         window.countryLayer = null;
 
-        // Function to update stats and country list
         function updateUI(data) {
             document.getElementById('totalVisitors').textContent = data.totalVisitors;
             document.getElementById('visitorsToday').textContent = data.visitorsToday;
@@ -365,27 +324,20 @@
             document.getElementById('returningVisitors').textContent = data.returningVisitors;
             document.getElementById('liveVisitors').textContent = data.liveVisitors;
 
-            // Country list
             const countryListDiv = document.getElementById('countryList');
             countryListDiv.innerHTML = '';
             data.countries.forEach(c => {
                 const entry = document.createElement('div');
                 entry.className = 'country-entry';
-                entry.innerHTML = `
-                    <span class="country-flag">${c.flag}</span>
-                    <span class="country-name">${c.country}</span>
-                    <span class="country-visitors">${c.visitors}</span>
-                `;
+                entry.innerHTML = `<span class="country-flag">${c.flag}</span><span class="country-name">${c.country}</span><span class="country-visitors">${c.visitors}</span>`;
                 countryListDiv.appendChild(entry);
             });
 
-            // Update map colours
             const visitedCountries = new Set(data.countries.map(c => c.country));
 
             fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson')
                 .then(response => response.json())
                 .then(geoData => {
-                    // Merge Kosovo into Serbia
                     const serbia = geoData.features.find(f => f.properties.NAME === 'Serbia' || f.properties.ADMIN === 'Serbia');
                     const kosovo = geoData.features.find(f => f.properties.NAME === 'Kosovo' || f.properties.ADMIN === 'Kosovo');
                     if (serbia && kosovo) {
@@ -399,12 +351,7 @@
                         }
                         geoData.features = geoData.features.filter(f => f !== kosovo);
                     }
-
-                    // Remove old layer if exists
-                    if (window.countryLayer) {
-                        map.removeLayer(window.countryLayer);
-                    }
-
+                    if (window.countryLayer) { map.removeLayer(window.countryLayer); }
                     window.countryLayer = L.geoJSON(geoData, {
                         style: feature => {
                             const name = feature.properties.NAME || feature.properties.ADMIN;
@@ -426,17 +373,11 @@
                 });
         }
 
-        // Try to fetch real data
         fetch(APP_SCRIPT_URL)
             .then(response => response.json())
-            .then(data => {
-                console.log('Data received:', data); // Debug line
-                updateUI(data);
-            })
+            .then(data => updateUI(data))
             .catch(error => console.error('Failed to fetch:', error));
-            });
 
-        // Theme toggle switches map tiles
         const observer = new MutationObserver(() => {
             const theme = document.documentElement.getAttribute('data-theme');
             if (theme === 'dark') {
@@ -451,7 +392,6 @@
     </script>
 
     <script>
-        // Theme toggle
         const themeToggle = document.getElementById('themeToggle');
         themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
         themeToggle.addEventListener('click', () => {
