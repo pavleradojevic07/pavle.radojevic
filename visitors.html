@@ -63,7 +63,6 @@
         .page-content { padding-top:var(--nav-height); flex:1; }
         .section { padding:4rem 2rem; max-width:var(--max-width); margin:0 auto; }
 
-        /* Stats grid: 7 columns on desktop, auto-fit on mobile */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -173,99 +172,78 @@
 </head>
 <body>
     <!-- Cookie Consent Banner (self‑hosted, free) -->
-<style>
-    #cookie-banner {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: var(--bg-card, #16161f);
-        border-top: 1px solid var(--border, #252535);
-        color: var(--text, #e8e8f0);
-        padding: 1rem 2rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-        z-index: 10000;
-        font-size: 0.9rem;
-        box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
-        transition: transform 0.3s ease;
-    }
-    #cookie-banner.hidden {
-        transform: translateY(100%);
-    }
-    .cookie-btn {
-        background: var(--accent-gold, #d4a853);
-        color: #000;
-        border: none;
-        padding: 0.6rem 1.4rem;
-        border-radius: 30px;
-        cursor: pointer;
-        font-weight: 600;
-        font-family: var(--font-sans, 'Inter', sans-serif);
-        transition: background 0.3s;
-    }
-    .cookie-btn:hover { background: #c0943a; }
-    .cookie-btn.decline {
-        background: transparent;
-        border: 1px solid var(--border, #252535);
-        color: var(--text, #e8e8f0);
-    }
-    .cookie-btn.decline:hover { background: var(--bg-card-hover, #1c1c28); }
-</style>
+    <style>
+        #cookie-banner {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--bg-card, #16161f); border-top: 1px solid var(--border, #252535);
+            color: var(--text, #e8e8f0); padding: 1rem 2rem;
+            display: flex; align-items: center; justify-content: center;
+            gap: 1.5rem; flex-wrap: wrap; z-index: 10000; font-size: 0.9rem;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.4); transition: transform 0.3s ease;
+        }
+        #cookie-banner.hidden { transform: translateY(100%); }
+        .cookie-btn {
+            background: var(--accent-gold, #d4a853); color: #000;
+            border: none; padding: 0.6rem 1.4rem; border-radius: 30px;
+            cursor: pointer; font-weight: 600; font-family: var(--font-sans, 'Inter', sans-serif);
+            transition: background 0.3s;
+        }
+        .cookie-btn:hover { background: #c0943a; }
+        .cookie-btn.decline {
+            background: transparent; border: 1px solid var(--border, #252535);
+            color: var(--text, #e8e8f0);
+        }
+        .cookie-btn.decline:hover { background: var(--bg-card-hover, #1c1c28); }
+    </style>
 
-<div id="cookie-banner">
-    <span>🍪 This website uses cookies to analyze traffic and improve your experience. See our <a href="#" style="color:var(--accent-gold)">Privacy Policy</a>.</span>
-    <div style="display:flex; gap:0.5rem;">
-        <button class="cookie-btn decline" onclick="setCookieConsent(false)">Decline</button>
-        <button class="cookie-btn" onclick="setCookieConsent(true)">Accept</button>
+    <div id="cookie-banner">
+        <span>🍪 This website uses cookies to analyze traffic and improve your experience. See our <a href="#" style="color:var(--accent-gold)">Privacy Policy</a>.</span>
+        <div style="display:flex; gap:0.5rem;">
+            <button class="cookie-btn decline" onclick="setCookieConsent(false)">Decline</button>
+            <button class="cookie-btn" onclick="setCookieConsent(true)">Accept</button>
+        </div>
     </div>
-</div>
 
-<script>
-    // Check if consent already given
-    (function() {
-        const consent = getCookie('cookie-consent');
-        if (consent === 'accepted') {
+    <script>
+        (function() {
+            const consent = getCookie('cookie-consent');
+            if (consent === 'accepted') {
+                document.getElementById('cookie-banner').classList.add('hidden');
+                loadGoogleAnalytics();
+            } else if (consent === 'declined') {
+                document.getElementById('cookie-banner').classList.add('hidden');
+            }
+        })();
+
+        function setCookieConsent(accepted) {
+            const value = accepted ? 'accepted' : 'declined';
+            document.cookie = 'cookie-consent=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
             document.getElementById('cookie-banner').classList.add('hidden');
-            loadGoogleAnalytics();
-        } else if (consent === 'declined') {
-            document.getElementById('cookie-banner').classList.add('hidden');
+            if (accepted) {
+                loadGoogleAnalytics();
+            }
         }
-    })();
 
-    function setCookieConsent(accepted) {
-        const value = accepted ? 'accepted' : 'declined';
-        document.cookie = 'cookie-consent=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
-        document.getElementById('cookie-banner').classList.add('hidden');
-        if (accepted) {
-            loadGoogleAnalytics();
+        function getCookie(name) {
+            const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            return match ? match[2] : null;
         }
-    }
 
-    function getCookie(name) {
-        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-        return match ? match[2] : null;
-    }
+        function loadGoogleAnalytics() {
+            // 🔴 Replace BOTH occurrences of 'G-XXXXXXXXXX' with your real GA4 Measurement ID
+            var script = document.createElement('script');
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=G-544848773';
+            script.async = true;
+            document.head.appendChild(script);
+            script.onload = function() {
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-544848773');
+            };
+        }
+    </script>
 
-    // Load Google Analytics only after consent (replace with your own GA tag)
-    function loadGoogleAnalytics() {
-        // Google Analytics gtag snippet
-        var script = document.createElement('script');
-        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-D90VNGY0XX'; // 🔴 Your GA4 measurement ID
-        script.async = true;
-        document.head.appendChild(script);
-
-        script.onload = function() {
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-D90VNGY0XX'); // 🔴 Your GA4 measurement ID
-        };
-    }
-</script>
     <nav class="nav">
         <a href="index.html" class="nav-logo">PR</a>
         <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
@@ -281,38 +259,34 @@
     <main class="page-content">
         <section class="section">
             <h1 style="font-family:var(--font-display); font-size:2.5rem; text-align:center; margin-bottom:0.5rem;">Visitor Map</h1>
-            <p style="text-align:center; color:var(--text-secondary); margin-bottom:2rem;">Real-time insights into where my website visitors come from.</p>
+            <p style="text-align:center; color:var(--text-secondary); margin-bottom:2rem;">Real‑time insights into where my website visitors come from.</p>
 
-            <!-- Statistics cards – 7 columns on desktop -->
+            <!-- Statistics cards -->
             <div class="stats-grid" id="statsContainer">
-                <div class="stat-card"><div class="stat-value" id="totalVisitors">1,247</div><div class="stat-label">Total Visitors</div></div>
-                <div class="stat-card"><div class="stat-value" id="visitorsToday">23</div><div class="stat-label">Today</div></div>
-                <div class="stat-card"><div class="stat-value" id="countriesCount">7</div><div class="stat-label">Countries</div></div>
-                <div class="stat-card"><div class="stat-value" id="citiesCount">12</div><div class="stat-label">Cities</div></div>
-                <div class="stat-card"><div class="stat-value" id="avgSession">2m 34s</div><div class="stat-label">Avg Session</div></div>
-                <div class="stat-card"><div class="stat-value" id="returningVisitors">42%</div><div class="stat-label">Returning</div></div>
-                <div class="stat-card"><div class="stat-value" id="liveVisitors">8</div><div class="stat-label">Live</div></div>
+                <div class="stat-card"><div class="stat-value" id="totalVisitors">0</div><div class="stat-label">Total Visitors</div></div>
+                <div class="stat-card"><div class="stat-value" id="visitorsToday">0</div><div class="stat-label">Today</div></div>
+                <div class="stat-card"><div class="stat-value" id="countriesCount">0</div><div class="stat-label">Countries</div></div>
+                <div class="stat-card"><div class="stat-value" id="citiesCount">0</div><div class="stat-label">Cities</div></div>
+                <div class="stat-card"><div class="stat-value" id="avgSession">0m 00s</div><div class="stat-label">Avg Session</div></div>
+                <div class="stat-card"><div class="stat-value" id="returningVisitors">0%</div><div class="stat-label">Returning</div></div>
+                <div class="stat-card"><div class="stat-value" id="liveVisitors">0</div><div class="stat-label">Live</div></div>
             </div>
 
-            <!-- Last visitor info -->
             <div class="last-visitor">
-                <strong>Last visitor:</strong> 12 Jul 2026 14:37 from 🇷🇸 Serbia (Belgrade)
+                <strong>Last visitor:</strong> <span id="lastVisitorInfo">—</span>
             </div>
 
-            <!-- Interactive map (zoomable, with cities) -->
             <div class="map-container" id="mapContainer"></div>
 
-            <!-- Country list -->
             <h2 style="font-family:var(--font-display); font-size:1.8rem; margin:2rem 0 1rem;">Visitors by Country</h2>
-            <div class="country-list" id="countryList">
-                <!-- Populated by JavaScript -->
-            </div>
+            <div class="country-list" id="countryList"></div>
         </section>
     </main>
 
     <footer class="contact-footer">
         <h4>Get in Touch</h4>
         <div class="contact-links">
+            <!-- 🔴 Update these with your real contact links -->
             <a href="mailto:pavle.radojevic07@gmail.com" class="contact-link email-link">✉️ Email</a>
             <a href="https://instagram.com/pavle.radojevic" target="_blank" rel="noopener" class="contact-link">📷 Instagram</a>
             <a href="https://linkedin.com/in/pavle-radojevic-3677b4255/" target="_blank" rel="noopener" class="contact-link">💼 LinkedIn</a>
@@ -323,52 +297,21 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Sample visitor data by country (Kosovo excluded – merged into Serbia)
-        const visitorData = [
-            { country: "Serbia", flag: "🇷🇸", visitors: 153, lastVisit: "12 Jul 2026 14:37", avgTime: "3m 12s" },
-            { country: "Hungary", flag: "🇭🇺", visitors: 42, lastVisit: "11 Jul 2026 09:15", avgTime: "2m 05s" },
-            { country: "Germany", flag: "🇩🇪", visitors: 19, lastVisit: "10 Jul 2026 22:40", avgTime: "1m 48s" },
-            { country: "United States of America", flag: "🇺🇸", visitors: 12, lastVisit: "09 Jul 2026 18:20", avgTime: "2m 55s" },
-            { country: "Poland", flag: "🇵🇱", visitors: 5, lastVisit: "08 Jul 2026 11:10", avgTime: "1m 30s" },
-            { country: "Croatia", flag: "🇭🇷", visitors: 3, lastVisit: "07 Jul 2026 15:45", avgTime: "2m 10s" },
-            { country: "Austria", flag: "🇦🇹", visitors: 2, lastVisit: "06 Jul 2026 20:00", avgTime: "1m 55s" }
-        ];
+        // 🔴 Replace this URL with your deployed Apps Script web app URL
+        const APP_SCRIPT_URL = 'https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnT6EYCCZKmnkwYwF31YgEBXmMoJySOIvpeWBwnagcmyUw_gOaMVOBw7GYlcRuyv8kx9DYJnvMOJEMFfcpg4e-BgppUh6qho4q25G86RGLc6Ljt2fBHRzV552cEOU4tK0EXqkgMe1tvUuXumSdTJ1TUlByFwPzWWJJ0q_B3OX55e0rgLohDncEErTa1dgPYCZNf6ar_L6B_e3ZyQNZDuh015qu9F9GxdOFw9-wRkw6thgAM5bXjEr8VvcIHmCqNNUitdDms6MZAFy30xoKmdnUk5mWJp6Q&lib=Mf2zfB40N741s7Ur7G-uxwiSd-v8C9WVJ';
 
-        // Sample city data (Kosovo cities removed)
-        const cityData = [
-            { city: "Belgrade", country: "Serbia", lat: 44.7866, lon: 20.4489, visitors: 89 },
-            { city: "Novi Sad", country: "Serbia", lat: 45.2671, lon: 19.8335, visitors: 34 },
-            { city: "Budapest", country: "Hungary", lat: 47.4979, lon: 19.0402, visitors: 28 },
-            { city: "Berlin", country: "Germany", lat: 52.5200, lon: 13.4050, visitors: 12 },
-            { city: "New York", country: "United States of America", lat: 40.7128, lon: -74.0060, visitors: 7 },
-            { city: "Warsaw", country: "Poland", lat: 52.2297, lon: 21.0122, visitors: 5 },
-            { city: "Zagreb", country: "Croatia", lat: 45.8150, lon: 15.9819, visitors: 3 },
-            { city: "Vienna", country: "Austria", lat: 48.2082, lon: 16.3738, visitors: 2 },
-            { city: "Szeged", country: "Hungary", lat: 46.2530, lon: 20.1414, visitors: 14 },
-            { city: "Munich", country: "Germany", lat: 48.1351, lon: 11.5820, visitors: 7 },
-            { city: "Chicago", country: "United States of America", lat: 41.8781, lon: -87.6298, visitors: 5 },
-            { city: "Los Angeles", country: "United States of America", lat: 34.0522, lon: -118.2437, visitors: 3 }
-        ];
+        // Static fallback data (used if the fetch fails or returns nothing)
+        const fallbackData = {
+            totalVisitors: 0,
+            visitorsToday: 0,
+            countries: [],
+            cities: [],
+            avgSession: '0m 00s',
+            returningVisitors: '0%',
+            liveVisitors: 0
+        };
 
-        // Build country list
-        const countryListDiv = document.getElementById('countryList');
-        visitorData.forEach(c => {
-            const entry = document.createElement('div');
-            entry.className = 'country-entry';
-            entry.innerHTML = `
-                <span class="country-flag">${c.flag}</span>
-                <span class="country-name">${c.country}</span>
-                <span class="country-visitors">${c.visitors}</span>
-            `;
-            countryListDiv.appendChild(entry);
-        });
-
-        // Update stats
-        document.getElementById('totalVisitors').textContent = visitorData.reduce((sum, c) => sum + c.visitors, 0);
-        document.getElementById('countriesCount').textContent = visitorData.length;
-        document.getElementById('citiesCount').textContent = cityData.length;
-
-        // Interactive map with Leaflet (zoomable)
+        // Initialize Leaflet map
         const map = L.map('mapContainer', {
             center: [48, 10],
             zoom: 3,
@@ -377,13 +320,8 @@
             attributionControl: false
         });
 
-        // Tile layers
-        const tilesDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            maxZoom: 19
-        });
-        const tilesLight = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            maxZoom: 19
-        });
+        const tilesDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 });
+        const tilesLight = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 });
 
         const currentTheme = document.documentElement.getAttribute('data-theme');
         if (currentTheme === 'dark') {
@@ -392,85 +330,92 @@
             tilesLight.addTo(map);
         }
 
-        // Load high-precision GeoJSON, merge Kosovo into Serbia
-        fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson')
-            .then(response => response.json())
-            .then(geoData => {
-                // Merge Kosovo into Serbia
-                const serbia = geoData.features.find(f => f.properties.NAME === 'Serbia' || f.properties.ADMIN === 'Serbia');
-                const kosovo = geoData.features.find(f => f.properties.NAME === 'Kosovo' || f.properties.ADMIN === 'Kosovo');
+        // Store the country layer globally so we can update it later
+        window.countryLayer = null;
 
-                if (serbia && kosovo) {
-                    // Convert Serbia to MultiPolygon if necessary
-                    if (serbia.geometry.type === 'Polygon') {
-                        serbia.geometry = {
-                            type: 'MultiPolygon',
-                            coordinates: [serbia.geometry.coordinates]
-                        };
-                    }
-                    // Add Kosovo's coordinates to Serbia
-                    if (kosovo.geometry.type === 'Polygon') {
-                        serbia.geometry.coordinates.push(kosovo.geometry.coordinates);
-                    } else if (kosovo.geometry.type === 'MultiPolygon') {
-                        serbia.geometry.coordinates.push(...kosovo.geometry.coordinates);
-                    }
-                    // Remove Kosovo from the features array
-                    geoData.features = geoData.features.filter(f => f !== kosovo);
-                }
+        // Function to update stats and country list
+        function updateUI(data) {
+            document.getElementById('totalVisitors').textContent = data.totalVisitors;
+            document.getElementById('visitorsToday').textContent = data.visitorsToday;
+            document.getElementById('countriesCount').textContent = data.countries.length;
+            document.getElementById('citiesCount').textContent = data.cities.length;
+            document.getElementById('avgSession').textContent = data.avgSession;
+            document.getElementById('returningVisitors').textContent = data.returningVisitors;
+            document.getElementById('liveVisitors').textContent = data.liveVisitors;
 
-                const visitedCountries = new Set(visitorData.map(c => c.country));
-
-                L.geoJSON(geoData, {
-                    style: feature => {
-                        const countryName = feature.properties.NAME || feature.properties.ADMIN;
-                        if (visitedCountries.has(countryName)) {
-                            return { fillColor: '#3ddc84', color: '#1a1a1a', weight: 1, fillOpacity: 0.7 };
-                        } else {
-                            return { fillColor: '#3a3a4a', color: '#1a1a1a', weight: 1, fillOpacity: 0.4 };
-                        }
-                    },
-                    onEachFeature: (feature, layer) => {
-                        const countryName = feature.properties.NAME || feature.properties.ADMIN;
-                        layer.bindTooltip(countryName, { permanent: false, direction: 'center' });
-                        layer.on('click', () => {
-                            const data = visitorData.find(c => c.country === countryName);
-                            if (data) {
-                                layer.bindPopup(`
-                                    <b>${data.flag} ${data.country}</b><br>
-                                    Visitors: ${data.visitors}<br>
-                                    Last visit: ${data.lastVisit}<br>
-                                    Average visit: ${data.avgTime}
-                                `).openPopup();
-                            }
-                        });
-                    }
-                }).addTo(map);
-
-                // Add city markers
-                cityData.forEach(city => {
-                    const marker = L.circleMarker([city.lat, city.lon], {
-                        radius: Math.max(4, Math.sqrt(city.visitors) * 2),
-                        color: '#d4a853',
-                        fillColor: '#d4a853',
-                        fillOpacity: 0.8,
-                        weight: 1
-                    }).addTo(map);
-
-                    marker.bindTooltip(`${city.city}, ${city.country} (${city.visitors})`, {
-                        permanent: false,
-                        direction: 'top'
-                    });
-
-                    marker.on('click', () => {
-                        marker.bindPopup(`
-                            <b>${city.city}, ${city.country}</b><br>
-                            Visitors from here: ${city.visitors}
-                        `).openPopup();
-                    });
-                });
+            // Country list
+            const countryListDiv = document.getElementById('countryList');
+            countryListDiv.innerHTML = '';
+            data.countries.forEach(c => {
+                const entry = document.createElement('div');
+                entry.className = 'country-entry';
+                entry.innerHTML = `
+                    <span class="country-flag">${c.flag}</span>
+                    <span class="country-name">${c.country}</span>
+                    <span class="country-visitors">${c.visitors}</span>
+                `;
+                countryListDiv.appendChild(entry);
             });
 
-        // Theme toggle also switches map tiles
+            // Update map colours
+            const visitedCountries = new Set(data.countries.map(c => c.country));
+
+            fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson')
+                .then(response => response.json())
+                .then(geoData => {
+                    // Merge Kosovo into Serbia
+                    const serbia = geoData.features.find(f => f.properties.NAME === 'Serbia' || f.properties.ADMIN === 'Serbia');
+                    const kosovo = geoData.features.find(f => f.properties.NAME === 'Kosovo' || f.properties.ADMIN === 'Kosovo');
+                    if (serbia && kosovo) {
+                        if (serbia.geometry.type === 'Polygon') {
+                            serbia.geometry = { type: 'MultiPolygon', coordinates: [serbia.geometry.coordinates] };
+                        }
+                        if (kosovo.geometry.type === 'Polygon') {
+                            serbia.geometry.coordinates.push(kosovo.geometry.coordinates);
+                        } else if (kosovo.geometry.type === 'MultiPolygon') {
+                            serbia.geometry.coordinates.push(...kosovo.geometry.coordinates);
+                        }
+                        geoData.features = geoData.features.filter(f => f !== kosovo);
+                    }
+
+                    // Remove old layer if exists
+                    if (window.countryLayer) {
+                        map.removeLayer(window.countryLayer);
+                    }
+
+                    window.countryLayer = L.geoJSON(geoData, {
+                        style: feature => {
+                            const name = feature.properties.NAME || feature.properties.ADMIN;
+                            return visitedCountries.has(name)
+                                ? { fillColor: '#3ddc84', color: '#1a1a1a', weight: 1, fillOpacity: 0.7 }
+                                : { fillColor: '#3a3a4a', color: '#1a1a1a', weight: 1, fillOpacity: 0.4 };
+                        },
+                        onEachFeature: (feature, layer) => {
+                            const name = feature.properties.NAME || feature.properties.ADMIN;
+                            layer.bindTooltip(name);
+                            layer.on('click', () => {
+                                const countryData = data.countries.find(c => c.country === name);
+                                if (countryData) {
+                                    layer.bindPopup(`<b>${countryData.flag} ${countryData.country}</b><br>Visitors: ${countryData.visitors}`).openPopup();
+                                }
+                            });
+                        }
+                    }).addTo(map);
+                });
+        }
+
+        // Try to fetch real data
+        fetch(APP_SCRIPT_URL)
+            .then(response => response.json())
+            .then(data => {
+                updateUI(data);
+            })
+            .catch(() => {
+                // Use fallback data if fetch fails (for example, the URL is wrong or not deployed)
+                updateUI(fallbackData);
+            });
+
+        // Theme toggle switches map tiles
         const observer = new MutationObserver(() => {
             const theme = document.documentElement.getAttribute('data-theme');
             if (theme === 'dark') {
