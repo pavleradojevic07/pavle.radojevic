@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic — Pavle Radojević</title>
+    <meta name="description" content="Academic background of Pavle Radojević – University of Belgrade, Faculty of Mathematics">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        (function() {
+            var theme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1") || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-secondary: #111118;
+            --bg-card: #16161f;
+            --bg-card-hover: #1c1c28;
+            --text: #e8e8f0;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6a6a80;
+            --accent-basketball: #f07b3b;
+            --accent-academic: #4da6ff;
+            --accent-plates: #3ddc84;
+            --accent-gold: #d4a853;
+            --border: #252535;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.5);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-lg: 24px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --nav-height: 70px;
+            --max-width: 1100px;
+        }
+
+        [data-theme="light"] {
+            --bg: #f5f5f8;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f8f8fc;
+            --text: #1a1a2e;
+            --text-secondary: #4a4a60;
+            --text-muted: #7a7a90;
+            --border: #e0e0ea;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: background var(--transition), color var(--transition);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ── NAV ── */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            height: var(--nav-height); background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 2rem; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+        .nav-logo {
+            font-family: var(--font-display); font-weight: 700; font-size: 1.4rem;
+            letter-spacing: -0.02em; color: var(--text); text-decoration: none;
+        }
+        .nav-links { display: flex; gap: 0.25rem; align-items: center; }
+        .nav-link {
+            color: var(--text-secondary); text-decoration: none; font-weight: 500;
+            font-size: 0.9rem; padding: 0.5rem 1rem; border-radius: 8px;
+            transition: all var(--transition); white-space: nowrap;
+        }
+        .nav-link:hover, .nav-link.active { color: var(--text); background: var(--bg-card); }
+        .nav-link.academic-link:hover { color: var(--accent-academic); }
+        .theme-toggle {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
+            cursor: pointer; width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+            transition: all var(--transition); margin-left: 0.5rem;
+        }
+        .theme-toggle:hover { background: var(--bg-card-hover); transform: rotate(30deg); }
+        .mobile-menu-btn { display: none; background: none; border: none; color: var(--text); font-size: 1.6rem; cursor: pointer; }
+
+        /* ── PAGE CONTENT ── */
+        .page-content { padding-top: var(--nav-height); flex: 1; }
+        .section { padding: 4rem 2rem; max-width: var(--max-width); margin: 0 auto; }
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        a { color: var(--accent-academic); text-decoration: underline; text-underline-offset: 3px; font-weight: 500; }
+        a:hover { opacity: 0.8; }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 3rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+            border-radius: 1px;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-academic);
+            border: 3px solid var(--bg);
+            z-index: 2;
+        }
+        .timeline-year {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent-academic);
+            font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+        .timeline-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 0.2rem 0;
+        }
+        .timeline-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .school-link {
+            color: var(--accent-academic);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            font-weight: 600;
+        }
+        .school-link:hover { background: var(--accent-academic); color: #fff; padding: 0 4px; border-radius: 3px; }
+
+        /* Courses */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+        .course-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1.2rem;
+            border-left: 4px solid var(--accent-academic);
+            transition: all var(--transition);
+            cursor: pointer;
+            user-select: none;
+        }
+        .course-card:hover { transform: translateX(4px); border-color: var(--accent-academic); }
+        .course-name { font-weight: 600; margin: 0.3rem 0; display: flex; align-items: center; gap: 0.5rem; }
+        .course-status {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+        .status-completed { background: rgba(61, 220, 132, 0.15); color: var(--accent-plates); }
+        .status-ongoing { background: rgba(77, 166, 255, 0.15); color: var(--accent-academic); }
+
+        .course-summary {
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            display: none;
+            padding-top: 0.8rem;
+            border-top: 1px dashed var(--border);
+        }
+        .course-card.open .course-summary {
+            display: block;
+        }
+
+        .achievement-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow);
+        }
+        .achievement-box h3 { font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 1rem; }
+        .pdf-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.6rem 1.4rem;
+            border-radius: 30px;
+            border: 1px solid var(--accent-academic);
+            color: var(--accent-academic);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all var(--transition);
+        }
+        .pdf-link:hover { background: var(--accent-academic); color: #fff; }
+
+        /* ── FOOTER ── */
+        .contact-footer {
+            text-align: center;
+            padding: 2rem 1rem 2.5rem;
+            border-top: 1px solid var(--border);
+            background: var(--bg);
+        }
+        .contact-footer h4 { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 1rem; }
+        .contact-links { display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+        .contact-link {
+            color: var(--text); text-decoration: none; font-weight: 500;
+            padding: 0.6rem 1.6rem; border-radius: 30px; border: 1px solid var(--border);
+            transition: all var(--transition); background: var(--bg-card); font-size: 0.95rem;
+            display: inline-flex; align-items: center; gap: 0.4rem;
+        }
+        .contact-link:hover { border-color: var(--accent-gold); background: var(--bg-card-hover); transform: translateY(-2px); }
+        .contact-link.email-link { border-color: var(--accent-academic); }
+        .footer-note { color: var(--text-muted); font-size: 0.8rem; margin-top: 1.5rem; }
+
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .nav-links.mobile-open {
+                display: flex; flex-direction: column; position: absolute;
+                top: var(--nav-height); left: 0; right: 0;
+                background: var(--bg-secondary); padding: 1rem;
+                border-bottom: 1px solid var(--border); box-shadow: var(--shadow-lg);
+            }
+            .mobile-menu-btn { display: block; }
+            .section { padding: 2rem 1rem; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .lang-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 1.2rem;
+        text-align: center;
+        transition: all var(--transition);
+        }
+        .lang-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--accent-gold);
+        box-shadow: var(--shadow);
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">PR</a>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
+        <div class="nav-links" id="navLinks">
+            <a href="basketball.html" class="nav-link basketball-link">🏀 Basketball</a>
+            <a href="academic.html" class="nav-link academic-link active">🎓 Academic</a>
+            <a href="plates.html" class="nav-link plates-link">🌍 Atlas</a>
+            <a href="visitors.html" class="nav-link">📊 Visitors</a>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        </div>
+    </nav>
+
+    <main class="page-content">
+        <section class="section">
+            <h1 class="section-title">Academic</h1>
+
+            <h2 style="font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Academic Background</h2>
+            <div class="timeline">
+                <!-- University (now first) -->
+                <div class="timeline-item">
+                    <div class="timeline-year">2025 – Present</div>
+                    <div class="timeline-title">
+                        <a href="https://www.bg.ac.rs/" target="_blank" rel="noopener" class="school-link">University of Belgrade</a> — 
+                        <a href="https://www.matf.bg.ac.rs/" target="_blank" rel="noopener" class="school-link">Faculty of Mathematics</a> 🇷🇸
+                    </div>
+                    <div class="timeline-desc">Currently enrolled: <strong>Applied Mathematics</strong> (1st Year).</div>
+                </div>
+
+                <!-- High School (second) -->
+                <div class="timeline-item">
+                    <div class="timeline-year">2021 – 2025</div>
+                    <div class="timeline-title">
+                        <a href="https://www.nikola-tesla.hu/" target="_blank" rel="noopener" class="school-link">High School "Nikola Tesla"</a>, Budapest, Hungary 🇭🇺
+                    </div>
+                    <div class="timeline-desc">
+                        Serbian Grammar School – High School Diploma. Graduated with <strong>Highest Honors</strong>, Matura Examination Score: <strong>5.0/5.0</strong>.
+                    </div>
+                </div>
+
+                <!-- Elementary School (third) -->
+                <div class="timeline-item">
+                    <div class="timeline-year">2013 – 2021</div>
+                    <div class="timeline-title">
+                        <a href="https://osradekoncar.edu.rs/" target="_blank" rel="noopener" class="school-link">Elementary School „Rade Končar“</a>, Zemun, Serbia 🇷🇸
+                    </div>
+                    <div class="timeline-desc">Finished with <strong>excellent grades</strong>.</div>
+                </div>
+            </div>
+
+            <h2 style="font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Courses</h2>
+
+            <h3 style="font-weight:600; margin-bottom:0.8rem; color:var(--text);">Completed</h3>
+            
+            <div class="courses-grid">
+                <div class="course-card">
+                    <div class="course-name">💡 Programming 2</div>
+                    <span class="course-status status-completed">Completed</span>
+                    <div class="course-summary">Building on Programming 1, this course covers advanced programming techniques in C. Students learn about pointers, dynamic memory allocation, and complex data structures including linked lists, stacks, queues, and trees. The curriculum includes file handling, bitwise operators, and command-line arguments. Students explore algorithms for searching and sorting, both iterative and recursive implementations, and gain understanding of computational complexity and algorithmic undecidability.</div>
+                </div>
+                <div class="course-card">
+                    <div class="course-name">💻 Programming 1</div>
+                    <span class="course-status status-completed">Completed</span>
+                    <div class="course-summary">This course introduces students to fundamental concepts of procedural programming. Students learn basic programming constructs including data types, control structures, functions, and arrays. The course covers algorithm development, recursion, and elementary data structures, with practical implementation in the C programming language. Students also gain understanding of testing, debugging, and the historical context of computer science.</div>
+                </div>
+                <div class="course-card">
+                    <div class="course-name">🧠 Introduction to Mathematical Logic</div>
+                    <span class="course-status status-completed">Completed</span>
+                    <div class="course-summary">This course provides foundational knowledge in mathematical logic and set theory. Students learn about sets, relations, functions, cardinality, and the concept of countability. The curriculum covers propositional logic with semantics and normal forms, as well as first-order predicate logic with quantifiers. Students understand key theorems including Gödel's completeness theorem and the compactness theorem, preparing them for advanced mathematical courses.</div>
+                </div>
+                <div class="course-card">
+                    <div class="course-name">📐 Elementary Mathematics</div>
+                    <span class="course-status status-completed">Completed</span>
+                    <div class="course-summary">This course aims to standardize students' mathematical knowledge from previous education. It covers algebraic expressions, absolute values, exponentiation, logarithms, and trigonometric functions. Students work with functions, inverse functions, and their graphs, as well as solving various types of equations and inequalities. The content ensures students have mastered the mathematics taught in Serbian primary and secondary schools.</div>
+                </div>
+            </div>
+
+            <h3 style="font-weight:600; margin:2rem 0 0.8rem; color:var(--text);">Currently Enrolled</h3>
+            <div class="courses-grid">
+                <div class="course-card">
+                    <div class="course-name">📈 Mathematical Analysis 1</div>
+                    <span class="course-status status-ongoing">In Progress</span>
+                    <div class="course-summary">This comprehensive course covers the core concepts of mathematical analysis. Students learn about real numbers, convergence of sequences and series, continuity, differentiability, and integration. Topics include limits, the derivative and its applications, Riemann integration, and improper integrals. The course also covers elementary functions, Taylor polynomials, uniform convergence, and numerical and power series. Students develop skills in applying these fundamental analytical tools.</div>
+                </div>
+                <div class="course-card">
+                    <div class="course-name">📊 Linear Algebra</div>
+                    <span class="course-status status-ongoing">In Progress</span>
+                    <div class="course-summary">This course provides advanced knowledge of linear algebra over two semesters. Students learn about vector spaces, linear mappings, bases, dimension, and matrices. The curriculum covers determinants, systems of linear equations, eigenvalues and eigenvectors, and diagonalization. Additional topics include bilinear and quadratic forms, Euclidean vector spaces, orthogonal transformations, and Hermitian spaces. Students gain the ability to solve problems and apply linear algebra in other mathematical contexts.</div>
+                </div>
+                
+                <div class="course-card">
+                    <div class="course-name">🇬🇧 English for Mathematical Purposes</div>
+                    <span class="course-status status-ongoing">In Progress</span>
+                    <div class="course-summary">This course develops students' English language skills with a focus on mathematical contexts. Students improve reading comprehension of technical texts, writing skills for professional communication, and overall language proficiency. The curriculum covers essential English grammar including verb tenses, conditionals, reported speech, and passive voice. Students learn to communicate effectively in English and independently use English-language mathematical literature.</div>
+                </div>
+                <div class="course-card">
+                    <div class="course-name">📏 Analytic Geometry</div>
+                    <span class="course-status status-ongoing">In Progress</span>
+                    <div class="course-summary">This course provides foundational knowledge of analytic geometry in the plane and space. Students learn vector algebra, linear geometry, and quadratic geometry, including points, lines, planes, and second-order curves and surfaces. The curriculum includes coordinate transformations, affine transformations, and elementary spherical geometry. Students develop geometric intuition and the ability to apply coordinate methods in other mathematical courses.</div>
+                </div>
+            </div>
+            <!-- Languages -->
+                        <h2 style="font-family:var(--font-display); font-size:2rem; margin:3rem 0 1.5rem;">Languages</h2>
+                        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:1rem;">
+                            <div class="lang-card">
+                                <div style="font-size:2rem; margin-bottom:0.5rem;">🇷🇸</div>
+                                <div style="font-weight:600;">Serbian</div>
+                                <div style="color:var(--text-secondary); font-size:0.9rem;">Native</div>
+                            </div>
+                            <div class="lang-card">
+                                <div style="font-size:2rem; margin-bottom:0.5rem;">🇬🇧</div>
+                                <div style="font-weight:600;">English</div>
+                            <div style="color:var(--text-secondary); font-size:0.9rem;">C1 – IELTS 7.5</div>
+                            </div>
+                            <div class="lang-card">
+                                <div style="font-size:2rem; margin-bottom:0.5rem;">🇭🇺</div>
+                                <div style="font-weight:600;">Hungarian</div>
+                                <div style="color:var(--text-secondary); font-size:0.9rem;">B2</div>
+                        </div>
+                        </div>
+            <div class="achievement-box">
+                <h3>Achievement & Projects</h3>
+                <p>
+                    <strong>🏆 Competition Winner</strong><br>
+                    Winner of the Financial Mathematics Competition by the 
+                    <a href="https://dms.rs/" target="_blank" rel="noopener">Mathematical Society of Serbia</a> 
+                    with the research project: <em>“Fleet procurement risk management in the aviation industry using financial mathematics.”</em> (June 2024)
+                </p>
+                <a href="files/fleet-procurement-risk.pdf" class="pdf-link" target="_blank" download>
+                    📄 Download Project (PDF)
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="contact-footer">
+        <h4>Get in Touch</h4>
+        <div class="contact-links">
+            <a href="mailto:pavle.radojevic07@gmail.com" class="contact-link email-link">✉️ Email</a>
+            <a href="https://instagram.com/pavle.radojevic" target="_blank" rel="noopener" class="contact-link">📷 Instagram</a>
+            <a href="https://linkedin.com/in/pavle-radojevic-3677b4255/" target="_blank" rel="noopener" class="contact-link">💼 LinkedIn</a>
+            <a href="https://www.youtube.com/@pavleradojevic5867" target="_blank" rel="noopener" class="contact-link">▶️ YouTube</a>
+        </div>
+        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages</p>
+    </footer>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+        });
+
+        // Mobile menu
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('mobile-open');
+            mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+        });
+
+        // Toggle course summaries on click
+        document.querySelectorAll('.course-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Prevent toggle if user clicks on a link inside the card (shouldn't happen, but just in case)
+                if (e.target.tagName === 'A') return;
+                this.classList.toggle('open');
+            });
+        });
+    </script>
+</body>
+</html>

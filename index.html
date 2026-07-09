@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pavle Radojević — Home</title>
+    <meta name="description" content="Personal website of Pavle Radojević — Basketball, Academics, License Plate Atlas">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+    // Immediately apply saved theme from cookie (no flash)
+        (function() {
+            var theme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1") || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-secondary: #111118;
+            --bg-card: #16161f;
+            --bg-card-hover: #1c1c28;
+            --text: #e8e8f0;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6a6a80;
+            --accent-basketball: #f07b3b;
+            --accent-academic: #4da6ff;
+            --accent-plates: #3ddc84;
+            --accent-gold: #d4a853;
+            --border: #252535;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.5);
+            --radius: 16px;
+            --radius-lg: 24px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --nav-height: 70px;
+            --img-basketball: url('images/basketball-dark.jpg');
+            --img-academic:   url('images/academic-dark.jpg');
+            --img-plates:     url('images/plates-dark.jpg');
+        }
+
+        [data-theme="light"] {
+            --bg: #f5f5f8;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f8f8fc;
+            --text: #1a1a2e;
+            --text-secondary: #4a4a60;
+            --text-muted: #7a7a90;
+            --border: #e0e0ea;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
+            --img-basketball: url('images/basketball-light.jpg');
+            --img-academic:   url('images/academic-light.jpg');
+            --img-plates:     url('images/plates-light.jpg');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: background var(--transition-slow), color var(--transition-slow);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: var(--nav-height);
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: background var(--transition);
+        }
+        .nav-logo {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.4rem;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex;
+            gap: 0.25rem;
+            align-items: center;
+        }
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all var(--transition);
+            white-space: nowrap;
+            letter-spacing: -0.01em;
+        }
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--text);
+            background: var(--bg-card);
+        }
+        .nav-link.basketball-link:hover { color: var(--accent-basketball); }
+        .nav-link.academic-link:hover { color: var(--accent-academic); }
+        .nav-link.plates-link:hover { color: var(--accent-plates); }
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all var(--transition);
+            margin-left: 0.5rem;
+        }
+        .theme-toggle:hover {
+            background: var(--bg-card-hover);
+            transform: rotate(30deg);
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.6rem;
+            cursor: pointer;
+            padding: 0.4rem;
+        }
+
+        /* Hero panels */
+        .hero {
+            height: calc(100vh - var(--nav-height));
+            margin-top: var(--nav-height);
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-snap-type: y mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        .hero-panels {
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            width: 100%;
+        }
+        .hero-panel {
+            width: 100%;
+            height: calc(100vh - var(--nav-height));
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #fff;
+            background-size: cover;
+            background-position: center;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            cursor: pointer;
+        }
+        /* 👇 REPLACE THESE URLs WITH YOUR OWN IMAGES 👇 */
+        .panel-basketball {
+            background-image: var(--img-basketball);
+        }
+        .panel-academic {
+            background-image: var(--img-academic);
+        }
+        .panel-plates {
+            background-image: var(--img-plates);
+        }
+
+        .hero-panel::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.1) 100%);
+            z-index: 1;
+            transition: background var(--transition-slow);
+        }
+        .hero-panel:hover::after {
+            background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.05) 100%);
+        }
+        .hero-panel:hover {
+            transform: scale(1.02);
+            z-index: 5;
+            box-shadow: 0 0 60px rgba(0,0,0,0.8);
+        }
+        .panel-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 2rem;
+            max-width: 400px;
+            transition: transform var(--transition);
+        }
+        .hero-panel:hover .panel-content {
+            transform: translateY(-10px);
+        }
+        .panel-content .hero-card-icon {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+        }
+        .panel-content h3 {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+            margin-bottom: 0.5rem;
+        }
+        .panel-content p {
+            font-size: 1rem;
+            opacity: 0.9;
+            text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+            font-weight: 400;
+        }
+
+        /* Footer */
+        .contact-footer {
+            text-align: center;
+            padding: 2rem 1rem 2.5rem;
+            border-top: 1px solid var(--border);
+            background: var(--bg);
+            margin-top: auto;
+        }
+        .contact-footer h4 {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+        .contact-links {
+            display: flex;
+            gap: 1.2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .contact-link {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.6rem 1.6rem;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            background: var(--bg-card);
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .contact-link:hover {
+            border-color: var(--accent-gold);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+        .contact-link.email-link { border-color: var(--accent-academic); }
+        .contact-link.email-link:hover { border-color: var(--accent-academic); background: rgba(77,166,255,0.1); }
+        .footer-note {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .nav-links.mobile-open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: var(--nav-height);
+                left: 0;
+                right: 0;
+                background: var(--bg-secondary);
+                padding: 1rem;
+                border-bottom: 1px solid var(--border);
+                box-shadow: var(--shadow-lg);
+                gap: 0.3rem;
+            }
+            .mobile-menu-btn { display: block; }
+        }
+        @media (max-width: 500px) {
+            .hero-panel .panel-content h3 { font-size: 1.8rem; }
+            .hero-panel .hero-card-icon { font-size: 3rem; }
+            .contact-links { gap: 0.6rem; }
+            .contact-link { padding: 0.5rem 1.2rem; font-size: 0.85rem; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">PR</a>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
+        <div class="nav-links" id="navLinks">
+            <a href="basketball.html" class="nav-link basketball-link">🏀 Basketball</a>
+            <a href="academic.html" class="nav-link academic-link">🎓 Academic</a>
+            <a href="plates.html" class="nav-link plates-link">🌍 Atlas</a>
+            <a href="visitors.html" class="nav-link">📊 Visitors</a>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        </div>
+    </nav>
+
+    <main class="hero">
+        <div class="hero-panels">
+            <a href="basketball.html" class="hero-panel panel-basketball">
+                <div class="panel-content">
+                    <span class="hero-card-icon">🏀</span>
+                    <h3>Basketball</h3>
+                    <p>Player profile, career timeline, highlights</p>
+                </div>
+            </a>
+            <a href="academic.html" class="hero-panel panel-academic">
+                <div class="panel-content">
+                    <span class="hero-card-icon">🎓</span>
+                    <h3>Academic</h3>
+                    <p>University, courses & personal projects</p>
+                </div>
+            </a>
+            <a href="plates.html" class="hero-panel panel-plates">
+                <div class="panel-content">
+                    <span class="hero-card-icon">🌍</span>
+                    <h3>License Plate Atlas</h3>
+                    <p>Interactive globe & collection stories</p>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <footer class="contact-footer">
+        <h4>Get in Touch</h4>
+        <div class="contact-links">
+            <a href="mailto:pavle.radojevic07@gmail.com" class="contact-link email-link">✉️ Email</a>
+            <a href="https://instagram.com/pavle.radojevic" target="_blank" rel="noopener" class="contact-link">📷 Instagram</a>
+            <a href="https://linkedin.com/in/pavle-radojevic-3677b4255/" target="_blank" rel="noopener" class="contact-link">💼 LinkedIn</a>
+            <a href="https://www.youtube.com/@pavleradojevic5867" target="_blank" rel="noopener" class="contact-link">▶️ YouTube</a>
+        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages</p>
+    </footer>
+
+    <script>
+        // Theme toggle with cookie (no localStorage)
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+        });
+
+        // Mobile menu (kept exactly the same)
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('mobile-open');
+            mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+        });
+    </script>
+</body>
+</html>

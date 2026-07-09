@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>License Plate Atlas — Pavle Radojević</title>
+    <meta name="description" content="Interactive license plate collection">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        (function() {
+            var theme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1") || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <style>
+        /* (all CSS rules identical to previous – no changes needed) */
+        :root {
+            --bg: #0a0a0f; --bg-secondary: #111118; --bg-card: #16161f; --bg-card-hover: #1c1c28;
+            --text: #e8e8f0; --text-secondary: #a0a0b8; --text-muted: #6a6a80;
+            --accent-basketball: #f07b3b; --accent-academic: #4da6ff; --accent-plates: #3ddc84; --accent-gold: #d4a853;
+            --border: #252535; --shadow: 0 4px 24px rgba(0, 0, 0, 0.4); --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.5);
+            --radius: 16px; --radius-sm: 10px; --radius-lg: 24px; --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-sans: 'Inter', system-ui, sans-serif; --font-display: 'Playfair Display', serif;
+            --font-mono: 'JetBrains Mono', monospace; --nav-height: 70px; --max-width: 1200px;
+        }
+        [data-theme="light"] {
+            --bg: #f5f5f8; --bg-secondary: #ffffff; --bg-card: #ffffff; --bg-card-hover: #f8f8fc;
+            --text: #1a1a2e; --text-secondary: #4a4a60; --text-muted: #7a7a90;
+            --border: #e0e0ea; --shadow: 0 4px 20px rgba(0, 0, 0, 0.06); --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans); background: var(--bg); color: var(--text);
+            line-height: 1.6; transition: background var(--transition), color var(--transition);
+            overflow-x: hidden; -webkit-font-smoothing: antialiased;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+        .nav {
+            position: fixed; top:0; left:0; right:0; z-index:1000; height:var(--nav-height);
+            background:var(--bg); border-bottom:1px solid var(--border);
+            display:flex; align-items:center; justify-content:space-between;
+            padding:0 2rem; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+        }
+        .nav-logo { font-family:var(--font-display); font-weight:700; font-size:1.4rem; color:var(--text); text-decoration:none; }
+        .nav-links { display:flex; gap:0.25rem; align-items:center; }
+        .nav-link {
+            color:var(--text-secondary); text-decoration:none; font-weight:500; font-size:0.9rem;
+            padding:0.5rem 1rem; border-radius:8px; transition:all var(--transition); white-space:nowrap;
+        }
+        .nav-link:hover, .nav-link.active { color:var(--text); background:var(--bg-card); }
+        .nav-link.plates-link:hover { color:var(--accent-plates); }
+        .theme-toggle {
+            background:var(--bg-card); border:1px solid var(--border); color:var(--text);
+            cursor:pointer; width:40px; height:40px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+            transition:all var(--transition); margin-left:0.5rem;
+        }
+        .theme-toggle:hover { background:var(--bg-card-hover); transform:rotate(30deg); }
+        .mobile-menu-btn { display:none; background:none; border:none; color:var(--text); font-size:1.6rem; cursor:pointer; }
+
+        .page-content { padding-top:var(--nav-height); flex:1; }
+        .section { padding:4rem 2rem; max-width:var(--max-width); margin:0 auto; }
+
+        .globe-container {
+            position:relative; width:100%; max-width:700px; height:500px; margin:0 auto 3rem;
+            cursor:grab; border-radius:var(--radius-lg); overflow:hidden;
+            background:radial-gradient(ellipse at center, #1a1a30 0%, #0a0a15 100%);
+            border:1px solid var(--border); box-shadow:var(--shadow-lg);
+        }
+        .globe-container:active { cursor:grabbing; }
+        .globe-container canvas { display:block; }
+        .globe-search {
+            position:absolute; bottom:20px; left:50%; transform:translateX(-50%);
+            z-index:10; display:flex; gap:0.5rem;
+            background:var(--bg-card); border-radius:30px; padding:0.4rem;
+            border:1px solid var(--border); box-shadow:var(--shadow);
+        }
+        .globe-search input {
+            background:transparent; border:none; color:var(--text); padding:0.5rem 1rem;
+            font-family:var(--font-sans); font-size:0.9rem; width:200px; outline:none;
+        }
+        .globe-search input::placeholder { color:var(--text-muted); }
+        .globe-search button {
+            background:var(--accent-plates); color:#000; border:none; padding:0.5rem 1.2rem;
+            border-radius:25px; cursor:pointer; font-weight:600; font-family:var(--font-sans);
+            font-size:0.85rem; transition:all var(--transition); white-space:nowrap;
+        }
+        .globe-search button:hover { filter:brightness(1.15); }
+
+        .country-panel {
+            background:var(--bg-card); border:1px solid var(--border);
+            border-radius:var(--radius-lg); padding:2rem; margin:2rem 0;
+            box-shadow:var(--shadow); display:none; animation:fadeSlideIn 0.4s ease;
+        }
+        .country-panel.visible { display:block; }
+        @keyframes fadeSlideIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        .country-panel-header { display:flex; align-items:center; gap:1.5rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+        .country-flag { font-size:4rem; }
+        .country-info h3 { font-family:var(--font-display); font-size:1.8rem; }
+        .country-info .country-meta { color:var(--text-secondary); font-size:0.9rem; }
+        .country-details { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:1rem; }
+        .country-detail { background:var(--bg-secondary); border-radius:var(--radius-sm); padding:1rem; }
+        .cd-label { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); }
+        .cd-value { font-weight:600; font-size:1rem; }
+        .plate-image { font-size:3rem; margin-top:0.5rem; }
+
+        .collection-stats { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:1rem; margin:2rem 0; }
+        .coll-stat { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:1.3rem; text-align:center; }
+        .cs-value { font-family:var(--font-display); font-size:2.2rem; font-weight:700; color:var(--accent-plates); }
+        .cs-label { color:var(--text-muted); font-size:0.85rem; }
+        .progress-bar-wrap { background:var(--bg-secondary); border-radius:20px; height:20px; overflow:hidden; margin:1.5rem 0; border:1px solid var(--border); }
+        .progress-bar-fill { height:100%; background:linear-gradient(90deg, var(--accent-plates), #1abc6c); border-radius:20px; display:flex; align-items:center; justify-content:flex-end; padding-right:10px; font-size:0.75rem; font-weight:700; color:#000; }
+
+        /* Gallery – now shows real images */
+        .gallery-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:1rem; margin-top:2rem; }
+        .gallery-item {
+    height: 120px;                           /* fixed height for uniform rows */
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all var(--transition);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.gallery-item img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;      /* shows the whole plate without cropping */
+    display: block;
+}
+.gallery-item:hover {
+    transform: scale(1.04);
+    border-color: var(--accent-plates);
+    box-shadow: var(--shadow);
+}
+        .plate-country-label {
+            position:absolute; bottom:6px; font-size:0.7rem; font-weight:600;
+            background:rgba(0,0,0,0.7); color:#fff; padding:2px 8px; border-radius:4px;
+        }
+
+        .modal-overlay {
+            position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:2000;
+            display:flex; align-items:center; justify-content:center; cursor:pointer;
+        }
+        .modal-overlay.hidden { display:none !important; }
+        .modal-content {
+            background:var(--bg-card); border-radius:var(--radius-lg); padding:2rem;
+            max-width:600px; width:90%; text-align:center; cursor:default;
+            box-shadow:var(--shadow-lg); animation:scaleIn 0.3s ease;
+        }
+        @keyframes scaleIn { from { transform:scale(0.9); opacity:0; } to { transform:scale(1); opacity:1; } }
+        .modal-content img {
+            max-width:100%; max-height:300px; border-radius:var(--radius-sm); margin:1rem 0;
+        }
+        .modal-close {
+            margin-top:1rem; padding:0.5rem 1.5rem; border-radius:25px;
+            border:1px solid var(--border); background:var(--bg-secondary);
+            color:var(--text); cursor:pointer;
+        }
+
+        .contact-footer {
+            text-align:center; padding:2rem 1rem 2.5rem; border-top:1px solid var(--border);
+            background:var(--bg);
+        }
+        .contact-footer h4 { font-family:var(--font-display); font-size:1.3rem; margin-bottom:1rem; }
+        .contact-links { display:flex; gap:1.2rem; justify-content:center; flex-wrap:wrap; align-items:center; }
+        .contact-link {
+            color:var(--text); text-decoration:none; font-weight:500; padding:0.6rem 1.6rem;
+            border-radius:30px; border:1px solid var(--border); transition:all var(--transition);
+            background:var(--bg-card); font-size:0.95rem; display:inline-flex; align-items:center; gap:0.4rem;
+        }
+        .contact-link:hover { border-color:var(--accent-gold); background:var(--bg-card-hover); transform:translateY(-2px); }
+        .contact-link.email-link { border-color:var(--accent-academic); }
+        .footer-note { color:var(--text-muted); font-size:0.8rem; margin-top:1.5rem; }
+
+        @media (max-width:900px) {
+            .nav-links { display:none; }
+            .nav-links.mobile-open {
+                display:flex; flex-direction:column; position:absolute; top:var(--nav-height); left:0; right:0;
+                background:var(--bg-secondary); padding:1rem; border-bottom:1px solid var(--border);
+                box-shadow:var(--shadow-lg);
+            }
+            .mobile-menu-btn { display:block; }
+            .globe-container { height:350px; }
+            .globe-search input { width:140px; }
+        }
+        @media (max-width:500px) {
+            .globe-container { height:280px; }
+            .gallery-grid { grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); }
+        }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:var(--bg); }
+        ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+        #searchDropdown {
+    position: absolute;
+    bottom: 100%;               /* show above the search bar */
+    left: 0;
+    right: 0;
+    margin-bottom: 4px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 4px 0;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: var(--shadow);
+}
+
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">PR</a>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
+        <div class="nav-links" id="navLinks">
+            <a href="basketball.html" class="nav-link">🏀 Basketball</a>
+            <a href="academic.html" class="nav-link">🎓 Academic</a>
+            <a href="plates.html" class="nav-link plates-link active">🌍 Atlas</a>
+            <a href="visitors.html" class="nav-link">📊 Visitors</a>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        </div>
+    </nav>
+
+    <main class="page-content">
+        <section class="section">
+            <h1 style="font-family:var(--font-display); font-size:2.5rem; text-align:center; margin-bottom:0.5rem;">License Plate Atlas</h1>
+            <p style="text-align:center; color:var(--text-secondary); margin-bottom:2rem;">Green territories = collected · Search any country or state</p>
+
+            <div class="globe-container" id="globeContainer">
+    <div class="globe-search">
+        <input type="text" id="globeSearchInput" placeholder="Type country or state..." autocomplete="off"
+        style="background:transparent; border:none; color:var(--text); padding:0.5rem 1rem; font-family:var(--font-sans); font-size:0.9rem; width:220px; outline:none;">
+        <ul id="searchDropdown" style="display:none;"></ul>
+        <button id="globeSearchBtn">🔍 Find</button>
+    </div>
+</div>
+
+            <!-- Country Panel -->
+<div class="country-panel" id="countryPanel">
+    <div class="country-panel-header">
+        <div class="country-flag" id="cpFlag">🇷🇸</div>
+        <div class="country-info">
+            <h3 id="cpName">Serbia</h3>
+            <div class="country-meta" id="cpMeta">Capital: Belgrade</div>
+        </div>
+    </div>
+    <div class="country-details">
+        <div class="country-detail"><div class="cd-label">Capital</div><div class="cd-value" id="cpCapital">Belgrade</div></div>
+        <div class="country-detail"><div class="cd-label">Population</div><div class="cd-value" id="cpPopulation">6.9M</div></div>
+        <div class="country-detail"><div class="cd-label">Language(s)</div><div class="cd-value" id="cpLanguage">Serbian</div></div>
+        <div class="country-detail" style="grid-column: 1 / -1;">
+            <div class="cd-label">Plates</div>
+            <div id="cpPlateList" style="margin-top:0.5rem;"></div>
+        </div>
+    </div>
+</div>
+
+            <!-- Collection Stats -->
+            <div class="collection-stats" id="statsContainer">
+                <div class="coll-stat"><div class="cs-value" id="statCollected">0</div><div class="cs-label">Countries Collected</div></div>
+                <div class="coll-stat"><div class="cs-value" id="statMissing">195</div><div class="cs-label">Still Missing</div></div>
+                <div class="coll-stat"><div class="cs-value" id="statPercent">0%</div><div class="cs-label">Completion</div></div>
+                <div class="coll-stat"><div class="cs-value" id="statRarest">-</div><div class="cs-label">Rarest Plate</div></div>
+                <div class="coll-stat"><div class="cs-value" id="statNewest">-</div><div class="cs-label">Newest Addition</div></div>
+                <div class="coll-stat"><div class="cs-value" id="statOldest">-</div><div class="cs-label">Oldest Addition</div></div>
+            </div>
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="progressBar" style="width:0%;">0%</div>
+            </div>
+
+            <!-- Gallery -->
+            <h2 style="font-family:var(--font-display); font-size:2rem; margin:2.5rem 0 1rem;">Gallery</h2>
+            <div class="gallery-grid" id="galleryGrid"></div>
+        </section>
+    </main>
+
+    <footer class="contact-footer">
+        <h4>Get in Touch</h4>
+        <div class="contact-links">
+                    <a href="mailto:pavle.radojevic07@gmail.com" class="contact-link email-link">✉️ Email</a>
+                    <a href="https://instagram.com/pavle.radojevic" target="_blank" rel="noopener" class="contact-link">📷 Instagram</a>
+                    <a href="https://linkedin.com/in/pavle-radojevic-3677b4255/" target="_blank" rel="noopener" class="contact-link">💼 LinkedIn</a>
+                    <a href="https://www.youtube.com/@pavleradojevic5867" target="_blank" rel="noopener" class="contact-link">▶️ YouTube</a>
+        </div>
+        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages</p>
+    </footer>
+
+    <!-- Modal for fullscreen plate view -->
+    <div class="modal-overlay hidden" id="plateModal">
+        <div class="modal-content">
+            <img id="modalPlateImage" src="" alt="Plate image" style="display:none;">
+            <div class="plate-display" id="modalPlateEmoji" style="font-size:6rem;">🚗</div>
+            <h3 id="modalPlateCountry">Country</h3>
+            <p id="modalPlateStory" style="color:var(--text-secondary);">Story...</p>
+            <button class="modal-close" id="modalClose">Close</button>
+        </div>
+    </div>
+
+    <script>
+    // Full list of all UN countries + US states (capital, population, language, flag, continent)
+    window.allCountries = [
+        // Africa
+        { name: "Algeria", capital: "Algiers", population: "44.9M", language: "Arabic", flag: "🇩🇿", continent: "Africa" },
+        { name: "Angola", capital: "Luanda", population: "34.8M", language: "Portuguese", flag: "🇦🇴", continent: "Africa" },
+        { name: "Benin", capital: "Porto-Novo", population: "12.9M", language: "French", flag: "🇧🇯", continent: "Africa" },
+        { name: "Botswana", capital: "Gaborone", population: "2.4M", language: "English", flag: "🇧🇼", continent: "Africa" },
+        { name: "Burkina Faso", capital: "Ouagadougou", population: "22.1M", language: "French", flag: "🇧🇫", continent: "Africa" },
+        { name: "Burundi", capital: "Gitega", population: "12.6M", language: "Kirundi/French/English", flag: "🇧🇮", continent: "Africa" },
+        { name: "Cabo Verde", capital: "Praia", population: "0.6M", language: "Portuguese", flag: "🇨🇻", continent: "Africa" },
+        { name: "Cameroon", capital: "Yaoundé", population: "27.9M", language: "French/English", flag: "🇨🇲", continent: "Africa" },
+        { name: "Central African Republic", capital: "Bangui", population: "5.5M", language: "French", flag: "🇨🇫", continent: "Africa" },
+        { name: "Chad", capital: "N'Djamena", population: "17.2M", language: "French/Arabic", flag: "🇹🇩", continent: "Africa" },
+        { name: "Comoros", capital: "Moroni", population: "0.8M", language: "Comorian/French/Arabic", flag: "🇰🇲", continent: "Africa" },
+        { name: "Congo", capital: "Brazzaville", population: "5.8M", language: "French", flag: "🇨🇬", continent: "Africa" },
+        { name: "Côte d'Ivoire", capital: "Yamoussoukro", population: "27.5M", language: "French", flag: "🇨🇮", continent: "Africa" },
+        { name: "Democratic Republic of the Congo", capital: "Kinshasa", population: "95.9M", language: "French", flag: "🇨🇩", continent: "Africa" },
+        { name: "Djibouti", capital: "Djibouti", population: "1.1M", language: "French/Arabic", flag: "🇩🇯", continent: "Africa" },
+        { name: "Egypt", capital: "Cairo", population: "109.3M", language: "Arabic", flag: "🇪🇬", continent: "Africa" },
+        { name: "Equatorial Guinea", capital: "Malabo", population: "1.5M", language: "Spanish/French/Portuguese", flag: "🇬🇶", continent: "Africa" },
+        { name: "Eritrea", capital: "Asmara", population: "3.6M", language: "Tigrinya/Arabic/English", flag: "🇪🇷", continent: "Africa" },
+        { name: "Eswatini", capital: "Mbabane", population: "1.2M", language: "Swazi/English", flag: "🇸🇿", continent: "Africa" },
+        { name: "Ethiopia", capital: "Addis Ababa", population: "123.4M", language: "Amharic", flag: "🇪🇹", continent: "Africa" },
+        { name: "Gabon", capital: "Libreville", population: "2.3M", language: "French", flag: "🇬🇦", continent: "Africa" },
+        { name: "Gambia", capital: "Banjul", population: "2.6M", language: "English", flag: "🇬🇲", continent: "Africa" },
+        { name: "Ghana", capital: "Accra", population: "32.8M", language: "English", flag: "🇬🇭", continent: "Africa" },
+        { name: "Guinea", capital: "Conakry", population: "13.9M", language: "French", flag: "🇬🇳", continent: "Africa" },
+        { name: "Guinea-Bissau", capital: "Bissau", population: "2.1M", language: "Portuguese", flag: "🇬🇼", continent: "Africa" },
+        { name: "Kenya", capital: "Nairobi", population: "56.2M", language: "Swahili/English", flag: "🇰🇪", continent: "Africa" },
+        { name: "Lesotho", capital: "Maseru", population: "2.3M", language: "Sesotho/English", flag: "🇱🇸", continent: "Africa" },
+        { name: "Liberia", capital: "Monrovia", population: "5.3M", language: "English", flag: "🇱🇷", continent: "Africa" },
+        { name: "Libya", capital: "Tripoli", population: "7.0M", language: "Arabic", flag: "🇱🇾", continent: "Africa" },
+        { name: "Madagascar", capital: "Antananarivo", population: "29.6M", language: "Malagasy/French", flag: "🇲🇬", continent: "Africa" },
+        { name: "Malawi", capital: "Lilongwe", population: "20.2M", language: "English/Chichewa", flag: "🇲🇼", continent: "Africa" },
+        { name: "Mali", capital: "Bamako", population: "22.2M", language: "French", flag: "🇲🇱", continent: "Africa" },
+        { name: "Mauritania", capital: "Nouakchott", population: "4.9M", language: "Arabic", flag: "🇲🇷", continent: "Africa" },
+        { name: "Mauritius", capital: "Port Louis", population: "1.3M", language: "English", flag: "🇲🇺", continent: "Africa" },
+        { name: "Morocco", capital: "Rabat", population: "37.5M", language: "Arabic/Berber", flag: "🇲🇦", continent: "Africa" },
+        { name: "Mozambique", capital: "Maputo", population: "33.1M", language: "Portuguese", flag: "🇲🇿", continent: "Africa" },
+        { name: "Namibia", capital: "Windhoek", population: "2.6M", language: "English", flag: "🇳🇦", continent: "Africa" },
+        { name: "Niger", capital: "Niamey", population: "26.1M", language: "French", flag: "🇳🇪", continent: "Africa" },
+        { name: "Nigeria", capital: "Abuja", population: "218.5M", language: "English", flag: "🇳🇬", continent: "Africa" },
+        { name: "Rwanda", capital: "Kigali", population: "13.8M", language: "Kinyarwanda/English/French", flag: "🇷🇼", continent: "Africa" },
+        { name: "Sao Tome and Principe", capital: "São Tomé", population: "0.2M", language: "Portuguese", flag: "🇸🇹", continent: "Africa" },
+        { name: "Senegal", capital: "Dakar", population: "17.7M", language: "French", flag: "🇸🇳", continent: "Africa" },
+        { name: "Seychelles", capital: "Victoria", population: "0.1M", language: "Seychellois Creole/English/French", flag: "🇸🇨", continent: "Africa" },
+        { name: "Sierra Leone", capital: "Freetown", population: "8.4M", language: "English", flag: "🇸🇱", continent: "Africa" },
+        { name: "Somalia", capital: "Mogadishu", population: "17.1M", language: "Somali/Arabic", flag: "🇸🇴", continent: "Africa" },
+        { name: "South Africa", capital: "Pretoria", population: "60.0M", language: "11 Official", flag: "🇿🇦", continent: "Africa" },
+        { name: "South Sudan", capital: "Juba", population: "11.4M", language: "English", flag: "🇸🇸", continent: "Africa" },
+        { name: "Sudan", capital: "Khartoum", population: "46.9M", language: "Arabic/English", flag: "🇸🇩", continent: "Africa" },
+        { name: "Tanzania", capital: "Dodoma", population: "63.9M", language: "Swahili/English", flag: "🇹🇿", continent: "Africa" },
+        { name: "Togo", capital: "Lomé", population: "8.8M", language: "French", flag: "🇹🇬", continent: "Africa" },
+        { name: "Tunisia", capital: "Tunis", population: "12.0M", language: "Arabic", flag: "🇹🇳", continent: "Africa" },
+        { name: "Uganda", capital: "Kampala", population: "48.4M", language: "English/Swahili", flag: "🇺🇬", continent: "Africa" },
+        { name: "Zambia", capital: "Lusaka", population: "19.6M", language: "English", flag: "🇿🇲", continent: "Africa" },
+        { name: "Zimbabwe", capital: "Harare", population: "16.3M", language: "16 Official", flag: "🇿🇼", continent: "Africa" },
+
+        // Asia
+        { name: "Afghanistan", capital: "Kabul", population: "40.2M", language: "Pashto/Dari", flag: "🇦🇫", continent: "Asia" },
+        { name: "Armenia", capital: "Yerevan", population: "3.0M", language: "Armenian", flag: "🇦🇲", continent: "Asia" },
+        { name: "Azerbaijan", capital: "Baku", population: "10.4M", language: "Azerbaijani", flag: "🇦🇿", continent: "Asia" },
+        { name: "Bahrain", capital: "Manama", population: "1.8M", language: "Arabic", flag: "🇧🇭", continent: "Asia" },
+        { name: "Bangladesh", capital: "Dhaka", population: "171.2M", language: "Bengali", flag: "🇧🇩", continent: "Asia" },
+        { name: "Bhutan", capital: "Thimphu", population: "0.8M", language: "Dzongkha", flag: "🇧🇹", continent: "Asia" },
+        { name: "Brunei", capital: "Bandar Seri Begawan", population: "0.4M", language: "Malay", flag: "🇧🇳", continent: "Asia" },
+        { name: "Cambodia", capital: "Phnom Penh", population: "17.2M", language: "Khmer", flag: "🇰🇭", continent: "Asia" },
+        { name: "China", capital: "Beijing", population: "1.43B", language: "Chinese", flag: "🇨🇳", continent: "Asia" },
+        { name: "Cyprus", capital: "Nicosia", population: "1.2M", language: "Greek/Turkish", flag: "🇨🇾", continent: "Asia" },
+        { name: "Georgia", capital: "Tbilisi", population: "3.7M", language: "Georgian", flag: "🇬🇪", continent: "Asia" },
+        { name: "India", capital: "New Delhi", population: "1.42B", language: "Hindi/English", flag: "🇮🇳", continent: "Asia" },
+        { name: "Indonesia", capital: "Jakarta", population: "277.5M", language: "Indonesian", flag: "🇮🇩", continent: "Asia" },
+        { name: "Iran", capital: "Tehran", population: "88.6M", language: "Persian", flag: "🇮🇷", continent: "Asia" },
+        { name: "Iraq", capital: "Baghdad", population: "43.5M", language: "Arabic/Kurdish", flag: "🇮🇶", continent: "Asia" },
+        { name: "Israel", capital: "Jerusalem", population: "9.2M", language: "Hebrew/Arabic", flag: "🇮🇱", continent: "Asia" },
+        { name: "Japan", capital: "Tokyo", population: "125.8M", language: "Japanese", flag: "🇯🇵", continent: "Asia" },
+        { name: "Jordan", capital: "Amman", population: "10.5M", language: "Arabic", flag: "🇯🇴", continent: "Asia" },
+        { name: "Kazakhstan", capital: "Astana", population: "19.0M", language: "Kazakh/Russian", flag: "🇰🇿", continent: "Asia" },
+        { name: "Kuwait", capital: "Kuwait City", population: "4.5M", language: "Arabic", flag: "🇰🇼", continent: "Asia" },
+        { name: "Kyrgyzstan", capital: "Bishkek", population: "6.8M", language: "Kyrgyz/Russian", flag: "🇰🇬", continent: "Asia" },
+        { name: "Laos", capital: "Vientiane", population: "7.5M", language: "Lao", flag: "🇱🇦", continent: "Asia" },
+        { name: "Lebanon", capital: "Beirut", population: "5.5M", language: "Arabic", flag: "🇱🇧", continent: "Asia" },
+        { name: "Malaysia", capital: "Kuala Lumpur", population: "33.9M", language: "Malay", flag: "🇲🇾", continent: "Asia" },
+        { name: "Maldives", capital: "Malé", population: "0.5M", language: "Dhivehi", flag: "🇲🇻", continent: "Asia" },
+        { name: "Mongolia", capital: "Ulaanbaatar", population: "3.4M", language: "Mongolian", flag: "🇲🇳", continent: "Asia" },
+        { name: "Myanmar", capital: "Naypyidaw", population: "55.2M", language: "Burmese", flag: "🇲🇲", continent: "Asia" },
+        { name: "Nepal", capital: "Kathmandu", population: "30.9M", language: "Nepali", flag: "🇳🇵", continent: "Asia" },
+        { name: "North Korea", capital: "Pyongyang", population: "26.1M", language: "Korean", flag: "🇰🇵", continent: "Asia" },
+        { name: "Oman", capital: "Muscat", population: "4.5M", language: "Arabic", flag: "🇴🇲", continent: "Asia" },
+        { name: "Pakistan", capital: "Islamabad", population: "235.8M", language: "Urdu/English", flag: "🇵🇰", continent: "Asia" },
+        { name: "Palestine", capital: "Ramallah", population: "5.4M", language: "Arabic", flag: "🇵🇸", continent: "Asia" },
+        { name: "Philippines", capital: "Manila", population: "115.6M", language: "Filipino/English", flag: "🇵🇭", continent: "Asia" },
+        { name: "Qatar", capital: "Doha", population: "3.0M", language: "Arabic", flag: "🇶🇦", continent: "Asia" },
+        { name: "Saudi Arabia", capital: "Riyadh", population: "36.4M", language: "Arabic", flag: "🇸🇦", continent: "Asia" },
+        { name: "Singapore", capital: "Singapore", population: "5.6M", language: "English/Malay/Chinese/Tamil", flag: "🇸🇬", continent: "Asia" },
+        { name: "South Korea", capital: "Seoul", population: "51.8M", language: "Korean", flag: "🇰🇷", continent: "Asia" },
+        { name: "Sri Lanka", capital: "Colombo", population: "22.2M", language: "Sinhala/Tamil", flag: "🇱🇰", continent: "Asia" },
+        { name: "Syria", capital: "Damascus", population: "22.1M", language: "Arabic", flag: "🇸🇾", continent: "Asia" },
+        { name: "Taiwan", capital: "Taipei", population: "23.9M", language: "Chinese", flag: "🇹🇼", continent: "Asia" },
+        { name: "Tajikistan", capital: "Dushanbe", population: "10.1M", language: "Tajik", flag: "🇹🇯", continent: "Asia" },
+        { name: "Thailand", capital: "Bangkok", population: "71.8M", language: "Thai", flag: "🇹🇭", continent: "Asia" },
+        { name: "Timor-Leste", capital: "Dili", population: "1.4M", language: "Tetun/Portuguese", flag: "🇹🇱", continent: "Asia" },
+        { name: "Turkmenistan", capital: "Ashgabat", population: "6.2M", language: "Turkmen", flag: "🇹🇲", continent: "Asia" },
+        { name: "United Arab Emirates", capital: "Abu Dhabi", population: "10.1M", language: "Arabic", flag: "🇦🇪", continent: "Asia" },
+        { name: "Uzbekistan", capital: "Tashkent", population: "34.9M", language: "Uzbek", flag: "🇺🇿", continent: "Asia" },
+        { name: "Vietnam", capital: "Hanoi", population: "99.5M", language: "Vietnamese", flag: "🇻🇳", continent: "Asia" },
+        { name: "Yemen", capital: "Sana'a", population: "34.4M", language: "Arabic", flag: "🇾🇪", continent: "Asia" },
+
+        // Europe (already mostly covered, but adding missing ones)
+        { name: "Albania", capital: "Tirana", population: "2.8M", language: "Albanian", flag: "🇦🇱", continent: "Europe" },
+        { name: "Andorra", capital: "Andorra la Vella", population: "0.08M", language: "Catalan", flag: "🇦🇩", continent: "Europe" },
+        { name: "Austria", capital: "Vienna", population: "9.0M", language: "German", flag: "🇦🇹", continent: "Europe" },
+        { name: "Belarus", capital: "Minsk", population: "9.4M", language: "Belarusian/Russian", flag: "🇧🇾", continent: "Europe" },
+        { name: "Belgium", capital: "Brussels", population: "11.7M", language: "Dutch/French/German", flag: "🇧🇪", continent: "Europe" },
+        { name: "Bosnia and Herzegovina", capital: "Sarajevo", population: "3.2M", language: "Bosnian/Croatian/Serbian", flag: "🇧🇦", continent: "Europe" },
+        { name: "Bulgaria", capital: "Sofia", population: "6.5M", language: "Bulgarian", flag: "🇧🇬", continent: "Europe" },
+        { name: "Croatia", capital: "Zagreb", population: "3.9M", language: "Croatian", flag: "🇭🇷", continent: "Europe" },
+        { name: "Czech Republic", capital: "Prague", population: "10.5M", language: "Czech", flag: "🇨🇿", continent: "Europe" },
+        { name: "Denmark", capital: "Copenhagen", population: "5.9M", language: "Danish", flag: "🇩🇰", continent: "Europe" },
+        { name: "Estonia", capital: "Tallinn", population: "1.3M", language: "Estonian", flag: "🇪🇪", continent: "Europe" },
+        { name: "Finland", capital: "Helsinki", population: "5.5M", language: "Finnish/Swedish", flag: "🇫🇮", continent: "Europe" },
+        { name: "France", capital: "Paris", population: "67.8M", language: "French", flag: "🇫🇷", continent: "Europe" },
+        { name: "Germany", capital: "Berlin", population: "83.2M", language: "German", flag: "🇩🇪", continent: "Europe" },
+        { name: "Greece", capital: "Athens", population: "10.4M", language: "Greek", flag: "🇬🇷", continent: "Europe" },
+        { name: "Hungary", capital: "Budapest", population: "9.6M", language: "Hungarian", flag: "🇭🇺", continent: "Europe" },
+        { name: "Iceland", capital: "Reykjavik", population: "0.38M", language: "Icelandic", flag: "🇮🇸", continent: "Europe" },
+        { name: "Ireland", capital: "Dublin", population: "5.1M", language: "English/Irish", flag: "🇮🇪", continent: "Europe" },
+        { name: "Italy", capital: "Rome", population: "58.9M", language: "Italian", flag: "🇮🇹", continent: "Europe" },
+        { name: "Latvia", capital: "Riga", population: "1.8M", language: "Latvian", flag: "🇱🇻", continent: "Europe" },
+        { name: "Liechtenstein", capital: "Vaduz", population: "0.04M", language: "German", flag: "🇱🇮", continent: "Europe" },
+        { name: "Lithuania", capital: "Vilnius", population: "2.8M", language: "Lithuanian", flag: "🇱🇹", continent: "Europe" },
+        { name: "Luxembourg", capital: "Luxembourg City", population: "0.66M", language: "Luxembourgish/French/German", flag: "🇱🇺", continent: "Europe" },
+        { name: "Malta", capital: "Valletta", population: "0.5M", language: "Maltese/English", flag: "🇲🇹", continent: "Europe" },
+        { name: "Moldova", capital: "Chișinău", population: "2.5M", language: "Romanian", flag: "🇲🇩", continent: "Europe" },
+        { name: "Monaco", capital: "Monaco", population: "0.04M", language: "French", flag: "🇲🇨", continent: "Europe" },
+        { name: "Montenegro", capital: "Podgorica", population: "0.62M", language: "Montenegrin", flag: "🇲🇪", continent: "Europe" },
+        { name: "Netherlands", capital: "Amsterdam", population: "17.7M", language: "Dutch", flag: "🇳🇱", continent: "Europe" },
+        { name: "North Macedonia", capital: "Skopje", population: "2.1M", language: "Macedonian", flag: "🇲🇰", continent: "Europe" },
+        { name: "Norway", capital: "Oslo", population: "5.5M", language: "Norwegian", flag: "🇳🇴", continent: "Europe" },
+        { name: "Poland", capital: "Warsaw", population: "37.7M", language: "Polish", flag: "🇵🇱", continent: "Europe" },
+        { name: "Portugal", capital: "Lisbon", population: "10.3M", language: "Portuguese", flag: "🇵🇹", continent: "Europe" },
+        { name: "Romania", capital: "Bucharest", population: "19.0M", language: "Romanian", flag: "🇷🇴", continent: "Europe" },
+        { name: "San Marino", capital: "San Marino", population: "0.03M", language: "Italian", flag: "🇸🇲", continent: "Europe" },
+        { name: "Serbia", capital: "Belgrade", population: "6.9M", language: "Serbian", flag: "🇷🇸", continent: "Europe" },
+        { name: "Slovakia", capital: "Bratislava", population: "5.5M", language: "Slovak", flag: "🇸🇰", continent: "Europe" },
+        { name: "Slovenia", capital: "Ljubljana", population: "2.1M", language: "Slovenian", flag: "🇸🇮", continent: "Europe" },
+        { name: "Spain", capital: "Madrid", population: "47.4M", language: "Spanish", flag: "🇪🇸", continent: "Europe" },
+        { name: "Sweden", capital: "Stockholm", population: "10.4M", language: "Swedish", flag: "🇸🇪", continent: "Europe" },
+        { name: "Switzerland", capital: "Bern", population: "8.7M", language: "German/French/Italian", flag: "🇨🇭", continent: "Europe" },
+        { name: "Ukraine", capital: "Kyiv", population: "37.0M", language: "Ukrainian", flag: "🇺🇦", continent: "Europe" },
+        { name: "United Kingdom", capital: "London", population: "67.8M", language: "English", flag: "🇬🇧", continent: "Europe" },
+        { name: "Vatican City", capital: "Vatican City", population: "0.0008M", language: "Italian/Latin", flag: "🇻🇦", continent: "Europe" },
+
+        // North America
+        { name: "Antigua and Barbuda", capital: "Saint John's", population: "0.1M", language: "English", flag: "🇦🇬", continent: "North America" },
+        { name: "Bahamas", capital: "Nassau", population: "0.4M", language: "English", flag: "🇧🇸", continent: "North America" },
+        { name: "Barbados", capital: "Bridgetown", population: "0.3M", language: "English", flag: "🇧🇧", continent: "North America" },
+        { name: "Belize", capital: "Belmopan", population: "0.4M", language: "English", flag: "🇧🇿", continent: "North America" },
+        { name: "Canada", capital: "Ottawa", population: "38.9M", language: "English/French", flag: "🇨🇦", continent: "North America" },
+        { name: "Costa Rica", capital: "San José", population: "5.2M", language: "Spanish", flag: "🇨🇷", continent: "North America" },
+        { name: "Cuba", capital: "Havana", population: "11.2M", language: "Spanish", flag: "🇨🇺", continent: "North America" },
+        { name: "Dominica", capital: "Roseau", population: "0.07M", language: "English", flag: "🇩🇲", continent: "North America" },
+        { name: "Dominican Republic", capital: "Santo Domingo", population: "11.2M", language: "Spanish", flag: "🇩🇴", continent: "North America" },
+        { name: "El Salvador", capital: "San Salvador", population: "6.5M", language: "Spanish", flag: "🇸🇻", continent: "North America" },
+        { name: "Grenada", capital: "St. George's", population: "0.1M", language: "English", flag: "🇬🇩", continent: "North America" },
+        { name: "Guatemala", capital: "Guatemala City", population: "18.3M", language: "Spanish", flag: "🇬🇹", continent: "North America" },
+        { name: "Haiti", capital: "Port-au-Prince", population: "11.7M", language: "Haitian Creole/French", flag: "🇭🇹", continent: "North America" },
+        { name: "Honduras", capital: "Tegucigalpa", population: "10.3M", language: "Spanish", flag: "🇭🇳", continent: "North America" },
+        { name: "Jamaica", capital: "Kingston", population: "2.8M", language: "English", flag: "🇯🇲", continent: "North America" },
+        { name: "Mexico", capital: "Mexico City", population: "128.9M", language: "Spanish", flag: "🇲🇽", continent: "North America" },
+        { name: "Nicaragua", capital: "Managua", population: "6.9M", language: "Spanish", flag: "🇳🇮", continent: "North America" },
+        { name: "Panama", capital: "Panama City", population: "4.5M", language: "Spanish", flag: "🇵🇦", continent: "North America" },
+        { name: "Saint Kitts and Nevis", capital: "Basseterre", population: "0.05M", language: "English", flag: "🇰🇳", continent: "North America" },
+        { name: "Saint Lucia", capital: "Castries", population: "0.2M", language: "English", flag: "🇱🇨", continent: "North America" },
+        { name: "Saint Vincent and the Grenadines", capital: "Kingstown", population: "0.1M", language: "English", flag: "🇻🇨", continent: "North America" },
+        { name: "Trinidad and Tobago", capital: "Port of Spain", population: "1.5M", language: "English", flag: "🇹🇹", continent: "North America" },
+        { name: "United States", capital: "Washington, D.C.", population: "331.9M", language: "English", flag: "🇺🇸", continent: "North America" },
+
+        // South America
+        { name: "Argentina", capital: "Buenos Aires", population: "46.2M", language: "Spanish", flag: "🇦🇷", continent: "South America" },
+        { name: "Bolivia", capital: "Sucre", population: "12.1M", language: "Spanish/Quechua/Aymara", flag: "🇧🇴", continent: "South America" },
+        { name: "Brazil", capital: "Brasília", population: "215.3M", language: "Portuguese", flag: "🇧🇷", continent: "South America" },
+        { name: "Chile", capital: "Santiago", population: "19.6M", language: "Spanish", flag: "🇨🇱", continent: "South America" },
+        { name: "Colombia", capital: "Bogotá", population: "51.9M", language: "Spanish", flag: "🇨🇴", continent: "South America" },
+        { name: "Ecuador", capital: "Quito", population: "18.2M", language: "Spanish", flag: "🇪🇨", continent: "South America" },
+        { name: "Guyana", capital: "Georgetown", population: "0.8M", language: "English", flag: "🇬🇾", continent: "South America" },
+        { name: "Paraguay", capital: "Asunción", population: "7.5M", language: "Spanish/Guarani", flag: "🇵🇾", continent: "South America" },
+        { name: "Peru", capital: "Lima", population: "34.0M", language: "Spanish", flag: "🇵🇪", continent: "South America" },
+        { name: "Suriname", capital: "Paramaribo", population: "0.6M", language: "Dutch", flag: "🇸🇷", continent: "South America" },
+        { name: "Uruguay", capital: "Montevideo", population: "3.4M", language: "Spanish", flag: "🇺🇾", continent: "South America" },
+        { name: "Venezuela", capital: "Caracas", population: "28.2M", language: "Spanish", flag: "🇻🇪", continent: "South America" },
+
+        // Oceania
+        { name: "Australia", capital: "Canberra", population: "26.1M", language: "English", flag: "🇦🇺", continent: "Oceania" },
+        { name: "Fiji", capital: "Suva", population: "0.9M", language: "English/Fijian/Hindi", flag: "🇫🇯", continent: "Oceania" },
+        { name: "Kiribati", capital: "Tarawa", population: "0.1M", language: "English/Gilbertese", flag: "🇰🇮", continent: "Oceania" },
+        { name: "Marshall Islands", capital: "Majuro", population: "0.04M", language: "Marshallese/English", flag: "🇲🇭", continent: "Oceania" },
+        { name: "Micronesia", capital: "Palikir", population: "0.1M", language: "English", flag: "🇫🇲", continent: "Oceania" },
+        { name: "Nauru", capital: "Yaren", population: "0.01M", language: "Nauruan/English", flag: "🇳🇷", continent: "Oceania" },
+        { name: "New Zealand", capital: "Wellington", population: "5.2M", language: "English/Māori", flag: "🇳🇿", continent: "Oceania" },
+        { name: "Palau", capital: "Ngerulmud", population: "0.02M", language: "Palauan/English", flag: "🇵🇼", continent: "Oceania" },
+        { name: "Papua New Guinea", capital: "Port Moresby", population: "9.9M", language: "English/Tok Pisin/Hiri Motu", flag: "🇵🇬", continent: "Oceania" },
+        { name: "Samoa", capital: "Apia", population: "0.2M", language: "Samoan/English", flag: "🇼🇸", continent: "Oceania" },
+        { name: "Solomon Islands", capital: "Honiara", population: "0.7M", language: "English", flag: "🇸🇧", continent: "Oceania" },
+        { name: "Tonga", capital: "Nuku'alofa", population: "0.1M", language: "Tongan/English", flag: "🇹🇴", continent: "Oceania" },
+        { name: "Tuvalu", capital: "Funafuti", population: "0.01M", language: "Tuvaluan/English", flag: "🇹🇻", continent: "Oceania" },
+        { name: "Vanuatu", capital: "Port Vila", population: "0.3M", language: "Bislama/English/French", flag: "🇻🇺", continent: "Oceania" },
+
+        // US states (each as "USA-<state>")
+        { name: "USA-Alabama", capital: "Montgomery", population: "5.1M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Alaska", capital: "Juneau", population: "0.7M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Arizona", capital: "Phoenix", population: "7.3M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Arkansas", capital: "Little Rock", population: "3.0M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-California", capital: "Sacramento", population: "39.5M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Colorado", capital: "Denver", population: "5.8M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Connecticut", capital: "Hartford", population: "3.6M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Delaware", capital: "Dover", population: "1.0M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Florida", capital: "Tallahassee", population: "22.2M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Georgia", capital: "Atlanta", population: "10.9M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Hawaii", capital: "Honolulu", population: "1.4M", language: "English/Hawaiian", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Idaho", capital: "Boise", population: "1.9M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Illinois", capital: "Springfield", population: "12.7M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Indiana", capital: "Indianapolis", population: "6.8M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Iowa", capital: "Des Moines", population: "3.2M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Kansas", capital: "Topeka", population: "2.9M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Kentucky", capital: "Frankfort", population: "4.5M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Louisiana", capital: "Baton Rouge", population: "4.6M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Maine", capital: "Augusta", population: "1.4M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Maryland", capital: "Annapolis", population: "6.2M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Massachusetts", capital: "Boston", population: "7.0M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Michigan", capital: "Lansing", population: "10.1M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Minnesota", capital: "Saint Paul", population: "5.7M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Mississippi", capital: "Jackson", population: "2.9M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Missouri", capital: "Jefferson City", population: "6.2M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Montana", capital: "Helena", population: "1.1M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Nebraska", capital: "Lincoln", population: "2.0M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Nevada", capital: "Carson City", population: "3.2M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-New Hampshire", capital: "Concord", population: "1.4M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-New Jersey", capital: "Trenton", population: "9.3M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-New Mexico", capital: "Santa Fe", population: "2.1M", language: "English/Spanish", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-New York", capital: "Albany", population: "19.8M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-North Carolina", capital: "Raleigh", population: "10.7M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-North Dakota", capital: "Bismarck", population: "0.8M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Ohio", capital: "Columbus", population: "11.8M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Oklahoma", capital: "Oklahoma City", population: "4.0M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Oregon", capital: "Salem", population: "4.3M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Pennsylvania", capital: "Harrisburg", population: "12.9M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Rhode Island", capital: "Providence", population: "1.1M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-South Carolina", capital: "Columbia", population: "5.3M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-South Dakota", capital: "Pierre", population: "0.9M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Tennessee", capital: "Nashville", population: "7.1M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Texas", capital: "Austin", population: "30.0M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Utah", capital: "Salt Lake City", population: "3.4M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Vermont", capital: "Montpelier", population: "0.6M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Virginia", capital: "Richmond", population: "8.7M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Washington", capital: "Olympia", population: "7.8M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-West Virginia", capital: "Charleston", population: "1.8M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Wisconsin", capital: "Madison", population: "5.9M", language: "English", flag: "🇺🇸", continent: "North America" },
+        { name: "USA-Wyoming", capital: "Cheyenne", population: "0.6M", language: "English", flag: "🇺🇸", continent: "North America" }
+    ];
+</script>
+
+    <script type="importmap">
+        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // ──────────────── YOUR PLATE COLLECTION (with image paths) ────────────────
+        const plateCollection = [
+    // Belgium
+    { country: 'Belgium', flag: '🇧🇪', image: 'plates images/belgium.jpg', capital: 'Brussels', population: '11.7M', language: 'Dutch/French/German', continent: 'Europe', rarity: 'Common', acquired: '2023', story: 'Found at a Brussels flea market.' },
+    // Bulgaria
+    { country: 'Bulgaria', flag: '🇧🇬', image: 'plates images/bulgaria.jpg', capital: 'Sofia', population: '6.5M', language: 'Bulgarian', continent: 'Europe', rarity: 'Uncommon', acquired: '2022', story: 'Classic Bulgarian plate from Sofia.' },
+    // France
+    { country: 'France', flag: '🇫🇷', image: 'plates images/france.jpg', capital: 'Paris', population: '67M', language: 'French', continent: 'Europe', rarity: 'Common', acquired: '2021', story: 'Modern French SIV format plate.' },
+    // Germany (2 plates)
+    { country: 'Germany', flag: '🇩🇪', image: 'plates images/germany.jpg', capital: 'Berlin', population: '83M', language: 'German', continent: 'Europe', rarity: 'Common', acquired: '2020', story: 'Found at a Berlin flea market.' },
+    { country: 'Germany', flag: '🇩🇪', image: 'plates images/germany2.jpg', capital: 'Berlin', population: '83M', language: 'German', continent: 'Europe', rarity: 'Common', acquired: '2021', story: 'Second German plate from Munich.' },
+    // Great Britain (United Kingdom)
+    { country: 'United Kingdom', flag: '🇬🇧', image: 'plates images/great britain.jpg', capital: 'London', population: '67M', language: 'English', continent: 'Europe', rarity: 'Common', acquired: '2022', story: 'Classic British plate from London.' },
+    // Holland (Netherlands) – 3 plates
+    { country: 'Netherlands', flag: '🇳🇱', image: 'plates images/holland.jpg', capital: 'Amsterdam', population: '17.5M', language: 'Dutch', continent: 'Europe', rarity: 'Common', acquired: '2020', story: 'Dutch plate from Amsterdam.' },
+    { country: 'Netherlands', flag: '🇳🇱', image: 'plates images/holland2.jpg', capital: 'Amsterdam', population: '17.5M', language: 'Dutch', continent: 'Europe', rarity: 'Common', acquired: '2021', story: 'Second Dutch plate from Rotterdam.' },
+    { country: 'Netherlands', flag: '🇳🇱', image: 'plates images/holland3.jpg', capital: 'Amsterdam', population: '17.5M', language: 'Dutch', continent: 'Europe', rarity: 'Common', acquired: '2022', story: 'Third Dutch plate from Utrecht.' },
+    // Hungary – 2 plates
+    { country: 'Hungary', flag: '🇭🇺', image: 'plates images/hungary.jpg', capital: 'Budapest', population: '9.6M', language: 'Hungarian', continent: 'Europe', rarity: 'Common', acquired: '2021', story: 'Hungarian plate from Budapest.' },
+    { country: 'Hungary', flag: '🇭🇺', image: 'plates images/hungary2.jpg', capital: 'Budapest', population: '9.6M', language: 'Hungarian', continent: 'Europe', rarity: 'Common', acquired: '2023', story: 'Second Hungarian plate from Debrecen.' },
+    // Italy
+    { country: 'Italy', flag: '🇮🇹', image: 'plates images/italy.jpg', capital: 'Rome', population: '59M', language: 'Italian', continent: 'Europe', rarity: 'Common', acquired: '2022', story: 'Classic Italian plate from Rome.' },
+    // Luxembourg
+    { country: 'Luxembourg', flag: '🇱🇺', image: 'plates images/luxembourg.jpg', capital: 'Luxembourg City', population: '0.66M', language: 'Luxembourgish/French/German', continent: 'Europe', rarity: 'Rare', acquired: '2024', story: 'Tiny but beautiful plate from Luxembourg.' },
+    // Montenegro
+    { country: 'Montenegro', flag: '🇲🇪', image: 'plates images/montenegro.jpg', capital: 'Podgorica', population: '0.62M', language: 'Montenegrin', continent: 'Europe', rarity: 'Uncommon', acquired: '2023', story: 'Scenic plate from the Bay of Kotor.' },
+    // Oman
+    { country: 'Oman', flag: '🇴🇲', image: 'plates images/oman.jpg', capital: 'Muscat', population: '4.5M', language: 'Arabic', continent: 'Asia', rarity: 'Rare', acquired: '2024', story: 'Exotic plate from the Middle East.' },
+    // Poland
+    { country: 'Poland', flag: '🇵🇱', image: 'plates images/poland.jpg', capital: 'Warsaw', population: '37.7M', language: 'Polish', continent: 'Europe', rarity: 'Common', acquired: '2022', story: 'Polish plate from Warsaw.' },
+    // Portugal
+    { country: 'Portugal', flag: '🇵🇹', image: 'plates images/portugal.jpg', capital: 'Lisbon', population: '10.3M', language: 'Portuguese', continent: 'Europe', rarity: 'Common', acquired: '2023', story: 'Portuguese plate from Lisbon.' },
+    // Romania
+    { country: 'Romania', flag: '🇷🇴', image: 'plates images/romania.jpg', capital: 'Bucharest', population: '19M', language: 'Romanian', continent: 'Europe', rarity: 'Common', acquired: '2022', story: 'Romanian plate from Bucharest.' },
+    // Serbia – 3 plates
+    { country: 'Serbia', flag: '🇷🇸', image: 'plates images/serbia.jpg', capital: 'Belgrade', population: '6.9M', language: 'Serbian', continent: 'Europe', rarity: 'Common', acquired: '2019', story: 'First plate – from my hometown.' },
+    { country: 'Serbia', flag: '🇷🇸', image: 'plates images/serbia2.jpg', capital: 'Belgrade', population: '6.9M', language: 'Serbian', continent: 'Europe', rarity: 'Common', acquired: '2020', story: 'Second Serbian plate, different region.' },
+    { country: 'Serbia', flag: '🇷🇸', image: 'plates images/serbia3.jpg', capital: 'Belgrade', population: '6.9M', language: 'Serbian', continent: 'Europe', rarity: 'Common', acquired: '2021', story: 'Third Serbian plate, from Novi Sad.' },
+    // Slovenia
+    { country: 'Slovenia', flag: '🇸🇮', image: 'plates images/slovenia.jpg', capital: 'Ljubljana', population: '2.1M', language: 'Slovenian', continent: 'Europe', rarity: 'Uncommon', acquired: '2023', story: 'Green plate from beautiful Slovenia.' },
+    // Spain
+    { country: 'Spain', flag: '🇪🇸', image: 'plates images/spain.jpg', capital: 'Madrid', population: '47.4M', language: 'Spanish', continent: 'Europe', rarity: 'Common', acquired: '2021', story: 'Spanish plate from Madrid.' },
+    // Sweden
+    { country: 'Sweden', flag: '🇸🇪', image: 'plates images/sweden.jpg', capital: 'Stockholm', population: '10.4M', language: 'Swedish', continent: 'Europe', rarity: 'Common', acquired: '2022', story: 'Swedish plate from Stockholm.' },
+    // Switzerland
+    { country: 'Switzerland', flag: '🇨🇭', image: 'plates images/switzerland.jpg', capital: 'Bern', population: '8.7M', language: 'German/French/Italian', continent: 'Europe', rarity: 'Uncommon', acquired: '2023', story: 'Swiss plate from Bern.' },
+    // Ukraine
+    { country: 'Ukraine', flag: '🇺🇦', image: 'plates images/ukraine.jpg', capital: 'Kyiv', population: '41M', language: 'Ukrainian', continent: 'Europe', rarity: 'Uncommon', acquired: '2024', story: 'Ukrainian plate from Kyiv.' },
+
+    // US plates (all under “USA‑State”)
+    { country: 'USA-Alabama', flag: '🇺🇸', image: 'plates images/us plates/alabama.jpg', capital: 'Montgomery', population: '5.1M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Alabama plate.' },
+    { country: 'USA-Arizona', flag: '🇺🇸', image: 'plates images/us plates/arizona.jpg', capital: 'Phoenix', population: '7.3M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2023', story: 'Arizona plate.' },
+    { country: 'USA-California', flag: '🇺🇸', image: 'plates images/us plates/california.jpg', capital: 'Sacramento', population: '39.5M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'California classic plate.' },
+    { country: 'USA-Colorado', flag: '🇺🇸', image: 'plates images/us plates/colorado.jpg', capital: 'Denver', population: '5.8M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2023', story: 'Colorado plate.' },
+    { country: 'USA-Colorado', flag: '🇺🇸', image: 'plates images/us plates/colorado2.jpg', capital: 'Denver', population: '5.8M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Second Colorado plate.' },
+    { country: 'USA-Georgia', flag: '🇺🇸', image: 'plates images/us plates/georgia.jpg', capital: 'Atlanta', population: '10.7M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2023', story: 'Georgia plate.' },
+    { country: 'USA-Idaho', flag: '🇺🇸', image: 'plates images/us plates/idaho.jpg', capital: 'Boise', population: '1.9M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Idaho plate.' },
+    { country: 'USA-Illinois', flag: '🇺🇸', image: 'plates images/us plates/illinois.jpg', capital: 'Springfield', population: '12.8M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2023', story: 'Illinois plate.' },
+    { country: 'USA-Indiana', flag: '🇺🇸', image: 'plates images/us plates/indiana.jpg', capital: 'Indianapolis', population: '6.8M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Indiana plate.' },
+    { country: 'USA-Iowa', flag: '🇺🇸', image: 'plates images/us plates/iowa.jpg', capital: 'Des Moines', population: '3.2M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Iowa plate.' },
+    { country: 'USA-Kansas', flag: '🇺🇸', image: 'plates images/us plates/kansas.jpg', capital: 'Topeka', population: '2.9M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2023', story: 'Kansas plate.' },
+    { country: 'USA-Louisiana', flag: '🇺🇸', image: 'plates images/us plates/louisiana.jpg', capital: 'Baton Rouge', population: '4.6M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Louisiana plate.' },
+    { country: 'USA-Massachusetts', flag: '🇺🇸', image: 'plates images/us plates/massachusetts.jpg', capital: 'Boston', population: '7M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2023', story: 'Massachusetts plate.' },
+    { country: 'USA-Minnesota', flag: '🇺🇸', image: 'plates images/us plates/minnesota.jpg', capital: 'Saint Paul', population: '5.7M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Minnesota plate.' },
+    { country: 'USA-Mississippi', flag: '🇺🇸', image: 'plates images/us plates/mississippi.jpg', capital: 'Jackson', population: '3M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Mississippi plate.' },
+    { country: 'USA-Montana', flag: '🇺🇸', image: 'plates images/us plates/montana.jpg', capital: 'Helena', population: '1.1M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Montana plate.' },
+    { country: 'USA-Nebraska', flag: '🇺🇸', image: 'plates images/us plates/nebraska.jpg', capital: 'Lincoln', population: '1.9M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2023', story: 'Nebraska plate.' },
+    { country: 'USA-New York', flag: '🇺🇸', image: 'plates images/us plates/new york.jpg', capital: 'Albany', population: '19.8M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2023', story: 'New York plate.' },
+    { country: 'USA-New York', flag: '🇺🇸', image: 'plates images/us plates/new york2.jpg', capital: 'Albany', population: '19.8M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Second New York plate.' },
+    { country: 'USA-New York', flag: '🇺🇸', image: 'plates images/us plates/new york3.jpg', capital: 'Albany', population: '19.8M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Third New York plate.' },
+    { country: 'USA-North Dakota', flag: '🇺🇸', image: 'plates images/us plates/north dakota.jpg', capital: 'Bismarck', population: '0.8M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'North Dakota plate.' },
+    { country: 'USA-Oklahoma', flag: '🇺🇸', image: 'plates images/us plates/oklahoma.jpg', capital: 'Oklahoma City', population: '4M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2023', story: 'Oklahoma plate.' },
+    { country: 'USA-Tennessee', flag: '🇺🇸', image: 'plates images/us plates/tennessee.jpg', capital: 'Nashville', population: '7M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Tennessee plate.' },
+    { country: 'USA-Texas', flag: '🇺🇸', image: 'plates images/us plates/texas.jpg', capital: 'Austin', population: '29.1M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2023', story: 'Texas plate.' },
+    { country: 'USA-Virginia', flag: '🇺🇸', image: 'plates images/us plates/virginia.jpg', capital: 'Richmond', population: '8.7M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Virginia plate.' },
+    { country: 'USA-Wyoming', flag: '🇺🇸', image: 'plates images/us plates/wyoming.jpg', capital: 'Cheyenne', population: '0.6M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Wyoming plate.' }
+];
+
+        // ──────────────── GLOBE SETUP (unchanged) ────────────────
+        const container = document.getElementById('globeContainer');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.set(0, 0.5, 3.8);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        scene.add(new THREE.AmbientLight(0x404060, 3.5));
+        const dirLight = new THREE.DirectionalLight(0xffffff, 2.5);
+        dirLight.position.set(5, 3, 5);
+        scene.add(dirLight);
+        const backLight = new THREE.DirectionalLight(0x4466aa, 1.2);
+        backLight.position.set(-3, -1, -3);
+        scene.add(backLight);
+
+        const earthGroup = new THREE.Group();
+        scene.add(earthGroup);
+
+        const textureLoader = new THREE.TextureLoader();
+        const earthTexture = textureLoader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
+        earthTexture.colorSpace = THREE.SRGBColorSpace;
+        const globeGeom = new THREE.SphereGeometry(1.3, 72, 54);
+        const globeMat = new THREE.MeshStandardMaterial({ map: earthTexture, roughness: 0.5 });
+        const globe = new THREE.Mesh(globeGeom, globeMat);
+        earthGroup.add(globe);
+
+        const atmosGeom = new THREE.SphereGeometry(1.36, 72, 36);
+        const atmosMat = new THREE.MeshPhongMaterial({ color: 0x4488cc, transparent: true, opacity: 0.08 });
+        earthGroup.add(new THREE.Mesh(atmosGeom, atmosMat));
+
+        const starsGeo = new THREE.BufferGeometry();
+        const starsPos = new Float32Array(1500 * 3);
+        for (let i = 0; i < 1500 * 3; i += 3) {
+            starsPos[i] = (Math.random() - 0.5) * 25;
+            starsPos[i+1] = (Math.random() - 0.5) * 25;
+            starsPos[i+2] = (Math.random() - 0.5) * 20 - 5;
+        }
+        starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
+        const stars = new THREE.Points(starsGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.03, transparent: true, opacity: 0.8 }));
+        scene.add(stars);
+
+        // ── GREEN OVERLAY (unchanged) ──
+        let overlayTexture = null;
+        const overlayCanvas = document.createElement('canvas');
+        overlayCanvas.width = 4096;
+        overlayCanvas.height = 2048;
+        const overlayCtx = overlayCanvas.getContext('2d');
+
+        function drawOverlayFromGeoJSON() {
+            overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+            const drawRing = (ring) => {
+                overlayCtx.beginPath();
+                ring.forEach(([lon, lat], i) => {
+                    const x = (lon + 180) * (overlayCanvas.width / 360);
+                    const y = (90 - lat) * (overlayCanvas.height / 180);
+                    if (i === 0) overlayCtx.moveTo(x, y);
+                    else overlayCtx.lineTo(x, y);
+                });
+                overlayCtx.closePath();
+                overlayCtx.fillStyle = 'rgba(61, 220, 132, 0.55)';
+                overlayCtx.fill();
+            };
+
+            // Process countries (unique from collection)
+            const uniqueCountries = [...new Set(plateCollection.map(p => p.country))];
+            if (window.countriesGeoJSON) {
+                uniqueCountries.forEach(name => {
+                    if (name.startsWith('USA-')) return;
+                    const feature = window.countriesGeoJSON.features.find(f => f.properties.NAME === name || f.properties.ADMIN === name);
+                    if (!feature) return;
+                    if (feature.geometry.type === 'Polygon') {
+                        feature.geometry.coordinates.forEach(ring => drawRing(ring));
+                    } else if (feature.geometry.type === 'MultiPolygon') {
+                        feature.geometry.coordinates.forEach(poly => poly.forEach(ring => drawRing(ring)));
+                    }
+                });
+            }
+
+            if (window.usStatesGeoJSON && window.usStatesGeoJSON.features) {
+                uniqueCountries.forEach(name => {
+                    if (!name.startsWith('USA-')) return;
+                    const stateName = name.replace('USA-', '');
+                    const feature = window.usStatesGeoJSON.features.find(f => {
+                        const nameProp = f.properties.NAME || f.properties.name || f.properties.state_name || '';
+                        const countryCode = f.properties.iso_a2 || f.properties.adm0_a3 || '';
+                        return nameProp === stateName && (countryCode === 'US' || countryCode === 'USA');
+                    });
+                    if (!feature) return;
+                    if (feature.geometry.type === 'Polygon') {
+                        feature.geometry.coordinates.forEach(ring => drawRing(ring));
+                    } else if (feature.geometry.type === 'MultiPolygon') {
+                        feature.geometry.coordinates.forEach(poly => poly.forEach(ring => drawRing(ring)));
+                    }
+                });
+            }
+
+            if (overlayTexture) overlayTexture.needsUpdate = true;
+        }
+        function drawSelectedCountry(countryName) {
+    selectedCtx.clearRect(0, 0, selectedCanvas.width, selectedCanvas.height);
+    if (!countryName) {
+        selectedTexture.needsUpdate = true;
+        return;
+    }
+
+    const drawRing = (ring) => {
+        selectedCtx.beginPath();
+        ring.forEach(([lon, lat], i) => {
+            const x = (lon + 180) * (selectedCanvas.width / 360);
+            const y = (90 - lat) * (selectedCanvas.height / 180);
+            if (i === 0) selectedCtx.moveTo(x, y);
+            else selectedCtx.lineTo(x, y);
+        });
+        selectedCtx.closePath();
+        selectedCtx.strokeStyle = 'rgba(212, 168, 83, 1)'; // gold
+        selectedCtx.lineWidth = 8;          // thick border
+        selectedCtx.stroke();
+    };
+
+    // Try countries first
+    if (!countryName.startsWith('USA-') && window.countriesGeoJSON) {
+        const feature = window.countriesGeoJSON.features.find(
+            f => f.properties.NAME === countryName || f.properties.ADMIN === countryName
+        );
+        if (feature) {
+            if (feature.geometry.type === 'Polygon') {
+                feature.geometry.coordinates.forEach(ring => drawRing(ring));
+            } else if (feature.geometry.type === 'MultiPolygon') {
+                feature.geometry.coordinates.forEach(poly => poly.forEach(ring => drawRing(ring)));
+            }
+        }
+    }
+
+    // US states
+    if (countryName.startsWith('USA-') && window.usStatesGeoJSON && window.usStatesGeoJSON.features) {
+        const stateName = countryName.replace('USA-', '');
+        const feature = window.usStatesGeoJSON.features.find(f => {
+            const nameProp = f.properties.NAME || f.properties.name || '';
+            const countryCode = f.properties.iso_a2 || f.properties.adm0_a3 || '';
+            return nameProp === stateName && (countryCode === 'US' || countryCode === 'USA');
+        });
+        if (feature) {
+            if (feature.geometry.type === 'Polygon') {
+                feature.geometry.coordinates.forEach(ring => drawRing(ring));
+            } else if (feature.geometry.type === 'MultiPolygon') {
+                feature.geometry.coordinates.forEach(poly => poly.forEach(ring => drawRing(ring)));
+            }
+        }
+    }
+
+    selectedTexture.needsUpdate = true;
+}
+
+        Promise.all([
+    fetch('countries.geojson').then(r => r.json()).then(data => {
+        // Merge Kosovo into Serbia
+        const serbia = data.features.find(f => f.properties.NAME === 'Serbia' || f.properties.ADMIN === 'Serbia');
+        const kosovo = data.features.find(f => f.properties.NAME === 'Kosovo' || f.properties.ADMIN === 'Kosovo');
+
+        if (serbia && kosovo) {
+            // Convert Serbia to MultiPolygon if necessary
+            if (serbia.geometry.type === 'Polygon') {
+                serbia.geometry = {
+                    type: 'MultiPolygon',
+                    coordinates: [serbia.geometry.coordinates]
+                };
+            }
+            // Add Kosovo's coordinates to Serbia
+            if (kosovo.geometry.type === 'Polygon') {
+                serbia.geometry.coordinates.push(kosovo.geometry.coordinates);
+            } else if (kosovo.geometry.type === 'MultiPolygon') {
+                serbia.geometry.coordinates.push(...kosovo.geometry.coordinates);
+            }
+            // Remove Kosovo from the features array
+            data.features = data.features.filter(f => f !== kosovo);
+        }
+
+        window.countriesGeoJSON = data;
+    }),
+    fetch('us-states.geojson').then(r => r.json()).then(data => { window.usStatesGeoJSON = data; })
+]).then(() => {
+    drawOverlayFromGeoJSON();
+}).catch(err => console.warn('GeoJSON files missing', err));
+
+        overlayTexture = new THREE.CanvasTexture(overlayCanvas);
+        overlayTexture.colorSpace = THREE.SRGBColorSpace;
+        overlayTexture.needsUpdate = true;
+        const overlayGeom = new THREE.SphereGeometry(1.33, 72, 54);
+        const overlayMat = new THREE.MeshBasicMaterial({ map: overlayTexture, transparent: true, depthTest: false, depthWrite: false });
+        const overlaySphere = new THREE.Mesh(overlayGeom, overlayMat);
+        // ── SELECTED COUNTRY HIGHLIGHT OVERLAY ──
+        const selectedCanvas = document.createElement('canvas');
+        selectedCanvas.width = 4096;
+        selectedCanvas.height = 2048;
+        const selectedCtx = selectedCanvas.getContext('2d');
+
+        const selectedTexture = new THREE.CanvasTexture(selectedCanvas);
+        selectedTexture.colorSpace = THREE.SRGBColorSpace;
+        const selectedGeom = new THREE.SphereGeometry(1.34, 72, 54); // slightly larger than green overlay
+        const selectedMat = new THREE.MeshBasicMaterial({
+            map: selectedTexture,
+            transparent: true,
+            opacity: 0.0,          // hidden by default
+            depthTest: false,
+            depthWrite: false
+        } );
+        const selectedSphere = new THREE.Mesh(selectedGeom, selectedMat);
+        selectedSphere.renderOrder = 2; // render on top of green overlay
+        earthGroup.add(selectedSphere);
+
+        let selectedCountryName = null;
+        let pulseStartTime = Date.now();
+
+        overlaySphere.renderOrder = 1;
+        earthGroup.add(overlaySphere);
+        window.updateOverlay = drawOverlayFromGeoJSON;
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.08;
+        controls.minDistance = 1.8;
+        controls.maxDistance = 8;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.4;
+
+                // ── COUNTRY PANEL (updated for collected/uncollected) ──
+        const countryPanel = document.getElementById('countryPanel');
+        function showCountryPanel(countryName, isCollected = true) {
+    let plates = [];
+    let info = null;
+
+    if (isCollected) {
+        plates = plateCollection.filter(p => p.country === countryName);
+        if (plates.length === 0) return;
+        info = plates[0]; // use the first plate for capital/population etc.
+        info.isCollected = true;
+    } else {
+        const allCountries = window.allCountries || [];
+        const data = allCountries.find(c => c.name === countryName);
+        if (!data) {
+            alert('Country not found.');
+            return;
+        }
+        info = {
+            country: data.name,
+            flag: data.flag || '🌍',
+            image: null,
+            capital: data.capital,
+            population: data.population,
+            language: data.language,
+            story: '',
+            continent: data.continent,
+            isCollected: false
+        };
+    }
+
+    document.getElementById('cpFlag').textContent = info.flag;
+    document.getElementById('cpName').textContent = info.country;
+    document.getElementById('cpMeta').textContent = `Capital: ${info.capital} · Population: ${info.population}`;
+    document.getElementById('cpCapital').textContent = info.capital;
+    document.getElementById('cpPopulation').textContent = info.population;
+    document.getElementById('cpLanguage').textContent = info.language;
+
+    const plateListContainer = document.getElementById('cpPlateList');
+
+    if (info.isCollected) {
+        // Build a list of all plates from that country
+        let html = '';
+        plates.forEach((plate, index) => {
+            html += `
+            <div class="plate-item" style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem; padding:0.8rem; background:var(--bg-secondary); border-radius:var(--radius-sm); cursor:pointer;">                    <img src="${plate.image}" style="width:80px; height:50px; object-fit:cover; border-radius:6px;" onerror="this.style.display='none';">
+                    <div>
+                        <strong>Plate #${index+1}</strong><br>
+                        <span style="font-size:0.9rem; color:var(--text-secondary);">${plate.story || ''}</span>
+                        <span style="font-size:0.75rem; color:var(--text-muted);"> (acquired ${plate.acquired})</span>
+                    </div>
+                </div>
+            `;
+        });
+        plateListContainer.innerHTML = html;
+        // Attach click events to each plate item
+        const plateItems = plateListContainer.querySelectorAll('.plate-item');
+        plateItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+             openModal(plates[index]);
+            });
+        });
+    } else {
+        // Uncollected – donation message + link
+        plateListContainer.innerHTML = `
+            <div style="text-align:center; padding:1rem;">
+                <span style="font-size:2rem;">❓</span>
+                <p style="margin-top:0.5rem;">
+                    I still don't have a plate from <strong>${info.country}</strong>.
+                    If you wish to donate one for my collection, feel free to contact me.<br><br>
+                    Until I collect one from this region, you can explore license plates from around the world at:
+                    <a href="http://www.worldlicenseplates.com/" target="_blank" rel="noopener" style="color:var(--accent-gold);">World License Plates</a>
+                </p>
+            </div>
+        `;
+    }
+
+    countryPanel.classList.add('visible');
+    countryPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+                // ── SEARCH & FLY (with donation link for uncollected) ──
+        function searchAndFly(rawName) {
+    if (!rawName) return;
+    // Try to find exact match in allCountries (case-insensitive)
+    const allCountries = window.allCountries || [];
+    const match = allCountries.find(c => c.name.toLowerCase() === rawName.toLowerCase());
+    if (!match) {
+        // If no exact match, try partial (but better to alert)
+        alert('Country not found. Please select a valid country from the suggestions.');
+        return;
+    }
+    const selectedValue = match.name;
+
+    // Check if collected
+    const isCollected = plateCollection.some(p => p.country === selectedValue);
+
+    // Fly to the country's location
+    const feature = findFeatureByName(selectedValue);
+    if (feature && feature.geometry) {
+        const coords = getPolygonCentroid(feature.geometry);
+        if (coords) {
+            const phi = (90 - coords[1]) * Math.PI / 180;
+            const theta = (coords[0] + 180) * Math.PI / 180;
+            const targetPos = new THREE.Vector3(
+                -1.5 * Math.sin(phi) * Math.cos(theta),
+                1.5 * Math.cos(phi),
+                1.5 * Math.sin(phi) * Math.sin(theta)
+            );
+            controls.target.lerp(targetPos, 1);
+            camera.position.lerp(targetPos.clone().multiplyScalar(2.5), 1);
+            controls.update();
+        }
+    }
+
+    // Show panel with appropriate message
+    showCountryPanel(selectedValue, isCollected);
+
+    // Highlight the selected country on the globe
+    drawSelectedCountry(selectedValue);
+    selectedCountryName = selectedValue;
+    pulseStartTime = Date.now();
+    selectedMat.opacity = 0.7;
+}
+        // ── AUTOCOMPLETE SEARCH ──
+const searchInput = document.getElementById('globeSearchInput');
+const searchDropdown = document.getElementById('searchDropdown');
+let currentFocus = -1;
+
+// Filter and show suggestions
+searchInput.addEventListener('input', function() {
+    const query = this.value.trim().toLowerCase();
+    closeDropdown();
+    if (!query) return;
+
+    const matches = (window.allCountries || []).filter(c => 
+        c.name.toLowerCase().includes(query)
+    ).slice(0, 15); // limit to 15 suggestions
+
+    if (matches.length === 0) return;
+
+    matches.forEach((country, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${country.flag} ${country.name}`;
+        li.setAttribute('data-name', country.name);
+        li.addEventListener('click', function() {
+            selectSuggestion(country.name);
+        });
+        searchDropdown.appendChild(li);
+    });
+    searchDropdown.style.display = 'block';
+    currentFocus = -1;
+});
+
+// Keyboard navigation
+searchInput.addEventListener('keydown', function(e) {
+    const items = searchDropdown.getElementsByTagName('li');
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        currentFocus++;
+        updateActive(items);
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        currentFocus--;
+        updateActive(items);
+    } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (currentFocus > -1 && items[currentFocus]) {
+            items[currentFocus].click();
+        } else {
+            // If no selection, try to search directly with typed text
+            searchAndFly(this.value);
+            closeDropdown();
+        }
+    } else if (e.key === 'Escape') {
+        closeDropdown();
+    }
+});
+
+function updateActive(items) {
+    if (!items.length) return;
+    // Remove active class from all items
+    Array.from(items).forEach(item => item.classList.remove('active'));
+    // Wrap around
+    if (currentFocus >= items.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = items.length - 1;
+    items[currentFocus].classList.add('active');
+    // Scroll into view
+    items[currentFocus].scrollIntoView({ block: 'nearest' });
+}
+
+function selectSuggestion(name) {
+    searchInput.value = name;
+    closeDropdown();
+    // Automatically trigger search when a suggestion is selected
+    searchAndFly(name);
+}
+
+function closeDropdown() {
+    searchDropdown.style.display = 'none';
+    searchDropdown.innerHTML = '';
+    currentFocus = -1;
+}
+
+// Hide dropdown when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.globe-search')) {
+        closeDropdown();
+    }
+});
+
+// Adjust the "Find" button to use the typed text
+document.getElementById('globeSearchBtn').addEventListener('click', () => {
+    const query = searchInput.value.trim();
+    if (query) {
+        searchAndFly(query);
+        closeDropdown();
+    }
+});
+
+        function findFeatureByName(name) {
+            if (name.startsWith('USA-') && window.usStatesGeoJSON) {
+                const stateName = name.replace('USA-', '');
+                return window.usStatesGeoJSON.features.find(f => (f.properties.NAME || f.properties.name) === stateName && (f.properties.iso_a2 || f.properties.adm0_a3) === 'US');
+            } else if (window.countriesGeoJSON) {
+                return window.countriesGeoJSON.features.find(f => f.properties.NAME === name || f.properties.ADMIN === name);
+            }
+            return null;
+        }
+
+        function getPolygonCentroid(geometry) {
+            if (geometry.type === 'Polygon') {
+                const ring = geometry.coordinates[0];
+                if (!ring) return null;
+                let sumLon = 0, sumLat = 0;
+                ring.forEach(([lon, lat]) => { sumLon += lon; sumLat += lat; });
+                return [sumLon / ring.length, sumLat / ring.length];
+            } else if (geometry.type === 'MultiPolygon') {
+                const ring = geometry.coordinates[0][0];
+                if (!ring) return null;
+                let sumLon = 0, sumLat = 0;
+                ring.forEach(([lon, lat]) => { sumLon += lon; sumLat += lat; });
+                return [sumLon / ring.length, sumLat / ring.length];
+            }
+            return null;
+        }
+
+        // ── GALLERY (now with images) ──
+        const galleryGrid = document.getElementById('galleryGrid');
+        plateCollection.forEach(plate => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            const img = document.createElement('img');
+            img.src = plate.image;
+            img.alt = plate.country;
+            img.onerror = () => { img.style.display = 'none'; item.innerHTML = `<span style="font-size:3rem;">🚗</span><span class="plate-country-label">${plate.flag} ${plate.country}</span>`; };
+            const label = document.createElement('span');
+            label.className = 'plate-country-label';
+            label.textContent = `${plate.flag} ${plate.country}`;
+            item.appendChild(img);
+            item.appendChild(label);
+            item.addEventListener('click', () => openModal(plate));
+            galleryGrid.appendChild(item);
+        });
+
+        // Modal with image
+        const plateModal = document.getElementById('plateModal');
+        const modalClose = document.getElementById('modalClose');
+        function openModal(plate) {
+            const modalImg = document.getElementById('modalPlateImage');
+            const modalEmoji = document.getElementById('modalPlateEmoji');
+            if (plate.image) {
+                modalImg.src = plate.image;
+                modalImg.style.display = 'block';
+                modalEmoji.style.display = 'none';
+            } else {
+                modalImg.style.display = 'none';
+                modalEmoji.style.display = 'block';
+                modalEmoji.textContent = '🚗'; // fallback
+            }
+            document.getElementById('modalPlateCountry').textContent = `${plate.flag} ${plate.country}`;
+            document.getElementById('modalPlateStory').textContent = plate.story;
+            plateModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal() {
+            plateModal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        modalClose.addEventListener('click', closeModal);
+        plateModal.addEventListener('click', e => { if (e.target === plateModal) closeModal(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+        // Update stats (unique countries)
+        function updateStats() {
+            const uniqueCountries = new Set(plateCollection.map(p => p.country));
+            const totalCountries = 195; // rough total, can be replaced by actual count from allCountries
+            const collected = uniqueCountries.size;
+            const percent = Math.round((collected / totalCountries) * 100);
+
+            document.getElementById('statCollected').textContent = collected;
+            document.getElementById('statMissing').textContent = totalCountries - collected;
+            document.getElementById('statPercent').textContent = percent + '%';
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressBar').textContent = percent + '%';
+
+            const rarityOrder = { 'Extremely Rare':0, 'Rare':1, 'Uncommon':2, 'Common':3 };
+            if (plateCollection.length > 0) {
+                const rarest = plateCollection.reduce((a,b) => (rarityOrder[a.rarity]||4) < (rarityOrder[b.rarity]||4) ? a : b);
+                document.getElementById('statRarest').textContent = rarest.flag;
+                const newest = plateCollection.reduce((a,b) => parseInt(b.acquired) > parseInt(a.acquired) ? b : a);
+                document.getElementById('statNewest').textContent = newest.flag;
+                const oldest = plateCollection.reduce((a,b) => parseInt(b.acquired) < parseInt(a.acquired) ? b : a);
+                document.getElementById('statOldest').textContent = oldest.flag;
+            }
+        }
+        updateStats();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            stars.rotation.y += 0.0001;
+
+            // Pulse effect for selected country highlight
+            if (selectedCountryName) {
+                const elapsed = (Date.now() - pulseStartTime) * 0.003; // speed control
+                const alpha = 0.4 + 0.3 * Math.sin(elapsed); // oscillates between 0.1 and 0.7
+                selectedMat.opacity = alpha;
+            }
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            const w = container.clientWidth, h = container.clientHeight;
+            camera.aspect = w / Math.max(h, 1);
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+        });
+    </script>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+        });
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('mobile-open');
+            mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+        });
+    </script>
+</body>
+</html>

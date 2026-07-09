@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitors — Pavle Radojević</title>
+    <meta name="description" content="Website visitor statistics and interactive map">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script>
+        (function() {
+            var theme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1") || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <style>
+        :root {
+            --bg: #0a0a0f; --bg-secondary: #111118; --bg-card: #16161f; --bg-card-hover: #1c1c28;
+            --text: #e8e8f0; --text-secondary: #a0a0b8; --text-muted: #6a6a80;
+            --accent-basketball: #f07b3b; --accent-academic: #4da6ff; --accent-plates: #3ddc84; --accent-gold: #d4a853;
+            --border: #252535; --shadow: 0 4px 24px rgba(0,0,0,0.4); --shadow-lg: 0 12px 48px rgba(0,0,0,0.5);
+            --radius: 16px; --radius-sm: 10px; --radius-lg: 24px; --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-sans: 'Inter', system-ui, sans-serif; --font-display: 'Playfair Display', serif;
+            --font-mono: 'JetBrains Mono', monospace; --nav-height: 70px; --max-width: 1200px;
+        }
+        [data-theme="light"] {
+            --bg: #f5f5f8; --bg-secondary: #ffffff; --bg-card: #ffffff; --bg-card-hover: #f8f8fc;
+            --text: #1a1a2e; --text-secondary: #4a4a60; --text-muted: #7a7a90;
+            --border: #e0e0ea; --shadow: 0 4px 20px rgba(0,0,0,0.06); --shadow-lg: 0 12px 40px rgba(0,0,0,0.1);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans); background: var(--bg); color: var(--text);
+            line-height: 1.6; transition: background var(--transition), color var(--transition);
+            overflow-x: hidden; -webkit-font-smoothing: antialiased;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+        .nav {
+            position: fixed; top:0; left:0; right:0; z-index:1000; height:var(--nav-height);
+            background:var(--bg); border-bottom:1px solid var(--border);
+            display:flex; align-items:center; justify-content:space-between;
+            padding:0 2rem; backdrop-filter:blur(20px);
+        }
+        .nav-logo { font-family:var(--font-display); font-weight:700; font-size:1.4rem; color:var(--text); text-decoration:none; }
+        .nav-links { display:flex; gap:0.25rem; align-items:center; }
+        .nav-link {
+            color:var(--text-secondary); text-decoration:none; font-weight:500; font-size:0.9rem;
+            padding:0.5rem 1rem; border-radius:8px; transition:all var(--transition);
+        }
+        .nav-link:hover, .nav-link.active { color:var(--text); background:var(--bg-card); }
+        .theme-toggle {
+            background:var(--bg-card); border:1px solid var(--border); color:var(--text);
+            cursor:pointer; width:40px; height:40px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+            transition:all var(--transition); margin-left:0.5rem;
+        }
+        .theme-toggle:hover { background:var(--bg-card-hover); transform:rotate(30deg); }
+        .mobile-menu-btn { display:none; background:none; border:none; color:var(--text); font-size:1.6rem; cursor:pointer; }
+
+        .page-content { padding-top:var(--nav-height); flex:1; }
+        .section { padding:4rem 2rem; max-width:var(--max-width); margin:0 auto; }
+
+        /* Stats grid: 7 columns on desktop, auto-fit on mobile */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+        @media (max-width: 1100px) {
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1rem 0.8rem;
+            text-align: center;
+            transition: all var(--transition);
+        }
+        .stat-card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.3rem;
+        }
+
+        .map-container {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+            height: 500px;
+        }
+
+        .country-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 0.8rem;
+            margin-top: 2rem;
+        }
+        .country-entry {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.8rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: all var(--transition);
+        }
+        .country-entry:hover {
+            border-color: var(--accent-gold);
+            background: var(--bg-card-hover);
+        }
+        .country-flag { font-size: 1.6rem; }
+        .country-name { font-weight: 600; }
+        .country-visitors { margin-left: auto; font-weight: 700; color: var(--accent-gold); }
+
+        .last-visitor {
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .last-visitor strong {
+            color: var(--text);
+        }
+
+        .contact-footer {
+            text-align:center; padding:2rem 1rem 2.5rem; border-top:1px solid var(--border);
+            background:var(--bg);
+        }
+        .contact-footer h4 { font-family:var(--font-display); font-size:1.3rem; margin-bottom:1rem; }
+        .contact-links { display:flex; gap:1.2rem; justify-content:center; flex-wrap:wrap; align-items:center; }
+        .contact-link {
+            color:var(--text); text-decoration:none; font-weight:500; padding:0.6rem 1.6rem;
+            border-radius:30px; border:1px solid var(--border); transition:all var(--transition);
+            background:var(--bg-card); font-size:0.95rem; display:inline-flex; align-items:center; gap:0.4rem;
+        }
+        .contact-link:hover { border-color:var(--accent-gold); background:var(--bg-card-hover); transform:translateY(-2px); }
+        .contact-link.email-link { border-color:var(--accent-academic); }
+        .footer-note { color:var(--text-muted); font-size:0.8rem; margin-top:1.5rem; }
+
+        @media (max-width:900px) {
+            .nav-links { display:none; }
+            .nav-links.mobile-open {
+                display:flex; flex-direction:column; position:absolute; top:var(--nav-height); left:0; right:0;
+                background:var(--bg-secondary); padding:1rem; border-bottom:1px solid var(--border);
+                box-shadow:var(--shadow-lg);
+            }
+            .mobile-menu-btn { display:block; }
+            .map-container { height: 350px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">PR</a>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
+        <div class="nav-links" id="navLinks">
+            <a href="basketball.html" class="nav-link">🏀 Basketball</a>
+            <a href="academic.html" class="nav-link">🎓 Academic</a>
+            <a href="plates.html" class="nav-link">🌍 Atlas</a>
+            <a href="visitors.html" class="nav-link active">📊 Visitors</a>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        </div>
+    </nav>
+
+    <main class="page-content">
+        <section class="section">
+            <h1 style="font-family:var(--font-display); font-size:2.5rem; text-align:center; margin-bottom:0.5rem;">Visitor Map</h1>
+            <p style="text-align:center; color:var(--text-secondary); margin-bottom:2rem;">Real-time insights into where my website visitors come from.</p>
+
+            <!-- Statistics cards – 7 columns on desktop -->
+            <div class="stats-grid" id="statsContainer">
+                <div class="stat-card"><div class="stat-value" id="totalVisitors">1,247</div><div class="stat-label">Total Visitors</div></div>
+                <div class="stat-card"><div class="stat-value" id="visitorsToday">23</div><div class="stat-label">Today</div></div>
+                <div class="stat-card"><div class="stat-value" id="countriesCount">7</div><div class="stat-label">Countries</div></div>
+                <div class="stat-card"><div class="stat-value" id="citiesCount">12</div><div class="stat-label">Cities</div></div>
+                <div class="stat-card"><div class="stat-value" id="avgSession">2m 34s</div><div class="stat-label">Avg Session</div></div>
+                <div class="stat-card"><div class="stat-value" id="returningVisitors">42%</div><div class="stat-label">Returning</div></div>
+                <div class="stat-card"><div class="stat-value" id="liveVisitors">8</div><div class="stat-label">Live</div></div>
+            </div>
+
+            <!-- Last visitor info -->
+            <div class="last-visitor">
+                <strong>Last visitor:</strong> 12 Jul 2026 14:37 from 🇷🇸 Serbia (Belgrade)
+            </div>
+
+            <!-- Interactive map (zoomable, with cities) -->
+            <div class="map-container" id="mapContainer"></div>
+
+            <!-- Country list -->
+            <h2 style="font-family:var(--font-display); font-size:1.8rem; margin:2rem 0 1rem;">Visitors by Country</h2>
+            <div class="country-list" id="countryList">
+                <!-- Populated by JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="contact-footer">
+        <h4>Get in Touch</h4>
+        <div class="contact-links">
+            <a href="mailto:pavle.radojevic07@gmail.com" class="contact-link email-link">✉️ Email</a>
+            <a href="https://instagram.com/pavle.radojevic" target="_blank" rel="noopener" class="contact-link">📷 Instagram</a>
+            <a href="https://linkedin.com/in/pavle-radojevic-3677b4255/" target="_blank" rel="noopener" class="contact-link">💼 LinkedIn</a>
+            <a href="https://www.youtube.com/@pavleradojevic5867" target="_blank" rel="noopener" class="contact-link">▶️ YouTube</a>
+        </div>
+        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Sample visitor data by country (Kosovo excluded – merged into Serbia)
+        const visitorData = [
+            { country: "Serbia", flag: "🇷🇸", visitors: 153, lastVisit: "12 Jul 2026 14:37", avgTime: "3m 12s" },
+            { country: "Hungary", flag: "🇭🇺", visitors: 42, lastVisit: "11 Jul 2026 09:15", avgTime: "2m 05s" },
+            { country: "Germany", flag: "🇩🇪", visitors: 19, lastVisit: "10 Jul 2026 22:40", avgTime: "1m 48s" },
+            { country: "United States of America", flag: "🇺🇸", visitors: 12, lastVisit: "09 Jul 2026 18:20", avgTime: "2m 55s" },
+            { country: "Poland", flag: "🇵🇱", visitors: 5, lastVisit: "08 Jul 2026 11:10", avgTime: "1m 30s" },
+            { country: "Croatia", flag: "🇭🇷", visitors: 3, lastVisit: "07 Jul 2026 15:45", avgTime: "2m 10s" },
+            { country: "Austria", flag: "🇦🇹", visitors: 2, lastVisit: "06 Jul 2026 20:00", avgTime: "1m 55s" }
+        ];
+
+        // Sample city data (Kosovo cities removed)
+        const cityData = [
+            { city: "Belgrade", country: "Serbia", lat: 44.7866, lon: 20.4489, visitors: 89 },
+            { city: "Novi Sad", country: "Serbia", lat: 45.2671, lon: 19.8335, visitors: 34 },
+            { city: "Budapest", country: "Hungary", lat: 47.4979, lon: 19.0402, visitors: 28 },
+            { city: "Berlin", country: "Germany", lat: 52.5200, lon: 13.4050, visitors: 12 },
+            { city: "New York", country: "United States of America", lat: 40.7128, lon: -74.0060, visitors: 7 },
+            { city: "Warsaw", country: "Poland", lat: 52.2297, lon: 21.0122, visitors: 5 },
+            { city: "Zagreb", country: "Croatia", lat: 45.8150, lon: 15.9819, visitors: 3 },
+            { city: "Vienna", country: "Austria", lat: 48.2082, lon: 16.3738, visitors: 2 },
+            { city: "Szeged", country: "Hungary", lat: 46.2530, lon: 20.1414, visitors: 14 },
+            { city: "Munich", country: "Germany", lat: 48.1351, lon: 11.5820, visitors: 7 },
+            { city: "Chicago", country: "United States of America", lat: 41.8781, lon: -87.6298, visitors: 5 },
+            { city: "Los Angeles", country: "United States of America", lat: 34.0522, lon: -118.2437, visitors: 3 }
+        ];
+
+        // Build country list
+        const countryListDiv = document.getElementById('countryList');
+        visitorData.forEach(c => {
+            const entry = document.createElement('div');
+            entry.className = 'country-entry';
+            entry.innerHTML = `
+                <span class="country-flag">${c.flag}</span>
+                <span class="country-name">${c.country}</span>
+                <span class="country-visitors">${c.visitors}</span>
+            `;
+            countryListDiv.appendChild(entry);
+        });
+
+        // Update stats
+        document.getElementById('totalVisitors').textContent = visitorData.reduce((sum, c) => sum + c.visitors, 0);
+        document.getElementById('countriesCount').textContent = visitorData.length;
+        document.getElementById('citiesCount').textContent = cityData.length;
+
+        // Interactive map with Leaflet (zoomable)
+        const map = L.map('mapContainer', {
+            center: [48, 10],
+            zoom: 3,
+            zoomControl: true,
+            scrollWheelZoom: true,
+            attributionControl: false
+        });
+
+        // Tile layers
+        const tilesDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19
+        });
+        const tilesLight = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19
+        });
+
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        if (currentTheme === 'dark') {
+            tilesDark.addTo(map);
+        } else {
+            tilesLight.addTo(map);
+        }
+
+        // Load high-precision GeoJSON, merge Kosovo into Serbia
+        fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson')
+            .then(response => response.json())
+            .then(geoData => {
+                // Merge Kosovo into Serbia
+                const serbia = geoData.features.find(f => f.properties.NAME === 'Serbia' || f.properties.ADMIN === 'Serbia');
+                const kosovo = geoData.features.find(f => f.properties.NAME === 'Kosovo' || f.properties.ADMIN === 'Kosovo');
+
+                if (serbia && kosovo) {
+                    // Convert Serbia to MultiPolygon if necessary
+                    if (serbia.geometry.type === 'Polygon') {
+                        serbia.geometry = {
+                            type: 'MultiPolygon',
+                            coordinates: [serbia.geometry.coordinates]
+                        };
+                    }
+                    // Add Kosovo's coordinates to Serbia
+                    if (kosovo.geometry.type === 'Polygon') {
+                        serbia.geometry.coordinates.push(kosovo.geometry.coordinates);
+                    } else if (kosovo.geometry.type === 'MultiPolygon') {
+                        serbia.geometry.coordinates.push(...kosovo.geometry.coordinates);
+                    }
+                    // Remove Kosovo from the features array
+                    geoData.features = geoData.features.filter(f => f !== kosovo);
+                }
+
+                const visitedCountries = new Set(visitorData.map(c => c.country));
+
+                L.geoJSON(geoData, {
+                    style: feature => {
+                        const countryName = feature.properties.NAME || feature.properties.ADMIN;
+                        if (visitedCountries.has(countryName)) {
+                            return { fillColor: '#3ddc84', color: '#1a1a1a', weight: 1, fillOpacity: 0.7 };
+                        } else {
+                            return { fillColor: '#3a3a4a', color: '#1a1a1a', weight: 1, fillOpacity: 0.4 };
+                        }
+                    },
+                    onEachFeature: (feature, layer) => {
+                        const countryName = feature.properties.NAME || feature.properties.ADMIN;
+                        layer.bindTooltip(countryName, { permanent: false, direction: 'center' });
+                        layer.on('click', () => {
+                            const data = visitorData.find(c => c.country === countryName);
+                            if (data) {
+                                layer.bindPopup(`
+                                    <b>${data.flag} ${data.country}</b><br>
+                                    Visitors: ${data.visitors}<br>
+                                    Last visit: ${data.lastVisit}<br>
+                                    Average visit: ${data.avgTime}
+                                `).openPopup();
+                            }
+                        });
+                    }
+                }).addTo(map);
+
+                // Add city markers
+                cityData.forEach(city => {
+                    const marker = L.circleMarker([city.lat, city.lon], {
+                        radius: Math.max(4, Math.sqrt(city.visitors) * 2),
+                        color: '#d4a853',
+                        fillColor: '#d4a853',
+                        fillOpacity: 0.8,
+                        weight: 1
+                    }).addTo(map);
+
+                    marker.bindTooltip(`${city.city}, ${city.country} (${city.visitors})`, {
+                        permanent: false,
+                        direction: 'top'
+                    });
+
+                    marker.on('click', () => {
+                        marker.bindPopup(`
+                            <b>${city.city}, ${city.country}</b><br>
+                            Visitors from here: ${city.visitors}
+                        `).openPopup();
+                    });
+                });
+            });
+
+        // Theme toggle also switches map tiles
+        const observer = new MutationObserver(() => {
+            const theme = document.documentElement.getAttribute('data-theme');
+            if (theme === 'dark') {
+                map.removeLayer(tilesLight);
+                tilesDark.addTo(map);
+            } else {
+                map.removeLayer(tilesDark);
+                tilesLight.addTo(map);
+            }
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    </script>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+        });
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('mobile-open');
+            mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+        });
+    </script>
+</body>
+</html>

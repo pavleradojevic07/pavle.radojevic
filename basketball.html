@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball — Pavle Radojević</title>
+    <meta name="description" content="Basketball profile of Pavle Radojević — player stats, career timeline, achievements.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        (function() {
+            var theme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1") || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-secondary: #111118;
+            --bg-card: #16161f;
+            --bg-card-hover: #1c1c28;
+            --text: #e8e8f0;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6a6a80;
+            --accent-basketball: #f07b3b;
+            --accent-academic: #4da6ff;
+            --accent-plates: #3ddc84;
+            --accent-gold: #d4a853;
+            --border: #252535;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.5);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-lg: 24px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --nav-height: 70px;
+            --max-width: 1200px;
+        }
+
+        [data-theme="light"] {
+            --bg: #f5f5f8;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f8f8fc;
+            --text: #1a1a2e;
+            --text-secondary: #4a4a60;
+            --text-muted: #7a7a90;
+            --border: #e0e0ea;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: background var(--transition-slow), color var(--transition-slow);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ── NAV ── */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            height: var(--nav-height); background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 2rem; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+        .nav-logo {
+            font-family: var(--font-display); font-weight: 700; font-size: 1.4rem;
+            letter-spacing: -0.02em; color: var(--text); text-decoration: none;
+        }
+        .nav-links { display: flex; gap: 0.25rem; align-items: center; }
+        .nav-link {
+            color: var(--text-secondary); text-decoration: none; font-weight: 500;
+            font-size: 0.9rem; padding: 0.5rem 1rem; border-radius: 8px;
+            transition: all var(--transition); white-space: nowrap;
+        }
+        .nav-link:hover, .nav-link.active { color: var(--text); background: var(--bg-card); }
+        .nav-link.basketball-link:hover { color: var(--accent-basketball); }
+        .theme-toggle {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
+            cursor: pointer; width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+            transition: all var(--transition); margin-left: 0.5rem;
+        }
+        .theme-toggle:hover { background: var(--bg-card-hover); transform: rotate(30deg); }
+        .mobile-menu-btn { display: none; background: none; border: none; color: var(--text); font-size: 1.6rem; cursor: pointer; }
+
+        /* ── PAGE CONTENT ── */
+        .page-content {
+            padding-top: var(--nav-height);
+            flex: 1;
+        }
+        .section {
+            padding: 4rem 2rem;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Profile grid */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2.5rem;
+            align-items: start;
+        }
+        .profile-photo-wrap {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        .profile-photo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1.2rem;
+            text-align: center;
+            transition: all var(--transition);
+        }
+        .stat-card:hover {
+            border-color: var(--accent-basketball);
+            transform: translateY(-2px);
+        }
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-basketball);
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.2rem;
+        }
+
+        /* Timeline (playing history) */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+            border-radius: 1px;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-basketball);
+            border: 3px solid var(--bg);
+            z-index: 2;
+        }
+        .timeline-year {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent-basketball);
+            font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+        .timeline-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 0.2rem 0;
+        }
+        .timeline-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .timeline-desc .highlight {
+            font-weight: 600;
+            color: var(--accent-gold);
+        }
+        .club-link {
+            color: var(--accent-basketball);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            font-weight: 600;
+        }
+        .club-link:hover {
+            color: #fff;
+            background: var(--accent-basketball);
+            padding: 0 4px;
+            border-radius: 3px;
+        }
+
+        /* Achievements */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+        }
+        .achievement-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1.5rem;
+            transition: all var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .achievement-card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+        .achievement-icon { font-size: 2rem; margin-bottom: 0.3rem; }
+        .achievement-card h4 { font-weight: 600; font-size: 1rem; line-height: 1.3; }
+        .ach-detail { font-size: 0.85rem; color: var(--text-secondary); }
+
+        /* Links */
+        .action-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        .btn-outline {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.7rem 1.8rem;
+            border-radius: 30px;
+            border: 1px solid var(--accent-basketball);
+            transition: all var(--transition);
+            background: transparent;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .btn-outline:hover {
+            background: var(--accent-basketball);
+            color: #fff;
+        }
+
+        /* ── FOOTER ── */
+        .contact-footer {
+            text-align: center;
+            padding: 2rem 1rem 2.5rem;
+            border-top: 1px solid var(--border);
+            background: var(--bg);
+        }
+        .contact-footer h4 {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        .contact-links {
+            display: flex;
+            gap: 1.2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .contact-link {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.6rem 1.6rem;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            background: var(--bg-card);
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .contact-link:hover {
+            border-color: var(--accent-gold);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+        .contact-link.email-link { border-color: var(--accent-academic); }
+        .footer-note {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .profile-grid { grid-template-columns: 1fr; }
+            .profile-photo-wrap { max-width: 300px; margin: 0 auto; }
+            .nav-links { display: none; }
+            .nav-links.mobile-open {
+                display: flex; flex-direction: column; position: absolute;
+                top: var(--nav-height); left: 0; right: 0;
+                background: var(--bg-secondary); padding: 1rem;
+                border-bottom: 1px solid var(--border); box-shadow: var(--shadow-lg);
+            }
+            .mobile-menu-btn { display: block; }
+        }
+        @media (max-width: 500px) {
+            .section { padding: 2rem 1rem; }
+            .profile-stats { grid-template-columns: repeat(2, 1fr); }
+            .achievements-grid { grid-template-columns: 1fr; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        /* Profile photo theme switching */
+        .img-light { display: none; }
+        [data-theme="light"] .img-dark { display: none; }
+        [data-theme="light"] .img-light { display: block; }
+    </style>
+</head>
+<body>
+    <!-- ════════════ HEADER ════════════ -->
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">PR</a>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
+        <div class="nav-links" id="navLinks">
+            <a href="basketball.html" class="nav-link basketball-link active">🏀 Basketball</a>
+            <a href="academic.html" class="nav-link academic-link">🎓 Academic</a>
+            <a href="plates.html" class="nav-link plates-link">🌍 Atlas</a>
+            <a href="visitors.html" class="nav-link">📊 Visitors</a>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        </div>
+    </nav>
+
+    <!-- ════════════ PAGE CONTENT ════════════ -->
+    <main class="page-content">
+        <section class="section">
+            <h1 class="section-title">Basketball</h1>
+
+            <!-- Player Profile -->
+            <div class="profile-grid">
+                <div class="profile-photo-wrap">
+                    <img src="images/profile-dark.jpg" alt="Profile (dark mode)" class="img-dark">
+                    <img src="images/profile-light.jpg" alt="Profile (light mode)" class="img-light">
+                </div>
+                <div>
+                    <div class="profile-stats">
+                        <div class="stat-card"><div class="stat-value">203 cm</div><div class="stat-label">Height (6'8")</div></div>
+                        <div class="stat-card"><div class="stat-value">101 kg</div><div class="stat-label">Weight (222 lbs)</div></div>
+                        <div class="stat-card"><div class="stat-value">PF / C</div><div class="stat-label">Position</div></div>
+                        <div class="stat-card"><div class="stat-value">🇷🇸 Serbia</div><div class="stat-label">Nationality</div></div>
+                        <div class="stat-card"><div class="stat-value">19</div><div class="stat-label">Age</div></div>
+                    </div>
+                    <p style="margin-top:1.5rem; color:var(--text-secondary); line-height:1.7;">
+                        A versatile forward/center with a strong international background. Known for defensive versatility, high basketball IQ, a strong presence in the paint, and the ability to stretch the floor with reliable outside shooting. Currently competing in the Belgrade Quality League while continuing to develop as a professional prospect.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Basketball Background / Playing History -->
+            <h2 style="margin-top:3.5rem; font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Playing History</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">2025 – Present</div>
+                    <div class="timeline-title">
+                        <a href="https://kkboraczemun.com/" target="_blank" rel="noopener" class="club-link">KK Borac Zemun</a> | Belgrade, Serbia
+                    </div>
+                    <div class="timeline-desc">
+                        Competing in the <span class="highlight">Belgrade Quality League (U19)</span>.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2021 – 2025</div>
+                    <div class="timeline-title">
+                        <a href="https://honved.hu/kosarlabda/" target="_blank" rel="noopener" class="club-link">Honvéd Academy</a> / University League | Budapest, Hungary
+                    </div>
+                    <div class="timeline-desc">
+                        <span class="highlight">League Achievement:</span> Winner of Hungarian NB II (Senior League).<br>
+                        <span class="highlight">International:</span> EYBL U21 Superfinal 3rd Place (May 2023).<br>
+                        Tournaments in Spain, Slovakia, Serbia, and Hungary.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2014 – 2021</div>
+                    <div class="timeline-title">
+                        <a href="https://kkboraczemun.com/" target="_blank" rel="noopener" class="club-link">KK Borac Zemun</a> (Youth Development) | Belgrade, Serbia
+                    </div>
+                    <div class="timeline-desc">
+                        Belgrade Quality League. Youth development from U12 to U17.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Career Achievements -->
+            <h2 style="margin-top:3.5rem; font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Career Achievements</h2>
+            <div class="achievements-grid">
+                <div class="achievement-card">
+                    <div class="achievement-icon">🇷🇸</div>
+                    <h4>National Team Selection</h4>
+                    <div class="ach-detail">Selected for the Serbian National Team Training Camp (Top 40) for 2007-born players (2021).</div>
+                </div>
+                <div class="achievement-card">
+                    <div class="achievement-icon">🏆</div>
+                    <h4>Senior League Champion</h4>
+                    <div class="ach-detail">Winner of the Hungarian NB II 2023/24 (Senior League).</div>
+                </div>
+                <div class="achievement-card">
+                    <div class="achievement-icon">🥉</div>
+                    <h4>EYBL Superfinal – 3rd Place</h4>
+                    <div class="ach-detail">U21 Superfinal (Levice, Slovakia – May 2023).</div>
+                </div>
+                <div class="achievement-card">
+                    <div class="achievement-icon">🇪🇸</div>
+                    <h4>ZBK International Tournament</h4>
+                    <div class="ach-detail">3rd Place finish (Alicante, Spain – April 2023).</div>
+                </div>
+                <div class="achievement-card">
+                    <div class="achievement-icon">🏅</div>
+                    <h4>EYBL Appearances</h4>
+                    <div class="ach-detail">U20 (Veszprém, Hungary); U16, U18, and U20 (Budapest, Hungary).</div>
+                </div>
+                <div class="achievement-card">
+                    <div class="achievement-icon">❄️</div>
+                    <h4>Winter Tournament U18</h4>
+                    <div class="ach-detail">3rd Place finish (Belgrade, January 2023).</div>
+                </div>
+            </div>
+
+            <!-- Statistics & Highlights -->
+            <h2 style="margin-top:3.5rem; font-family:var(--font-display); font-size:2rem; margin-bottom:1rem;">Statistics & Highlights</h2>
+            <div class="action-links">
+                <!-- 🔴 Replace the # with your highlight video URL or playlist -->
+                <a href="https://youtu.be/clxgFeRJaLQ?si=YKZxuFnwNneE3j2u" class="btn-outline">🎥 Highlight Video 2025/26</a>
+                <!-- 🔴 Replace the # with your actual statistics URL -->
+                <a href="https://mkosz.hu/jatekos/x2425/hun_univn/244313/radojevic-pavle" class="btn-outline">📊 Statistics 2024/25</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- ════════════ FOOTER ════════════ -->
+    <footer class="contact-footer">
+        <h4>Get in Touch</h4>
+        <div class="contact-links">
+            <a href="mailto:pavle.radojevic07@gmail.com" class="contact-link email-link">✉️ Email</a>
+            <a href="https://instagram.com/pavle.radojevic" target="_blank" rel="noopener" class="contact-link">📷 Instagram</a>
+            <a href="https://linkedin.com/in/pavle-radojevic-3677b4255/" target="_blank" rel="noopener" class="contact-link">💼 LinkedIn</a>
+            <a href="https://www.youtube.com/@pavleradojevic5867" target="_blank" rel="noopener" class="contact-link">▶️ YouTube</a>
+        </div>
+        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages</p>
+    </footer>
+
+    <script>
+        // Theme toggle (cookie-based, shared across pages)
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+        });
+
+        // Mobile menu
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('mobile-open');
+            mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+        });
+    </script>
+</body>
+</html>
