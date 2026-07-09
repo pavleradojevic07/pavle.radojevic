@@ -360,10 +360,14 @@
     </style>
 </head>
 <body>
-    <script>
-// Visitor tracking via Cloudflare Worker
+   <script>
 (function() {
-  const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/track'; // 🔴 Replace with your worker URL
+  const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/track';
+  
+  // Store entry time for session tracking
+  if (!sessionStorage.getItem('entryTime')) {
+    sessionStorage.setItem('entryTime', new Date().toISOString());
+  }
   
   const data = {
     browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
@@ -372,14 +376,19 @@
     os: navigator.platform || 'Unknown',
     device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
     referrer: document.referrer || 'Direct',
-    page: window.location.pathname
+    page: window.location.pathname,
+    entryTime: sessionStorage.getItem('entryTime'),
+    previousPage: sessionStorage.getItem('lastPage') || null
   };
+  
+  // Store current page for next navigation
+  sessionStorage.setItem('lastPage', window.location.pathname);
   
   fetch(`${WORKER_URL}/track`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
-  }).catch(() => {}); // Silent fail if worker is down
+  }).catch(() => {});
 })();
 </script>
     <!-- Cookie Consent Banner (self‑hosted, free) -->
