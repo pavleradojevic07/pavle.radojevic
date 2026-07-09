@@ -163,24 +163,36 @@
 <body>
     <!-- Tracking script -->
     <script>
-    (function() {
-      const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev';
-      const data = {
-        browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
-                 navigator.userAgent.includes('Chrome') ? 'Chrome' :
-                 navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
-        os: navigator.platform || 'Unknown',
-        device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
-        referrer: document.referrer || 'Direct',
-        page: window.location.pathname
-      };
-      fetch(`${WORKER_URL}/track`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      }).catch(() => {});
-    })();
-    </script>
+(function() {
+  const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/statistics.json';
+  
+  // Store entry time for session tracking
+  if (!sessionStorage.getItem('entryTime')) {
+    sessionStorage.setItem('entryTime', new Date().toISOString());
+  }
+  
+  const data = {
+    browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
+             navigator.userAgent.includes('Chrome') ? 'Chrome' :
+             navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
+    os: navigator.platform || 'Unknown',
+    device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+    referrer: document.referrer || 'Direct',
+    page: window.location.pathname,
+    entryTime: sessionStorage.getItem('entryTime'),
+    previousPage: sessionStorage.getItem('lastPage') || null
+  };
+  
+  // Store current page for next navigation
+  sessionStorage.setItem('lastPage', window.location.pathname);
+  
+  fetch(`${WORKER_URL}/track`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).catch(() => {});
+})();
+</script>
 
     <!-- Cookie Consent Banner -->
     <style>
