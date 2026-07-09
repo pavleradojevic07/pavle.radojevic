@@ -430,11 +430,10 @@
         fetch(APP_SCRIPT_URL)
             .then(response => response.json())
             .then(data => {
+                console.log('Data received:', data); // Debug line
                 updateUI(data);
             })
-            .catch(() => {
-                // Use fallback data if fetch fails (for example, the URL is wrong or not deployed)
-                updateUI(fallbackData);
+            .catch(error => console.error('Failed to fetch:', error));
             });
 
         // Theme toggle switches map tiles
