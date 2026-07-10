@@ -46,7 +46,23 @@
             display:flex; align-items:center; justify-content:space-between;
             padding:0 2rem; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
         }
-        .nav-logo { font-family:var(--font-display); font-weight:700; font-size:1.4rem; color:var(--text); text-decoration:none; }
+        .nav-logo {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.4rem;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        /* Logo image switching */
+        .logo-dark, .logo-light {
+            height: 36px;              /* adjust to your logo size */
+            display: block;
+        }
+        .logo-light { display: none; }
+        [data-theme="light"] .logo-dark { display: none; }
+        [data-theme="light"] .logo-light { display: block; }
         .nav-links { display:flex; gap:0.25rem; align-items:center; }
         .nav-link {
             color:var(--text-secondary); text-decoration:none; font-weight:500; font-size:0.9rem;
@@ -347,7 +363,10 @@
     }
 </script>
     <nav class="nav">
-        <a href="index.html" class="nav-logo">PR</a>
+        <a href="index.html" class="nav-logo">
+            <img src="images/logo-dark.png" alt="PR Logo" class="logo-dark">
+            <img src="images/logo-light.png" alt="PR Logo" class="logo-light">
+        </a>
         <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
         <div class="nav-links" id="navLinks">
             <a href="basketball.html" class="nav-link">🏀 Basketball</a>
