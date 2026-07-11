@@ -81,9 +81,8 @@
 
         // Load Google Analytics only after consent (replace with your own GA tag)
         function loadGoogleAnalytics() {
-            // Google Analytics gtag snippet
             var script = document.createElement('script');
-            script.src = 'https://www.googletagmanager.com/gtag/js?id=G-D90VNGY0XX'; // 🔴 Your GA4 measurement ID
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=G-D90VNGY0XX';
             script.async = true;
             document.head.appendChild(script);
 
@@ -91,7 +90,7 @@
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
-                gtag('config', 'G-D90VNGY0XX'); // 🔴 Your GA4 measurement ID
+                gtag('config', 'G-D90VNGY0XX');
             };
         }
     </script>
@@ -110,6 +109,10 @@
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
+
+    <!-- Swup – page transitions -->
+    <script src="https://unpkg.com/swup@4"></script>
+
     <style>
         :root {
             --bg: #0a0a0f;
@@ -170,7 +173,7 @@
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
-            transition: background var(--transition-fast), color var(--transition-slow);
+            transition: background var(--transition), color var(--transition-slow);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             display: flex;
@@ -296,20 +299,13 @@
             background-position: center;
             overflow: hidden;
             cursor: pointer;
-            /* Transition for transform (hover) and the scroll reveal */
             transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
                         opacity 0.8s ease,
                         transform 0.8s ease;
         }
-        .panel-basketball {
-            background-image: var(--img-basketball);
-        }
-        .panel-academic {
-            background-image: var(--img-academic);
-        }
-        .panel-plates {
-            background-image: var(--img-plates);
-        }
+        .panel-basketball { background-image: var(--img-basketball); }
+        .panel-academic   { background-image: var(--img-academic); }
+        .panel-plates     { background-image: var(--img-plates); }
 
         .hero-panel::after {
             content: '';
@@ -368,6 +364,15 @@
         .hero-panel.reveal-on-scroll.revealed {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* ── Swup page transition ── */
+        .transition-fade {
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+        html.is-animating .transition-fade {
+            opacity: 0;
         }
 
         /* Footer */
@@ -495,7 +500,7 @@
         </div>
     </nav>
 
-    <main class="hero">
+    <main id="swup" class="transition-fade hero">
         <div class="hero-panels">
             <a href="basketball.html" class="hero-panel panel-basketball reveal-on-scroll">
                 <div class="panel-content">
@@ -553,7 +558,7 @@
     </footer>
 
     <script>
-        // Theme toggle with cookie (no localStorage)
+        // Theme toggle with cookie
         const themeToggle = document.getElementById('themeToggle');
         themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
         themeToggle.addEventListener('click', () => {
@@ -572,6 +577,9 @@
             navLinks.classList.toggle('mobile-open');
             mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
         });
+
+        // Swup page transition init
+        const swup = new Swup();
     </script>
 
     <!-- Scroll‑reveal animation -->
@@ -579,7 +587,6 @@
         document.addEventListener('DOMContentLoaded', function () {
             const panels = document.querySelectorAll('.hero-panel.reveal-on-scroll');
 
-            // Immediately show the first panel (it's already in view)
             if (panels.length > 0) {
                 panels[0].classList.add('revealed');
             }

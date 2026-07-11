@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-    
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Academic — Pavle Radojević</title>
@@ -16,6 +14,8 @@
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
+    <!-- Swup – page transitions -->
+    <script src="https://unpkg.com/swup@4"></script>
     <style>
         :root {
             --bg: #0a0a0f;
@@ -269,6 +269,15 @@
         .contact-link.email-link { border-color: var(--accent-academic); }
         .footer-note { color: var(--text-muted); font-size: 0.8rem; margin-top: 1.5rem; }
 
+        /* ── Swup page transition ── */
+        .transition-fade {
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+        html.is-animating .transition-fade {
+            opacity: 0;
+        }
+
         @media (max-width: 900px) {
             .nav-links { display: none; }
             .nav-links.mobile-open {
@@ -284,146 +293,138 @@
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
         .lang-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        padding: 1.2rem;
-        text-align: center;
-        transition: all var(--transition);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1.2rem;
+            text-align: center;
+            transition: all var(--transition);
         }
         .lang-card:hover {
-        transform: translateY(-4px);
-        border-color: var(--accent-gold);
-        box-shadow: var(--shadow);
+            transform: translateY(-4px);
+            border-color: var(--accent-gold);
+            box-shadow: var(--shadow);
         }
     </style>
 </head>
 <body>
     <script>
-(function() {
-  const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/track';
-  
-  // Store entry time for session tracking
-  if (!sessionStorage.getItem('entryTime')) {
-    sessionStorage.setItem('entryTime', new Date().toISOString());
-  }
-  
-  const data = {
-    browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
-             navigator.userAgent.includes('Chrome') ? 'Chrome' :
-             navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
-    os: navigator.platform || 'Unknown',
-    device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
-    referrer: document.referrer || 'Direct',
-    page: window.location.pathname,
-    entryTime: sessionStorage.getItem('entryTime'),
-    previousPage: sessionStorage.getItem('lastPage') || null
-  };
-  
-  // Store current page for next navigation
-  sessionStorage.setItem('lastPage', window.location.pathname);
-  
-  fetch(`${WORKER_URL}/track`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  }).catch(() => {});
-})();
-</script>
+        (function() {
+          const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/track';
+          
+          if (!sessionStorage.getItem('entryTime')) {
+            sessionStorage.setItem('entryTime', new Date().toISOString());
+          }
+          
+          const data = {
+            browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
+                     navigator.userAgent.includes('Chrome') ? 'Chrome' :
+                     navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
+            os: navigator.platform || 'Unknown',
+            device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+            referrer: document.referrer || 'Direct',
+            page: window.location.pathname,
+            entryTime: sessionStorage.getItem('entryTime'),
+            previousPage: sessionStorage.getItem('lastPage') || null
+          };
+          
+          sessionStorage.setItem('lastPage', window.location.pathname);
+          
+          fetch(`${WORKER_URL}/track`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          }).catch(() => {});
+        })();
+    </script>
+
     <!-- Cookie Consent Banner (self‑hosted, free) -->
-<style>
-    #cookie-banner {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: var(--bg-card, #16161f);
-        border-top: 1px solid var(--border, #252535);
-        color: var(--text, #e8e8f0);
-        padding: 1rem 2rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-        z-index: 10000;
-        font-size: 0.9rem;
-        box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
-        transition: transform 0.3s ease;
-    }
-    #cookie-banner.hidden {
-        transform: translateY(100%);
-    }
-    .cookie-btn {
-        background: var(--accent-gold, #d4a853);
-        color: #000;
-        border: none;
-        padding: 0.6rem 1.4rem;
-        border-radius: 30px;
-        cursor: pointer;
-        font-weight: 600;
-        font-family: var(--font-sans, 'Inter', sans-serif);
-        transition: background 0.3s;
-    }
-    .cookie-btn:hover { background: #c0943a; }
-    .cookie-btn.decline {
-        background: transparent;
-        border: 1px solid var(--border, #252535);
-        color: var(--text, #e8e8f0);
-    }
-    .cookie-btn.decline:hover { background: var(--bg-card-hover, #1c1c28); }
-</style>
+    <style>
+        #cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card, #16161f);
+            border-top: 1px solid var(--border, #252535);
+            color: var(--text, #e8e8f0);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            z-index: 10000;
+            font-size: 0.9rem;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
+            transition: transform 0.3s ease;
+        }
+        #cookie-banner.hidden { transform: translateY(100%); }
+        .cookie-btn {
+            background: var(--accent-gold, #d4a853);
+            color: #000;
+            border: none;
+            padding: 0.6rem 1.4rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: var(--font-sans, 'Inter', sans-serif);
+            transition: background 0.3s;
+        }
+        .cookie-btn:hover { background: #c0943a; }
+        .cookie-btn.decline {
+            background: transparent;
+            border: 1px solid var(--border, #252535);
+            color: var(--text, #e8e8f0);
+        }
+        .cookie-btn.decline:hover { background: var(--bg-card-hover, #1c1c28); }
+    </style>
 
-<div id="cookie-banner">
-    <span>🍪 This website uses cookies to analyze traffic and improve your experience. See our <a href="#" style="color:var(--accent-gold)">Privacy Policy</a>.</span>
-    <div style="display:flex; gap:0.5rem;">
-        <button class="cookie-btn decline" onclick="setCookieConsent(false)">Decline</button>
-        <button class="cookie-btn" onclick="setCookieConsent(true)">Accept</button>
+    <div id="cookie-banner">
+        <span>🍪 This website uses cookies to analyze traffic and improve your experience. See our <a href="#" style="color:var(--accent-gold)">Privacy Policy</a>.</span>
+        <div style="display:flex; gap:0.5rem;">
+            <button class="cookie-btn decline" onclick="setCookieConsent(false)">Decline</button>
+            <button class="cookie-btn" onclick="setCookieConsent(true)">Accept</button>
+        </div>
     </div>
-</div>
 
-<script>
-    // Check if consent already given
-    (function() {
-        const consent = getCookie('cookie-consent');
-        if (consent === 'accepted') {
+    <script>
+        (function() {
+            const consent = getCookie('cookie-consent');
+            if (consent === 'accepted') {
+                document.getElementById('cookie-banner').classList.add('hidden');
+                loadGoogleAnalytics();
+            } else if (consent === 'declined') {
+                document.getElementById('cookie-banner').classList.add('hidden');
+            }
+        })();
+
+        function setCookieConsent(accepted) {
+            const value = accepted ? 'accepted' : 'declined';
+            document.cookie = 'cookie-consent=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
             document.getElementById('cookie-banner').classList.add('hidden');
-            loadGoogleAnalytics();
-        } else if (consent === 'declined') {
-            document.getElementById('cookie-banner').classList.add('hidden');
+            if (accepted) { loadGoogleAnalytics(); }
         }
-    })();
 
-    function setCookieConsent(accepted) {
-        const value = accepted ? 'accepted' : 'declined';
-        document.cookie = 'cookie-consent=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
-        document.getElementById('cookie-banner').classList.add('hidden');
-        if (accepted) {
-            loadGoogleAnalytics();
+        function getCookie(name) {
+            const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            return match ? match[2] : null;
         }
-    }
 
-    function getCookie(name) {
-        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-        return match ? match[2] : null;
-    }
+        function loadGoogleAnalytics() {
+            var script = document.createElement('script');
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=G-D90VNGY0XX';
+            script.async = true;
+            document.head.appendChild(script);
+            script.onload = function() {
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-D90VNGY0XX');
+            };
+        }
+    </script>
 
-    // Load Google Analytics only after consent (replace with your own GA tag)
-    function loadGoogleAnalytics() {
-        // Google Analytics gtag snippet
-        var script = document.createElement('script');
-        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-D90VNGY0XX'; // 🔴 Your GA4 measurement ID
-        script.async = true;
-        document.head.appendChild(script);
-
-        script.onload = function() {
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-D90VNGY0XX'); // 🔴 Your GA4 measurement ID
-        };
-    }
-</script>
     <nav class="nav">
         <a href="index.html" class="nav-logo">
             <img src="images/logo-dark.webp" alt="PR Logo" class="logo-dark">
@@ -439,13 +440,12 @@
         </div>
     </nav>
 
-    <main class="page-content">
+    <main id="swup" class="transition-fade page-content">
         <section class="section">
             <h1 class="section-title">Academic</h1>
 
             <h2 style="font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Academic Background</h2>
             <div class="timeline">
-                <!-- University (now first) -->
                 <div class="timeline-item">
                     <div class="timeline-year">2025 – Present</div>
                     <div class="timeline-title">
@@ -454,8 +454,6 @@
                     </div>
                     <div class="timeline-desc">Currently enrolled: <strong>Applied Mathematics</strong> (1st Year).</div>
                 </div>
-
-                <!-- High School (second) -->
                 <div class="timeline-item">
                     <div class="timeline-year">2021 – 2025</div>
                     <div class="timeline-title">
@@ -465,13 +463,11 @@
                         Serbian Grammar School – High School Diploma. Graduated with <strong>Highest Honors</strong>, Matura Examination Score: <strong>5.0/5.0</strong>.
                     </div>
                 </div>
-
             </div>
 
             <h2 style="font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Courses</h2>
 
             <h3 style="font-weight:600; margin-bottom:0.8rem; color:var(--text);">Completed</h3>
-            
             <div class="courses-grid">
                 <div class="course-card">
                     <div class="course-name">💡 Programming 2</div>
@@ -507,7 +503,6 @@
                     <span class="course-status status-ongoing">In Progress</span>
                     <div class="course-summary">This course provides advanced knowledge of linear algebra over two semesters. Students learn about vector spaces, linear mappings, bases, dimension, and matrices. The curriculum covers determinants, systems of linear equations, eigenvalues and eigenvectors, and diagonalization. Additional topics include bilinear and quadratic forms, Euclidean vector spaces, orthogonal transformations, and Hermitian spaces. Students gain the ability to solve problems and apply linear algebra in other mathematical contexts.</div>
                 </div>
-                
                 <div class="course-card">
                     <div class="course-name">🇬🇧 English for Mathematical Purposes</div>
                     <span class="course-status status-ongoing">In Progress</span>
@@ -519,25 +514,27 @@
                     <div class="course-summary">This course provides foundational knowledge of analytic geometry in the plane and space. Students learn vector algebra, linear geometry, and quadratic geometry, including points, lines, planes, and second-order curves and surfaces. The curriculum includes coordinate transformations, affine transformations, and elementary spherical geometry. Students develop geometric intuition and the ability to apply coordinate methods in other mathematical courses.</div>
                 </div>
             </div>
+
             <!-- Languages -->
-                        <h2 style="font-family:var(--font-display); font-size:2rem; margin:3rem 0 1.5rem;">Languages</h2>
-                        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:1rem;">
-                            <div class="lang-card">
-                                <div style="font-size:2rem; margin-bottom:0.5rem;">🇷🇸</div>
-                                <div style="font-weight:600;">Serbian</div>
-                                <div style="color:var(--text-secondary); font-size:0.9rem;">Native</div>
-                            </div>
-                            <div class="lang-card">
-                                <div style="font-size:2rem; margin-bottom:0.5rem;">🇬🇧</div>
-                                <div style="font-weight:600;">English</div>
-                            <div style="color:var(--text-secondary); font-size:0.9rem;">C1 – IELTS 7.5</div>
-                            </div>
-                            <div class="lang-card">
-                                <div style="font-size:2rem; margin-bottom:0.5rem;">🇭🇺</div>
-                                <div style="font-weight:600;">Hungarian</div>
-                                <div style="color:var(--text-secondary); font-size:0.9rem;">B2</div>
-                        </div>
-                        </div>
+            <h2 style="font-family:var(--font-display); font-size:2rem; margin:3rem 0 1.5rem;">Languages</h2>
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:1rem;">
+                <div class="lang-card">
+                    <div style="font-size:2rem; margin-bottom:0.5rem;">🇷🇸</div>
+                    <div style="font-weight:600;">Serbian</div>
+                    <div style="color:var(--text-secondary); font-size:0.9rem;">Native</div>
+                </div>
+                <div class="lang-card">
+                    <div style="font-size:2rem; margin-bottom:0.5rem;">🇬🇧</div>
+                    <div style="font-weight:600;">English</div>
+                    <div style="color:var(--text-secondary); font-size:0.9rem;">C1 – IELTS 7.5</div>
+                </div>
+                <div class="lang-card">
+                    <div style="font-size:2rem; margin-bottom:0.5rem;">🇭🇺</div>
+                    <div style="font-weight:600;">Hungarian</div>
+                    <div style="color:var(--text-secondary); font-size:0.9rem;">B2</div>
+                </div>
+            </div>
+
             <div class="achievement-box">
                 <h3>Achievement & Projects</h3>
                 <p>
@@ -556,28 +553,24 @@
     <footer class="contact-footer">
         <h4>Get in Touch</h4>
         <div class="contact-links">
-            <!-- Gmail -->
             <a href="mailto:pavle.radojevic07@gmail.com" class="contact-link email-link">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/>
                 </svg>
-            Email
+                Email
             </a>
-            <!-- Instagram -->
             <a href="https://instagram.com/pavle.radojevic" target="_blank" rel="noopener" class="contact-link">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4c0 3.2-2.6 5.8-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8C2 4.6 4.6 2 7.8 2zm-.2 2C5.6 4 4 5.6 4 7.6v8.8C4 18.4 5.6 20 7.6 20h8.8c2 0 3.6-1.6 3.6-3.6V7.6C20 5.6 18.4 4 16.4 4H7.6zm9.6 1.5a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5zM12 7c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zm0 2c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/>
                 </svg>
                 Instagram
             </a>
-            <!-- LinkedIn -->
             <a href="https://linkedin.com/in/pavle-radojevic-3677b4255/" target="_blank" rel="noopener" class="contact-link">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zm-3 7h-1.5v-.5c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5 1.5V10H10v6h1.5v-3h1v3H14v-6zm-5 0H9.5v6H11v-6zm-2-1.5a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z"/>
                 </svg>
                 LinkedIn
             </a>
-            <!-- YouTube -->
             <a href="https://www.youtube.com/@pavleradojevic5867" target="_blank" rel="noopener" class="contact-link">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M10 15l5.19-3L10 9v6zm11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/>
@@ -612,11 +605,13 @@
         // Toggle course summaries on click
         document.querySelectorAll('.course-card').forEach(card => {
             card.addEventListener('click', function(e) {
-                // Prevent toggle if user clicks on a link inside the card (shouldn't happen, but just in case)
                 if (e.target.tagName === 'A') return;
                 this.classList.toggle('open');
             });
         });
+
+        // Swup page transition init
+        const swup = new Swup();
     </script>
 </body>
 </html>
