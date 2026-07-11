@@ -1115,8 +1115,8 @@
              openModal(plates[index]);
             });
         });
-    } else {
-        // Uncollected – donation message + link
+        } else {
+        // Uncollected – donation message + link + contact form
         plateListContainer.innerHTML = `
             <div style="text-align:center; padding:1rem;">
                 <span style="font-size:2rem;">❓</span>
@@ -1126,6 +1126,14 @@
                     Until I collect one from this region, you can explore license plates from around the world at:
                     <a href="http://www.worldlicenseplates.com/" target="_blank" rel="noopener" style="color:var(--accent-gold);">World License Plates</a>
                 </p>
+                <div style="margin-top:1.5rem; padding:1rem; background:var(--bg-secondary); border-radius:var(--radius-sm);">
+                    <strong>Quick donation offer:</strong>
+                    <form action="mailto:pavle.radojevic07@gmail.com" method="get" enctype="text/plain" style="margin-top:0.8rem; display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center;">
+                        <input type="text" name="subject" value="Plate donation: ${info.country}" hidden>
+                        <textarea name="body" placeholder="Tell me about your plate…" rows="2" style="width:100%; max-width:300px; padding:0.5rem; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); resize:vertical;"></textarea>
+                        <button type="submit" style="background:var(--accent-gold); color:#000; border:none; padding:0.5rem 1.5rem; border-radius:20px; cursor:pointer; font-weight:600;">Send Offer</button>
+                    </form>
+                </div>
             </div>
         `;
     }
