@@ -1115,7 +1115,7 @@
              openModal(plates[index]);
             });
         });
-        } else {
+            } else {
         // Uncollected – donation message + link + contact form
         plateListContainer.innerHTML = `
             <div style="text-align:center; padding:1rem;">
@@ -1128,14 +1128,22 @@
                 </p>
                 <div style="margin-top:1.5rem; padding:1rem; background:var(--bg-secondary); border-radius:var(--radius-sm);">
                     <strong>Quick donation offer:</strong>
-                    <form action="mailto:pavle.radojevic07@gmail.com" method="get" enctype="text/plain" style="margin-top:0.8rem; display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center;">
-                        <input type="text" name="subject" value="Plate donation: ${info.country}" hidden>
-                        <textarea name="body" placeholder="Tell me about your plate…" rows="2" style="width:100%; max-width:300px; padding:0.5rem; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); resize:vertical;"></textarea>
-                        <button type="submit" style="background:var(--accent-gold); color:#000; border:none; padding:0.5rem 1.5rem; border-radius:20px; cursor:pointer; font-weight:600;">Send Offer</button>
-                    </form>
+                    <textarea id="donationText" placeholder="Tell me about your plate…" rows="2" style="width:100%; max-width:300px; padding:0.5rem; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); resize:vertical; margin-top:0.8rem;"></textarea>
+                    <button id="donationBtn" style="background:var(--accent-gold); color:#000; border:none; padding:0.5rem 1.5rem; border-radius:20px; cursor:pointer; font-weight:600; margin-top:0.5rem;">Send Offer</button>
                 </div>
             </div>
         `;
+
+        // Attach event listener to the donation button
+        const donationBtn = plateListContainer.querySelector('#donationBtn');
+        const donationText = plateListContainer.querySelector('#donationText');
+        if (donationBtn && donationText) {
+            donationBtn.addEventListener('click', () => {
+                const subject = `Plate donation: ${info.country}`;
+                const body = donationText.value;
+                window.location.href = `mailto:pavle.radojevic07@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            });
+        }
     }
 
     countryPanel.classList.add('visible');
