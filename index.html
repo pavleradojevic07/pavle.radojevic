@@ -437,6 +437,29 @@
     </style>
 </head>
 <body>
+    <style>
+  .hero-panel { 
+    opacity: 0; 
+    transform: translateY(40px); 
+    transition: opacity 0.8s ease, transform 0.8s ease; 
+  }
+  .hero-panel.revealed { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+</style>
+<script>
+  const panels = document.querySelectorAll('.hero-panel');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+      }
+    });
+  }, { threshold: 0.25 });
+
+  panels.forEach(panel => observer.observe(panel));
+</script>
     <script>
 (function() {
   const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/track';
