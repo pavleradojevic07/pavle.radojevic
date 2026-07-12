@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Basketball — Pavle Radojević</title>
@@ -14,8 +16,6 @@
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
-    <!-- Swup – page transitions -->
-    <script src="https://unpkg.com/swup@4"></script>
     <style>
         :root {
             --bg: #0a0a0f;
@@ -91,7 +91,7 @@
 
         /* Logo image switching */
         .logo-dark, .logo-light {
-            height: 36px;
+            height: 36px;              /* adjust to your logo size */
             display: block;
         }
         .logo-light { display: none; }
@@ -232,6 +232,10 @@
             font-size: 0.9rem;
             line-height: 1.5;
         }
+        .timeline-desc .highlight {
+            font-weight: 600;
+            color: var(--accent-gold);
+        }
         .club-link {
             color: var(--accent-basketball);
             text-decoration: underline;
@@ -266,8 +270,7 @@
             transform: translateY(-3px);
             box-shadow: var(--shadow);
         }
-        .achievement-icon, .achievement-icon-records { font-size: 2rem; margin-bottom: 0.3rem; } 
-        .achievement-icon-records {font-weight: 700; color:var(--accent-gold); font-family: var(--font-display);}
+        .achievement-icon { font-size: 2rem; margin-bottom: 0.3rem; }
         .achievement-card h4 { font-weight: 600; font-size: 1rem; line-height: 1.3; }
         .ach-detail { font-size: 0.85rem; color: var(--text-secondary); }
 
@@ -342,15 +345,6 @@
             margin-top: 1.5rem;
         }
 
-        /* Swup transition */
-        .transition-fade {
-            opacity: 1;
-            transition: opacity 0.4s ease;
-        }
-        html.is-animating .transition-fade {
-            opacity: 0;
-        }
-
         /* Responsive */
         @media (max-width: 900px) {
             .profile-grid { grid-template-columns: 1fr; }
@@ -379,98 +373,132 @@
     </style>
 </head>
 <body>
-    <script>
-        (function() {
-          const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/track';
-          if (!sessionStorage.getItem('entryTime')) {
-            sessionStorage.setItem('entryTime', new Date().toISOString());
-          }
-          const data = {
-            browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
-                     navigator.userAgent.includes('Chrome') ? 'Chrome' :
-                     navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
-            os: navigator.platform || 'Unknown',
-            device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
-            referrer: document.referrer || 'Direct',
-            page: window.location.pathname,
-            entryTime: sessionStorage.getItem('entryTime'),
-            previousPage: sessionStorage.getItem('lastPage') || null
-          };
-          sessionStorage.setItem('lastPage', window.location.pathname);
-          fetch(`${WORKER_URL}/track`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          }).catch(() => {});
-        })();
-    </script>
+   <script>
+(function() {
+  const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/track';
+  
+  // Store entry time for session tracking
+  if (!sessionStorage.getItem('entryTime')) {
+    sessionStorage.setItem('entryTime', new Date().toISOString());
+  }
+  
+  const data = {
+    browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
+             navigator.userAgent.includes('Chrome') ? 'Chrome' :
+             navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
+    os: navigator.platform || 'Unknown',
+    device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+    referrer: document.referrer || 'Direct',
+    page: window.location.pathname,
+    entryTime: sessionStorage.getItem('entryTime'),
+    previousPage: sessionStorage.getItem('lastPage') || null
+  };
+  
+  // Store current page for next navigation
+  sessionStorage.setItem('lastPage', window.location.pathname);
+  
+  fetch(`${WORKER_URL}/track`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).catch(() => {});
+})();
+</script>
+    <!-- Cookie Consent Banner (self‑hosted, free) -->
+<style>
+    #cookie-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--bg-card, #16161f);
+        border-top: 1px solid var(--border, #252535);
+        color: var(--text, #e8e8f0);
+        padding: 1rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        z-index: 10000;
+        font-size: 0.9rem;
+        box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
+        transition: transform 0.3s ease;
+    }
+    #cookie-banner.hidden {
+        transform: translateY(100%);
+    }
+    .cookie-btn {
+        background: var(--accent-gold, #d4a853);
+        color: #000;
+        border: none;
+        padding: 0.6rem 1.4rem;
+        border-radius: 30px;
+        cursor: pointer;
+        font-weight: 600;
+        font-family: var(--font-sans, 'Inter', sans-serif);
+        transition: background 0.3s;
+    }
+    .cookie-btn:hover { background: #c0943a; }
+    .cookie-btn.decline {
+        background: transparent;
+        border: 1px solid var(--border, #252535);
+        color: var(--text, #e8e8f0);
+    }
+    .cookie-btn.decline:hover { background: var(--bg-card-hover, #1c1c28); }
+</style>
 
-    <!-- Cookie Consent Banner -->
-    <style>
-        #cookie-banner {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--bg-card, #16161f); border-top: 1px solid var(--border, #252535);
-            color: var(--text, #e8e8f0); padding: 1rem 2rem;
-            display: flex; align-items: center; justify-content: center;
-            gap: 1.5rem; flex-wrap: wrap; z-index: 10000; font-size: 0.9rem;
-            box-shadow: 0 -4px 24px rgba(0,0,0,0.4); transition: transform 0.3s ease;
-        }
-        #cookie-banner.hidden { transform: translateY(100%); }
-        .cookie-btn {
-            background: var(--accent-gold, #d4a853); color: #000;
-            border: none; padding: 0.6rem 1.4rem; border-radius: 30px;
-            cursor: pointer; font-weight: 600; font-family: var(--font-sans, 'Inter', sans-serif);
-            transition: background 0.3s;
-        }
-        .cookie-btn:hover { background: #c0943a; }
-        .cookie-btn.decline {
-            background: transparent; border: 1px solid var(--border, #252535);
-            color: var(--text, #e8e8f0);
-        }
-        .cookie-btn.decline:hover { background: var(--bg-card-hover, #1c1c28); }
-    </style>
-    <div id="cookie-banner">
-        <span>🍪 This website uses cookies to analyze traffic and improve your experience.</span>
-        <div style="display:flex; gap:0.5rem;">
-            <button class="cookie-btn decline" onclick="setCookieConsent(false)">Decline</button>
-            <button class="cookie-btn" onclick="setCookieConsent(true)">Accept</button>
-        </div>
+<div id="cookie-banner">
+    <span>🍪 This website uses cookies to analyze traffic and improve your experience. See our <a href="#" style="color:var(--accent-gold)">Privacy Policy</a>.</span>
+    <div style="display:flex; gap:0.5rem;">
+        <button class="cookie-btn decline" onclick="setCookieConsent(false)">Decline</button>
+        <button class="cookie-btn" onclick="setCookieConsent(true)">Accept</button>
     </div>
-    <script>
-        (function() {
-            const consent = getCookie('cookie-consent');
-            if (consent === 'accepted') {
-                document.getElementById('cookie-banner').classList.add('hidden');
-                loadGoogleAnalytics();
-            } else if (consent === 'declined') {
-                document.getElementById('cookie-banner').classList.add('hidden');
-            }
-        })();
-        function setCookieConsent(accepted) {
-            const value = accepted ? 'accepted' : 'declined';
-            document.cookie = 'cookie-consent=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
-            document.getElementById('cookie-banner').classList.add('hidden');
-            if (accepted) { loadGoogleAnalytics(); }
-        }
-        function getCookie(name) {
-            const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-            return match ? match[2] : null;
-        }
-        function loadGoogleAnalytics() {
-            var script = document.createElement('script');
-            script.src = 'https://www.googletagmanager.com/gtag/js?id=G-D90VNGY0XX';
-            script.async = true;
-            document.head.appendChild(script);
-            script.onload = function() {
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'G-D90VNGY0XX');
-            };
-        }
-    </script>
+</div>
 
-    <!-- HEADER -->
+<script>
+    // Check if consent already given
+    (function() {
+        const consent = getCookie('cookie-consent');
+        if (consent === 'accepted') {
+            document.getElementById('cookie-banner').classList.add('hidden');
+            loadGoogleAnalytics();
+        } else if (consent === 'declined') {
+            document.getElementById('cookie-banner').classList.add('hidden');
+        }
+    })();
+
+    function setCookieConsent(accepted) {
+        const value = accepted ? 'accepted' : 'declined';
+        document.cookie = 'cookie-consent=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+        document.getElementById('cookie-banner').classList.add('hidden');
+        if (accepted) {
+            loadGoogleAnalytics();
+        }
+    }
+
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? match[2] : null;
+    }
+
+    // Load Google Analytics only after consent (replace with your own GA tag)
+    function loadGoogleAnalytics() {
+        // Google Analytics gtag snippet
+        var script = document.createElement('script');
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-D90VNGY0XX'; // 🔴 Your GA4 measurement ID
+        script.async = true;
+        document.head.appendChild(script);
+
+        script.onload = function() {
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-D90VNGY0XX'); // 🔴 Your GA4 measurement ID
+        };
+    }
+</script>
+    <!-- ════════════ HEADER ════════════ -->
     <nav class="nav">
         <a href="index.html" class="nav-logo">
             <img src="images/logo-dark.webp" alt="PR Logo" class="logo-dark">
@@ -486,8 +514,8 @@
         </div>
     </nav>
 
-    <!-- SWUP MAIN CONTENT -->
-    <main id="swup" class="transition-fade page-content">
+    <!-- ════════════ PAGE CONTENT ════════════ -->
+    <main class="page-content">
         <section class="section">
             <h1 class="section-title">Basketball</h1>
 
@@ -511,7 +539,7 @@
                 </div>
             </div>
 
-            <!-- Playing History (competitions only) -->
+            <!-- Basketball Background / Playing History -->
             <h2 style="margin-top:3.5rem; font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Playing History</h2>
             <div class="timeline">
                 <div class="timeline-item">
@@ -529,7 +557,9 @@
                         <a href="https://honved.hu/kosarlabda/" target="_blank" rel="noopener" class="club-link">Honvéd Academy</a> / University League | Budapest, Hungary
                     </div>
                     <div class="timeline-desc">
-                        Competed in the Hungarian NB II and University League. Participated in international tournaments across Spain, Slovakia, Serbia, and Hungary (including EYBL U16, U18, U20, U21).
+                        <span class="highlight">League Achievement:</span> Winner of Hungarian NB II (Senior League).<br>
+                        <span class="highlight">International:</span> EYBL U21 Superfinal 3rd Place (May 2023).<br>
+                        Tournaments in Spain, Slovakia, Serbia, and Hungary.
                     </div>
                 </div>
                 <div class="timeline-item">
@@ -578,58 +608,47 @@
                 </div>
             </div>
 
-            <!-- Records & Career Highs -->
-            <h2 style="margin-top:3.5rem; font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Records & Career Highs</h2>
-            <div class="achievements-grid">
-                <div class="achievement-card">
-                    <div class="achievement-icon-records">28</div>
-                    <h4>Points</h4>
-                    <div class="ach-detail">vs Óbudai Egyetem (25 Mar 2025)<br><span style="font-size:0.8rem;">(also grabbed 24 rebounds in that game)</span></div>
-                </div>
-                <div class="achievement-card">
-                    <div class="achievement-icon-records">25</div>
-                    <h4>Rebounds</h4>
-                    <div class="ach-detail">vs VESC (11 Nov 2024)</div>
-                </div>
-                <div class="achievement-card">
-                    <div class="achievement-icon-records">6</div>
-                    <h4>Assists</h4>
-                    <div class="ach-detail">vs SMAFC (24 Mar 2025)<br><span style="font-size:0.8rem;">(added 26 points in the same game)</span></div>
-                </div>
-                <div class="achievement-card">
-                    <div class="achievement-icon-records">6</div>
-                    <h4>Blocks</h4>
-                    <div class="ach-detail">vs Óbudai Egyetem (25 Mar 2025)</div>
-                </div>
-            </div>
-
             <!-- Highlights & Statistics -->
             <h2 style="margin-top:3.5rem; font-family:var(--font-display); font-size:2rem; margin-bottom:1rem;">Highlights & Statistics</h2>
             <div class="action-links">
+                <!-- 🔴 Replace the # with your highlight video URL or playlist -->
                 <a href="https://youtu.be/clxgFeRJaLQ?si=YKZxuFnwNneE3j2u" class="btn-outline">🎥 Highlight Video 2025/26</a>
+                <!-- 🔴 Replace the # with your actual statistics URL -->
                 <a href="https://mkosz.hu/jatekos/x2425/hun_univn/244313/radojevic-pavle" class="btn-outline">📊 Statistics 2024/25</a>
             </div>
         </section>
     </main>
 
-    <!-- FOOTER -->
+    <!-- ════════════ FOOTER ════════════ -->
     <footer class="contact-footer">
         <h4>Get in Touch</h4>
         <div class="contact-links">
+            <!-- Gmail -->
             <a href="mailto:pavle.radojevic07@gmail.com" class="contact-link email-link">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                Email
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+            Email
             </a>
+            <!-- Instagram -->
             <a href="https://instagram.com/pavle.radojevic" target="_blank" rel="noopener" class="contact-link">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4c0 3.2-2.6 5.8-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8C2 4.6 4.6 2 7.8 2zm-.2 2C5.6 4 4 5.6 4 7.6v8.8C4 18.4 5.6 20 7.6 20h8.8c2 0 3.6-1.6 3.6-3.6V7.6C20 5.6 18.4 4 16.4 4H7.6zm9.6 1.5a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5zM12 7c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zm0 2c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4c0 3.2-2.6 5.8-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8C2 4.6 4.6 2 7.8 2zm-.2 2C5.6 4 4 5.6 4 7.6v8.8C4 18.4 5.6 20 7.6 20h8.8c2 0 3.6-1.6 3.6-3.6V7.6C20 5.6 18.4 4 16.4 4H7.6zm9.6 1.5a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5zM12 7c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zm0 2c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/>
+                </svg>
                 Instagram
             </a>
+            <!-- LinkedIn -->
             <a href="https://linkedin.com/in/pavle-radojevic-3677b4255/" target="_blank" rel="noopener" class="contact-link">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zm-3 7h-1.5v-.5c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5 1.5V10H10v6h1.5v-3h1v3H14v-6zm-5 0H9.5v6H11v-6zm-2-1.5a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zm-3 7h-1.5v-.5c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5 1.5V10H10v6h1.5v-3h1v3H14v-6zm-5 0H9.5v6H11v-6zm-2-1.5a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z"/>
+                </svg>
                 LinkedIn
             </a>
+            <!-- YouTube -->
             <a href="https://www.youtube.com/@pavleradojevic5867" target="_blank" rel="noopener" class="contact-link">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 15l5.19-3L10 9v6zm11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 15l5.19-3L10 9v6zm11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/>
+                </svg>
                 YouTube
             </a>
         </div>
@@ -637,7 +656,7 @@
     </footer>
 
     <script>
-        // Theme toggle
+        // Theme toggle (cookie-based, shared across pages)
         const themeToggle = document.getElementById('themeToggle');
         themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
         themeToggle.addEventListener('click', () => {
@@ -656,9 +675,6 @@
             navLinks.classList.toggle('mobile-open');
             mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
         });
-
-        // Swup
-        const swup = new Swup();
     </script>
 </body>
 </html>
