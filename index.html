@@ -170,12 +170,12 @@
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
-            transition: background var(--transition-fast), color var(--transition-slow);
-            overflow-x: hidden;
+            transition: background var(--transition-slow), color var(--transition-slow);
+            overflow: hidden;
             -webkit-font-smoothing: antialiased;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            height: 100vh;               /* full viewport height */
         }
 
         /* Navigation */
@@ -266,41 +266,40 @@
             padding: 0.4rem;
         }
 
-        /* Hero panels */
-        .hero {
-            height: calc(100vh - var(--nav-height));
-            margin-top: var(--nav-height);
-            overflow-y: auto;
-            overflow-x: hidden;
-            scroll-snap-type: y mandatory;
-            -webkit-overflow-scrolling: touch;
-        }
-        .hero-panels {
-            display: flex;
-            flex-direction: column;
-            height: auto;
-            width: 100%;
-        }
-        .hero-panel {
-            width: 100%;
-            height: calc(100vh - var(--nav-height));
-            flex-shrink: 0;
-            scroll-snap-align: start;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: #fff;
-            background-size: cover;
-            background-position: center;
-            overflow: hidden;
-            cursor: pointer;
-            /* Transition for transform (hover) and the scroll reveal */
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-                        opacity 0.8s ease,
-                        transform 0.8s ease;
-        }
+        /* Hero – horizontal swipe */
+.hero {
+    flex: 1;                        /* take all remaining space between nav and footer */
+    overflow-y: hidden;             /* no vertical scroll */
+    overflow-x: auto;               /* horizontal swipe */
+    scroll-snap-type: x mandatory;  /* snap to each panel */
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    margin-top: var(--nav-height);
+}
+
+.hero-panels {
+    display: flex;
+    flex-direction: row;            /* panels side‑by‑side */
+    height: 100%;
+    width: auto;
+}
+
+.hero-panel {
+    min-width: 100vw;               /* each panel fills the viewport width */
+    height: 100%;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #fff;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    cursor: pointer;
+}
         .panel-basketball {
             background-image: var(--img-basketball);
         }
@@ -359,16 +358,7 @@
             font-weight: 400;
         }
 
-        /* ── Scroll‑reveal animation ── */
-        .hero-panel.reveal-on-scroll {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-        .hero-panel.reveal-on-scroll.revealed {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        
 
         /* Footer */
         .contact-footer {
@@ -497,21 +487,21 @@
 
     <main class="hero">
         <div class="hero-panels">
-            <a href="basketball.html" class="hero-panel panel-basketball reveal-on-scroll">
+            <a href="basketball.html" class="hero-panel panel-basketball">
                 <div class="panel-content">
                     <span class="hero-card-icon">🏀</span>
                     <h3>Basketball</h3>
                     <p>Player profile, career timeline, highlights</p>
                 </div>
             </a>
-            <a href="academic.html" class="hero-panel panel-academic reveal-on-scroll">
+            <a href="academic.html" class="hero-panel panel-academic">
                 <div class="panel-content">
                     <span class="hero-card-icon">🎓</span>
                     <h3>Academic</h3>
                     <p>University, courses & personal projects</p>
                 </div>
             </a>
-            <a href="plates.html" class="hero-panel panel-plates reveal-on-scroll">
+            <a href="plates.html" class="hero-panel panel-plates">
                 <div class="panel-content">
                     <span class="hero-card-icon">🌍</span>
                     <h3>License Plate Atlas</h3>
@@ -573,27 +563,6 @@
             mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
         });
     </script>
-
-    <!-- Scroll‑reveal animation -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const panels = document.querySelectorAll('.hero-panel.reveal-on-scroll');
-
-            // Immediately show the first panel (it's already in view)
-            if (panels.length > 0) {
-                panels[0].classList.add('revealed');
-            }
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('revealed');
-                    }
-                });
-            }, { threshold: 0.25 });
-
-            panels.forEach(panel => observer.observe(panel));
-        });
-    </script>
+    
 </body>
 </html>
