@@ -178,30 +178,42 @@
 <body>
     <!-- ── Tracking script (sends visit to /track) ── -->
     <script>
-    (function() {
-      const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev';
-      if (!sessionStorage.getItem('entryTime')) {
-        sessionStorage.setItem('entryTime', new Date().toISOString());
-      }
-      const data = {
-        browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
-                 navigator.userAgent.includes('Chrome') ? 'Chrome' :
-                 navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
-        os: navigator.platform || 'Unknown',
-        device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
-        referrer: document.referrer || 'Direct',
-        page: window.location.pathname,
-        entryTime: sessionStorage.getItem('entryTime'),
-        previousPage: sessionStorage.getItem('lastPage') || null
-      };
-      sessionStorage.setItem('lastPage', window.location.pathname);
-      fetch(`${WORKER_URL}/track`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      }).catch(() => {});
-    })();
-    </script>
+(function() {
+  const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev';
+
+  // Generate unique visitor token (persists during the browser session)
+  if (!sessionStorage.getItem('visitorToken')) {
+    sessionStorage.setItem('visitorToken', 
+      crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2));
+  }
+  const visitorToken = sessionStorage.getItem('visitorToken');
+
+  if (!sessionStorage.getItem('entryTime')) {
+    sessionStorage.setItem('entryTime', new Date().toISOString());
+  }
+
+  const data = {
+    browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
+             navigator.userAgent.includes('Chrome') ? 'Chrome' :
+             navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
+    os: navigator.platform || 'Unknown',
+    device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+    referrer: document.referrer || 'Direct',
+    page: window.location.pathname,
+    entryTime: sessionStorage.getItem('entryTime'),
+    previousPage: sessionStorage.getItem('lastPage') || null,
+    visitorToken: visitorToken          // <-- NEW: send the token
+  };
+
+  sessionStorage.setItem('lastPage', window.location.pathname);
+
+  fetch(`${WORKER_URL}/track`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).catch(() => {});
+})();
+</script>
 
     <!-- Cookie Consent Banner -->
     <style>
@@ -348,8 +360,8 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         // ── Dashboard script (fetches from /statistics.json) ──
-        const APP_SCRIPT_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/statistics.json';
-
+const visitorToken = sessionStorage.getItem('visitorToken') || '';
+const APP_SCRIPT_URL = `https://visitor-tracker.pavle-radojevic3.workers.dev/statistics.json?token=${encodeURIComponent(visitorToken)}`;
         const map = L.map('mapContainer', {
             center: [48, 10],
             zoom: 3,
@@ -367,72 +379,84 @@
         window.countryLayer = null;
 
         function updateUI(data) {
-            document.getElementById('totalVisitors').textContent = data.totalVisitors;
-            document.getElementById('visitorsToday').textContent = data.visitorsToday;
-            document.getElementById('countriesCount').textContent = data.countries.length;
-            document.getElementById('citiesCount').textContent = data.cities.length;
-            document.getElementById('avgSession').textContent = data.avgSession;
-            document.getElementById('returningVisitors').textContent = data.returningVisitors;
-            document.getElementById('liveVisitors').textContent = data.liveVisitors;
-            // Last visitor
-            if (data.lastVisitor) {
-                const date = new Date(data.lastVisitor.timestamp);
-                const formatted = date.toLocaleString('en-GB', { 
-                    day: '2-digit', month: 'short', year: 'numeric', 
-                    hour: '2-digit', minute: '2-digit' 
-                        });
-                document.getElementById('lastVisitorInfo').textContent = 
-                    `${formatted} from ${data.lastVisitor.flag} ${data.lastVisitor.country}`;
-        }
+    document.getElementById('totalVisitors').textContent = data.totalVisitors;
+    document.getElementById('visitorsToday').textContent = data.visitorsToday;
+    document.getElementById('countriesCount').textContent = data.countries.length;
+    document.getElementById('citiesCount').textContent = data.cities.length;
+    document.getElementById('avgSession').textContent = data.avgSession;
+    document.getElementById('returningVisitors').textContent = data.returningVisitors;
 
-            const countryListDiv = document.getElementById('countryList');
-            countryListDiv.innerHTML = '';
-            data.countries.forEach(c => {
-                const entry = document.createElement('div');
-                entry.className = 'country-entry';
-                entry.innerHTML = `<span class="country-flag">${c.flag}</span><span class="country-name">${c.country}</span><span class="country-visitors">${c.visitors}</span>`;
-                countryListDiv.appendChild(entry);
-            });
+    // Live visitors – show count and other countries
+    const liveCount = data.liveVisitors;
+    if (liveCount > 1 && data.liveCountries && data.liveCountries.length > 0) {
+        const countryList = data.liveCountries.map(c => `${c.flag} ${c.country}`).join(', ');
+        document.getElementById('liveVisitors').textContent = `${liveCount} (others from: ${countryList})`;
+    } else {
+        document.getElementById('liveVisitors').textContent = liveCount;
+    }
 
-            const visitedCountries = new Set(data.countries.map(c => c.country));
+    // Last visitor – now correctly excludes the current viewer
+    if (data.lastVisitor) {
+        const date = new Date(data.lastVisitor.timestamp);
+        const formatted = date.toLocaleString('en-GB', { 
+            day: '2-digit', month: 'short', year: 'numeric', 
+            hour: '2-digit', minute: '2-digit' 
+        });
+        document.getElementById('lastVisitorInfo').textContent = 
+            `${formatted} from ${data.lastVisitor.flag} ${data.lastVisitor.country}`;
+    } else {
+        document.getElementById('lastVisitorInfo').textContent = '—';
+    }
 
-            fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson')
-                .then(response => response.json())
-                .then(geoData => {
-                    const serbia = geoData.features.find(f => f.properties.NAME === 'Serbia' || f.properties.ADMIN === 'Serbia');
-                    const kosovo = geoData.features.find(f => f.properties.NAME === 'Kosovo' || f.properties.ADMIN === 'Kosovo');
-                    if (serbia && kosovo) {
-                        if (serbia.geometry.type === 'Polygon') {
-                            serbia.geometry = { type: 'MultiPolygon', coordinates: [serbia.geometry.coordinates] };
+    // Country list (unchanged)
+    const countryListDiv = document.getElementById('countryList');
+    countryListDiv.innerHTML = '';
+    data.countries.forEach(c => {
+        const entry = document.createElement('div');
+        entry.className = 'country-entry';
+        entry.innerHTML = `<span class="country-flag">${c.flag}</span><span class="country-name">${c.country}</span><span class="country-visitors">${c.visitors}</span>`;
+        countryListDiv.appendChild(entry);
+    });
+
+    const visitedCountries = new Set(data.countries.map(c => c.country));
+
+    fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson')
+        .then(response => response.json())
+        .then(geoData => {
+            const serbia = geoData.features.find(f => f.properties.NAME === 'Serbia' || f.properties.ADMIN === 'Serbia');
+            const kosovo = geoData.features.find(f => f.properties.NAME === 'Kosovo' || f.properties.ADMIN === 'Kosovo');
+            if (serbia && kosovo) {
+                if (serbia.geometry.type === 'Polygon') {
+                    serbia.geometry = { type: 'MultiPolygon', coordinates: [serbia.geometry.coordinates] };
+                }
+                if (kosovo.geometry.type === 'Polygon') {
+                    serbia.geometry.coordinates.push(kosovo.geometry.coordinates);
+                } else if (kosovo.geometry.type === 'MultiPolygon') {
+                    serbia.geometry.coordinates.push(...kosovo.geometry.coordinates);
+                }
+                geoData.features = geoData.features.filter(f => f !== kosovo);
+            }
+            if (window.countryLayer) { map.removeLayer(window.countryLayer); }
+            window.countryLayer = L.geoJSON(geoData, {
+                style: feature => {
+                    const name = feature.properties.NAME || feature.properties.ADMIN;
+                    return visitedCountries.has(name)
+                        ? { fillColor: '#3ddc84', color: '#1a1a1a', weight: 1, fillOpacity: 0.7 }
+                        : { fillColor: '#3a3a4a', color: '#1a1a1a', weight: 1, fillOpacity: 0.4 };
+                },
+                onEachFeature: (feature, layer) => {
+                    const name = feature.properties.NAME || feature.properties.ADMIN;
+                    layer.bindTooltip(name);
+                    layer.on('click', () => {
+                        const countryData = data.countries.find(c => c.country === name);
+                        if (countryData) {
+                            layer.bindPopup(`<b>${countryData.flag} ${countryData.country}</b><br>Visitors: ${countryData.visitors}`).openPopup();
                         }
-                        if (kosovo.geometry.type === 'Polygon') {
-                            serbia.geometry.coordinates.push(kosovo.geometry.coordinates);
-                        } else if (kosovo.geometry.type === 'MultiPolygon') {
-                            serbia.geometry.coordinates.push(...kosovo.geometry.coordinates);
-                        }
-                        geoData.features = geoData.features.filter(f => f !== kosovo);
-                    }
-                    if (window.countryLayer) { map.removeLayer(window.countryLayer); }
-                    window.countryLayer = L.geoJSON(geoData, {
-                        style: feature => {
-                            const name = feature.properties.NAME || feature.properties.ADMIN;
-                            return visitedCountries.has(name)
-                                ? { fillColor: '#3ddc84', color: '#1a1a1a', weight: 1, fillOpacity: 0.7 }
-                                : { fillColor: '#3a3a4a', color: '#1a1a1a', weight: 1, fillOpacity: 0.4 };
-                        },
-                        onEachFeature: (feature, layer) => {
-                            const name = feature.properties.NAME || feature.properties.ADMIN;
-                            layer.bindTooltip(name);
-                            layer.on('click', () => {
-                                const countryData = data.countries.find(c => c.country === name);
-                                if (countryData) {
-                                    layer.bindPopup(`<b>${countryData.flag} ${countryData.country}</b><br>Visitors: ${countryData.visitors}`).openPopup();
-                                }
-                            });
-                        }
-                    }).addTo(map);
-                });
-        }
+                    });
+                }
+            }).addTo(map);
+        });
+}
 
         fetch(APP_SCRIPT_URL)
             .then(response => response.json())
