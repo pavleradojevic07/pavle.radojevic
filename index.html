@@ -299,16 +299,39 @@
     background-position: center;
     overflow: hidden;
     cursor: pointer;
-}
-        .panel-basketball {
-            background-image: var(--img-basketball);
-        }
-        .panel-academic {
-            background-image: var(--img-academic);
-        }
-        .panel-plates {
-            background-image: var(--img-plates);
-        }
+    }
+
+    .scroll-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        background: rgba(0,0,0,0.4);
+        border: none;
+        color: white;
+        font-size: 2.5rem;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0.6;
+        transition: opacity 0.3s;
+    }
+    .scroll-arrow:hover { opacity: 1; }
+    .scroll-left  { left: 1rem; }
+    .scroll-right { right: 1rem; }
+    .panel-basketball {
+        background-image: var(--img-basketball);
+    }
+    .panel-academic {
+        background-image: var(--img-academic);
+    }
+    .panel-plates {
+        background-image: var(--img-plates);
+    }
 
         .hero-panel::after {
             content: '';
@@ -363,10 +386,9 @@
         /* Footer */
         .contact-footer {
             text-align: center;
-            padding: 2rem 1rem 2.5rem;
+            padding: 1rem 1rem 1.2rem;   /* was 2rem 1rem 2.5rem */
             border-top: 1px solid var(--border);
             background: var(--bg);
-            margin-top: auto;
         }
         .contact-footer h4 {
             font-family: var(--font-display);
@@ -486,6 +508,8 @@
     </nav>
 
     <main class="hero">
+        <button class="scroll-arrow scroll-left" id="scrollLeft" aria-label="Previous">‹</button>
+        <button class="scroll-arrow scroll-right" id="scrollRight" aria-label="Next">›</button>
         <div class="hero-panels">
             <a href="basketball.html" class="hero-panel panel-basketball">
                 <div class="panel-content">
@@ -563,6 +587,64 @@
             mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
         });
     </script>
-    
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const hero = document.querySelector('.hero');
+        const panels = document.querySelectorAll('.hero-panel');
+        const totalPanels = panels.length;
+        const leftBtn = document.getElementById('scrollLeft');
+        const rightBtn = document.getElementById('scrollRight');
+
+        // Duplicate panels for seamless looping
+        function setupLoop() {
+            // Clone first panel and append to end
+            const firstClone = panels[0].cloneNode(true);
+            firstClone.classList.add('clone');
+            hero.querySelector('.hero-panels').appendChild(firstClone);
+
+            // Clone last panel and prepend to beginning
+            const lastClone = panels[totalPanels - 1].cloneNode(true);
+            lastClone.classList.add('clone');
+            hero.querySelector('.hero-panels').prepend(lastClone);
+
+            // Set initial scroll position to the first real panel (skip the prepended clone)
+            hero.scrollLeft = hero.clientWidth; // scroll to the first real panel
+        }
+
+        setupLoop();
+
+        // Infinite scroll loop
+        hero.addEventListener('scroll', () => {
+            const panelWidth = hero.clientWidth;
+            const scrollPos = hero.scrollLeft;
+
+            // If scrolled to the clone at the end, jump to the first real panel
+            if (scrollPos >= panelWidth * (totalPanels + 1)) {
+                hero.scrollLeft = panelWidth;
+            }
+            // If scrolled to the clone at the beginning, jump to the last real panel
+            if (scrollPos <= 0) {
+                hero.scrollLeft = panelWidth * totalPanels;
+            }
+        });
+
+        // Arrow buttons
+        leftBtn.addEventListener('click', () => {
+            hero.scrollBy({ left: -hero.clientWidth, behavior: 'smooth' });
+        });
+        rightBtn.addEventListener('click', () => {
+            hero.scrollBy({ left: hero.clientWidth, behavior: 'smooth' });
+        });
+
+        // Keyboard arrows
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                hero.scrollBy({ left: -hero.clientWidth, behavior: 'smooth' });
+            } else if (e.key === 'ArrowRight') {
+                hero.scrollBy({ left: hero.clientWidth, behavior: 'smooth' });
+            }
+        });
+    });
+</script>
 </body>
 </html>
