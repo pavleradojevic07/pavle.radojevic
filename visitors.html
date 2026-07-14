@@ -180,16 +180,31 @@
     <script>
 (function() {
   const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev';
+  const MAX_IDLE_MINUTES = 30;
 
-  // Generate unique visitor token (persists during the browser session)
+  // generate visitor token
   if (!sessionStorage.getItem('visitorToken')) {
-    sessionStorage.setItem('visitorToken', 
+    sessionStorage.setItem('visitorToken',
       crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2));
   }
   const visitorToken = sessionStorage.getItem('visitorToken');
 
-  if (!sessionStorage.getItem('entryTime')) {
-    sessionStorage.setItem('entryTime', new Date().toISOString());
+  // entryTime with idle reset
+  function getEntryTime() {
+    const stored = sessionStorage.getItem('entryTime');
+    if (!stored) return null;
+    const elapsed = Date.now() - new Date(stored).getTime();
+    if (elapsed > MAX_IDLE_MINUTES * 60 * 1000) {
+      sessionStorage.removeItem('entryTime');
+      return null;
+    }
+    return stored;
+  }
+
+  let entryTime = getEntryTime();
+  if (!entryTime) {
+    entryTime = new Date().toISOString();
+    sessionStorage.setItem('entryTime', entryTime);
   }
 
   const data = {
@@ -200,9 +215,9 @@
     device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
     referrer: document.referrer || 'Direct',
     page: window.location.pathname,
-    entryTime: sessionStorage.getItem('entryTime'),
+    entryTime: entryTime,
     previousPage: sessionStorage.getItem('lastPage') || null,
-    visitorToken: visitorToken          // <-- NEW: send the token
+    visitorToken: visitorToken
   };
 
   sessionStorage.setItem('lastPage', window.location.pathname);

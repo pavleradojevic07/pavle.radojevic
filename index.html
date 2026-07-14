@@ -463,34 +463,58 @@
 </head>
 <body>
     <script>
-        (function() {
-          const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/track';
-          
-          if (!sessionStorage.getItem('entryTime')) {
-            sessionStorage.setItem('entryTime', new Date().toISOString());
-          }
-          
-          const data = {
-            browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
-                     navigator.userAgent.includes('Chrome') ? 'Chrome' :
-                     navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
-            os: navigator.platform || 'Unknown',
-            device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
-            referrer: document.referrer || 'Direct',
-            page: window.location.pathname,
-            entryTime: sessionStorage.getItem('entryTime'),
-            previousPage: sessionStorage.getItem('lastPage') || null
-          };
-          
-          sessionStorage.setItem('lastPage', window.location.pathname);
-          
-          fetch(`${WORKER_URL}/track`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          }).catch(() => {});
-        })();
-    </script>
+(function() {
+  const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/track';
+  const MAX_IDLE_MINUTES = 30;   // reset session after 30 min idle
+
+  // ---- generate visitor token (same on every page) ----
+  if (!sessionStorage.getItem('visitorToken')) {
+    sessionStorage.setItem('visitorToken',
+      crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2));
+  }
+  const visitorToken = sessionStorage.getItem('visitorToken');
+
+  // ---- entryTime with idle reset ----
+  function getEntryTime() {
+    const stored = sessionStorage.getItem('entryTime');
+    if (!stored) return null;
+    const elapsed = Date.now() - new Date(stored).getTime();
+    // if idle longer than MAX_IDLE_MINUTES, start a new session
+    if (elapsed > MAX_IDLE_MINUTES * 60 * 1000) {
+      sessionStorage.removeItem('entryTime');
+      return null;
+    }
+    return stored;
+  }
+
+  let entryTime = getEntryTime();
+  if (!entryTime) {
+    entryTime = new Date().toISOString();
+    sessionStorage.setItem('entryTime', entryTime);
+  }
+
+  const data = {
+    browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
+             navigator.userAgent.includes('Chrome') ? 'Chrome' :
+             navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
+    os: navigator.platform || 'Unknown',
+    device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+    referrer: document.referrer || 'Direct',
+    page: window.location.pathname,
+    entryTime: entryTime,
+    previousPage: sessionStorage.getItem('lastPage') || null,
+    visitorToken: visitorToken
+  };
+
+  sessionStorage.setItem('lastPage', window.location.pathname);
+
+  fetch(`${WORKER_URL}/track`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).catch(() => {});
+})();
+</script>
 
     <nav class="nav">
         <a href="index.html" class="nav-logo">
