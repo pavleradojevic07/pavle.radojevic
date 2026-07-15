@@ -1458,11 +1458,11 @@ document.getElementById('globeSearchBtn').addEventListener('click', () => {
             const rarityOrder = { 'Extremely Rare': 0, 'Rare': 1, 'Uncommon': 2, 'Common': 3 };
             if (plateCollection.length > 0) {
                 const rarest = plateCollection.reduce((a, b) => (rarityOrder[a.rarity] || 4) < (rarityOrder[b.rarity] || 4) ? a : b);
-                document.getElementById('statRarest').textContent = '🇱🇺 Luxembourg';
+                document.getElementById('statRarest').textContent = '🇴🇲 Oman';
                 const newest = plateCollection.reduce((a, b) => parseInt(b.acquired) > parseInt(a.acquired) ? b : a);
-                document.getElementById('statNewest').textContent = '🇷🇸 Serbia';
+                document.getElementById('statNewest').textContent = '🇺🇸 USA-California';
                 const oldest = plateCollection.reduce((a, b) => parseInt(b.acquired) < parseInt(a.acquired) ? b : a);
-                document.getElementById('statOldest').textContent = '🇷🇸 Serbia';
+                document.getElementById('statOldest').textContent = '🇭🇺 Hungary';
             }
 
             // Continent breakdown (unique real countries per continent)
