@@ -1467,11 +1467,14 @@ document.getElementById('globeSearchBtn').addEventListener('click', () => {
                 continentMap[cont].add(realCountry);
             });
 
-            let continentText = '';
-            for (const [cont, countries] of Object.entries(continentMap)) {
-                continentText += `${cont}: ${countries.size}  `;
+            const continentOrder = ['Europe', 'Asia', 'North America', 'South America', 'Africa', 'Oceania'];
+            let continentHTML = '';
+            for (const cont of continentOrder) {
+                if (continentMap[cont]) {
+                    continentHTML += `${cont}: ${continentMap[cont].size}<br>`;
+                }
             }
-            document.getElementById('statContinents').textContent = continentText.trim() || '—';
+document.getElementById('statContinents').innerHTML = continentHTML.trim() || '—';
         }
         updateStats();
 
