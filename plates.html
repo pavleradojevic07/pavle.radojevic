@@ -441,6 +441,10 @@
                 <div class="coll-stat"><div class="cs-value" id="statRarest">-</div><div class="cs-label">Rarest Plate</div></div>
                 <div class="coll-stat"><div class="cs-value" id="statNewest">-</div><div class="cs-label">Newest Addition</div></div>
                 <div class="coll-stat"><div class="cs-value" id="statOldest">-</div><div class="cs-label">Oldest Addition</div></div>
+                <div class="coll-stat" style="grid-column: 1 / -1;">
+                    <div class="cs-value" id="statContinents" style="font-size:1.2rem; line-height:1.4;">—</div>
+                    <div class="cs-label">By Continent</div>
+                </div>
             </div>
             <div class="progress-bar-wrap">
                 <div class="progress-bar-fill" id="progressBar" style="width:0%;">0%</div>
@@ -1386,26 +1390,53 @@ document.getElementById('globeSearchBtn').addEventListener('click', () => {
 
         // Update stats (unique countries)
         function updateStats() {
-            const uniqueCountries = new Set(plateCollection.map(p => p.country));
-            const totalCountries = 195; // rough total, can be replaced by actual count from allCountries
+            // Helper: convert plate collection country to real country name
+            function getRealCountry(plate) {
+                if (plate.country.startsWith('USA-')) return 'United States';
+                return plate.country;
+            }
+
+            // Unique real countries collected
+            const uniqueCountries = new Set(plateCollection.map(p => getRealCountry(p)));
             const collected = uniqueCountries.size;
+
+            // Total possible countries = all non-USA-state entries in allCountries
+            const totalCountries = (window.allCountries || []).filter(c => !c.name.startsWith('USA-')).length;
+            const missing = totalCountries - collected;
             const percent = Math.round((collected / totalCountries) * 100);
 
             document.getElementById('statCollected').textContent = collected;
-            document.getElementById('statMissing').textContent = totalCountries - collected;
+            document.getElementById('statMissing').textContent = missing;
             document.getElementById('statPercent').textContent = percent + '%';
             document.getElementById('progressBar').style.width = percent + '%';
             document.getElementById('progressBar').textContent = percent + '%';
 
-            const rarityOrder = { 'Extremely Rare':0, 'Rare':1, 'Uncommon':2, 'Common':3 };
+            // Rarest / newest / oldest (based on all plates, not unique countries)
+            const rarityOrder = { 'Extremely Rare': 0, 'Rare': 1, 'Uncommon': 2, 'Common': 3 };
             if (plateCollection.length > 0) {
-                const rarest = plateCollection.reduce((a,b) => (rarityOrder[a.rarity]||4) < (rarityOrder[b.rarity]||4) ? a : b);
+                const rarest = plateCollection.reduce((a, b) => (rarityOrder[a.rarity] || 4) < (rarityOrder[b.rarity] || 4) ? a : b);
                 document.getElementById('statRarest').textContent = rarest.flag;
-                const newest = plateCollection.reduce((a,b) => parseInt(b.acquired) > parseInt(a.acquired) ? b : a);
+                const newest = plateCollection.reduce((a, b) => parseInt(b.acquired) > parseInt(a.acquired) ? b : a);
                 document.getElementById('statNewest').textContent = newest.flag;
-                const oldest = plateCollection.reduce((a,b) => parseInt(b.acquired) < parseInt(a.acquired) ? b : a);
+                const oldest = plateCollection.reduce((a, b) => parseInt(b.acquired) < parseInt(a.acquired) ? b : a);
                 document.getElementById('statOldest').textContent = oldest.flag;
             }
+
+            // Continent breakdown (unique real countries per continent)
+            const continentMap = {};
+            plateCollection.forEach(p => {
+                const realCountry = getRealCountry(p);
+                // Get continent from plate (if not present, use 'Unknown')
+                const cont = p.continent || 'Unknown';
+                if (!continentMap[cont]) continentMap[cont] = new Set();
+                continentMap[cont].add(realCountry);
+            });
+
+            let continentText = '';
+            for (const [cont, countries] of Object.entries(continentMap)) {
+                continentText += `${cont}: ${countries.size}  `;
+            }
+            document.getElementById('statContinents').textContent = continentText.trim() || '—';
         }
         updateStats();
 
