@@ -182,14 +182,13 @@
   const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev';
   const MAX_IDLE_MINUTES = 30;
 
-  // generate visitor token
+  // ── visitor token & entry time (same as before) ──
   if (!sessionStorage.getItem('visitorToken')) {
     sessionStorage.setItem('visitorToken',
       crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2));
   }
   const visitorToken = sessionStorage.getItem('visitorToken');
 
-  // entryTime with idle reset
   function getEntryTime() {
     const stored = sessionStorage.getItem('entryTime');
     if (!stored) return null;
@@ -207,7 +206,8 @@
     sessionStorage.setItem('entryTime', entryTime);
   }
 
-  const data = {
+  // ── send page‑view (same as before) ──
+  const pageData = {
     browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
              navigator.userAgent.includes('Chrome') ? 'Chrome' :
              navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
@@ -225,8 +225,44 @@
   fetch(`${WORKER_URL}/track`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+    body: JSON.stringify(pageData)
   }).catch(() => {});
+
+  // ── NEW: event tracking (downloads & external clicks) ──
+  function trackEvent(type, label, url, referrer = '') {
+    fetch(`${WORKER_URL}/track-event`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, label, url, referrer })
+    }).catch(() => {});
+  }
+
+  // 1. Track PDF downloads
+  document.addEventListener('click', function(e) {
+    const link = e.target.closest('a');
+    if (!link) return;
+    const href = link.getAttribute('href') || '';
+
+    // Check if it's a PDF link
+    if (href.match(/\.pdf$/i) || link.hasAttribute('download') || link.classList.contains('pdf-link')) {
+      const label = link.textContent.trim() || 'PDF Download';
+      const referrer = getReferrerTag();
+      trackEvent('download', label, href, referrer);
+    }
+
+    // Track external links (social media, highlights, etc.)
+    if (link.hostname && link.hostname !== window.location.hostname) {
+      const label = link.textContent.trim() || link.href;
+      const referrer = getReferrerTag();
+      trackEvent('click', label, href, referrer);
+    }
+  });
+
+  // Helper: extract referrer tag from URL params (e.g., ?ref=email)
+  function getReferrerTag() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('ref') || document.referrer || 'Direct';
+  }
 })();
 </script>
 

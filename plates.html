@@ -239,22 +239,20 @@
 <body>
     <script>
 (function() {
-  const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev/track';
-  const MAX_IDLE_MINUTES = 30;   // reset session after 30 min idle
+  const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev';
+  const MAX_IDLE_MINUTES = 30;
 
-  // ---- generate visitor token (same on every page) ----
+  // ── visitor token & entry time (unchanged) ──
   if (!sessionStorage.getItem('visitorToken')) {
     sessionStorage.setItem('visitorToken',
       crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2));
   }
   const visitorToken = sessionStorage.getItem('visitorToken');
 
-  // ---- entryTime with idle reset ----
   function getEntryTime() {
     const stored = sessionStorage.getItem('entryTime');
     if (!stored) return null;
     const elapsed = Date.now() - new Date(stored).getTime();
-    // if idle longer than MAX_IDLE_MINUTES, start a new session
     if (elapsed > MAX_IDLE_MINUTES * 60 * 1000) {
       sessionStorage.removeItem('entryTime');
       return null;
@@ -268,7 +266,8 @@
     sessionStorage.setItem('entryTime', entryTime);
   }
 
-  const data = {
+  // ── send page‑view (unchanged) ──
+  const pageData = {
     browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
              navigator.userAgent.includes('Chrome') ? 'Chrome' :
              navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
@@ -286,8 +285,44 @@
   fetch(`${WORKER_URL}/track`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+    body: JSON.stringify(pageData)
   }).catch(() => {});
+
+  // ── new: event tracking (downloads & external clicks) ──
+  function trackEvent(type, label, url, referrer = '') {
+    fetch(`${WORKER_URL}/track-event`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, label, url, referrer })
+    }).catch(() => {});
+  }
+
+  // 1. Track PDF downloads
+  document.addEventListener('click', function(e) {
+    const link = e.target.closest('a');
+    if (!link) return;
+    const href = link.getAttribute('href') || '';
+
+    // Check if it's a PDF link
+    if (href.match(/\.pdf$/i) || link.hasAttribute('download') || link.classList.contains('pdf-link')) {
+      const label = link.textContent.trim() || 'PDF Download';
+      const referrer = getReferrerTag();
+      trackEvent('download', label, href, referrer);
+    }
+
+    // Track external links (social media, highlights, etc.)
+    if (link.hostname && link.hostname !== window.location.hostname) {
+      const label = link.textContent.trim() || link.href;
+      const referrer = getReferrerTag();
+      trackEvent('click', label, href, referrer);
+    }
+  });
+
+  // Helper: extract referrer tag from URL params (e.g., ?ref=email)
+  function getReferrerTag() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('ref') || document.referrer || 'Direct';
+  }
 })();
 </script>
     <!-- Cookie Consent Banner (self‑hosted, free) -->
@@ -1483,3 +1518,6 @@ document.getElementById('globeSearchBtn').addEventListener('click', () => {
     </script>
 </body>
 </html>
+
+
+
