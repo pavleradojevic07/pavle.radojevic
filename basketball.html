@@ -7,6 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Basketball — Pavle Radojević</title>
     <meta name="description" content="Basketball profile of Pavle Radojević — player stats, career timeline, achievements.">
+    <link rel="icon" type="image/webp" href="images/logo-dark.webp">
+    <meta property="og:type" content="profile">
+    <meta property="og:title" content="Basketball — Pavle Radojević">
+    <meta property="og:description" content="Basketball profile of Pavle Radojević — player stats, career timeline, achievements.">
+    <meta property="og:url" content="https://pavleradojevic07.github.io/pavle.radojevic/basketball.html">
+    <meta property="og:image" content="https://pavleradojevic07.github.io/pavle.radojevic/images/logo-dark.webp">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -373,187 +380,152 @@
     </style>
 </head>
 <body>
+    <!-- Minimal analytics consent banner (Cloudflare tracker only — no Google Analytics) -->
+    <style>
+        #analytics-consent-banner {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--bg-card, #16161f); border-top: 1px solid var(--border, #252535);
+            color: var(--text, #e8e8f0); padding: 0.9rem 1.5rem;
+            display: none; align-items: center; justify-content: center;
+            gap: 1.2rem; flex-wrap: wrap; z-index: 10000; font-size: 0.85rem;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.4); transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        #analytics-consent-banner.visible { display: flex; transform: translateY(0); }
+        #analytics-consent-banner .ac-btn {
+            border: none; padding: 0.5rem 1.2rem; border-radius: 30px;
+            cursor: pointer; font-weight: 600; font-family: var(--font-sans, 'Inter', sans-serif);
+            font-size: 0.85rem; transition: filter 0.2s;
+        }
+        #analytics-consent-banner .ac-accept { background: var(--accent-gold, #d4a853); color: #000; }
+        #analytics-consent-banner .ac-decline { background: transparent; border: 1px solid var(--border, #252535); color: var(--text, #e8e8f0); }
+        #analytics-consent-banner .ac-btn:hover { filter: brightness(1.1); }
+    </style>
+    <div id="analytics-consent-banner">
+        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location) to see where visitors come from. No data is sold or shared with third parties.</span>
+        <div style="display:flex; gap:0.5rem;">
+            <button class="ac-btn ac-decline" id="acDeclineBtn">Decline</button>
+            <button class="ac-btn ac-accept" id="acAcceptBtn">Accept</button>
+        </div>
+    </div>
    <script>
 (function() {
   const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev';
   const MAX_IDLE_MINUTES = 30;
+  const CONSENT_COOKIE = 'analytics-consent';
 
-  // ── visitor token & entry time ──
-  if (!sessionStorage.getItem('visitorToken')) {
-    sessionStorage.setItem('visitorToken',
-      crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2));
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : null;
   }
-  const visitorToken = sessionStorage.getItem('visitorToken');
 
-  function getEntryTime() {
-    const stored = sessionStorage.getItem('entryTime');
-    if (!stored) return null;
-    const elapsed = Date.now() - new Date(stored).getTime();
-    if (elapsed > MAX_IDLE_MINUTES * 60 * 1000) {
-      sessionStorage.removeItem('entryTime');
-      return null;
+  function setConsentCookie(value) {
+    document.cookie = CONSENT_COOKIE + '=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+  }
+
+  function runTracking() {
+    // ── visitor token & entry time ──
+    if (!sessionStorage.getItem('visitorToken')) {
+      sessionStorage.setItem('visitorToken',
+        crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2));
     }
-    return stored;
-  }
+    const visitorToken = sessionStorage.getItem('visitorToken');
 
-  let entryTime = getEntryTime();
-  if (!entryTime) {
-    entryTime = new Date().toISOString();
-    sessionStorage.setItem('entryTime', entryTime);
-  }
+    function getEntryTime() {
+      const stored = sessionStorage.getItem('entryTime');
+      if (!stored) return null;
+      const elapsed = Date.now() - new Date(stored).getTime();
+      if (elapsed > MAX_IDLE_MINUTES * 60 * 1000) {
+        sessionStorage.removeItem('entryTime');
+        return null;
+      }
+      return stored;
+    }
 
-  // ── send page‑view ──
-  const pageData = {
-    browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
-             navigator.userAgent.includes('Chrome') ? 'Chrome' :
-             navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
-    os: navigator.platform || 'Unknown',
-    device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
-    referrer: document.referrer || 'Direct',
-    page: window.location.pathname,
-    entryTime: entryTime,
-    previousPage: sessionStorage.getItem('lastPage') || null,
-    visitorToken: visitorToken
-  };
+    let entryTime = getEntryTime();
+    if (!entryTime) {
+      entryTime = new Date().toISOString();
+      sessionStorage.setItem('entryTime', entryTime);
+    }
 
-  sessionStorage.setItem('lastPage', window.location.pathname);
+    // ── send page‑view ──
+    const pageData = {
+      browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
+               navigator.userAgent.includes('Chrome') ? 'Chrome' :
+               navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
+      os: navigator.platform || 'Unknown',
+      device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+      referrer: document.referrer || 'Direct',
+      page: window.location.pathname,
+      entryTime: entryTime,
+      previousPage: sessionStorage.getItem('lastPage') || null,
+      visitorToken: visitorToken
+    };
 
-  fetch(`${WORKER_URL}/track`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(pageData)
-  }).catch(() => {});
+    sessionStorage.setItem('lastPage', window.location.pathname);
 
-  // ── NEW: event tracking (downloads & external clicks) ──
-  function trackEvent(type, label, url, referrer = '') {
-    fetch(`${WORKER_URL}/track-event`, {
+    fetch(`${WORKER_URL}/track`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type, label, url, referrer })
+      body: JSON.stringify(pageData)
     }).catch(() => {});
+
+    // ── event tracking (downloads & external clicks) ──
+    function trackEvent(type, label, url, referrer = '') {
+      fetch(`${WORKER_URL}/track-event`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, label, url, referrer })
+      }).catch(() => {});
+    }
+
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('a');
+      if (!link) return;
+      const href = link.getAttribute('href') || '';
+
+      if (href.match(/\.pdf$/i) || link.hasAttribute('download') || link.classList.contains('pdf-link')) {
+        const label = link.textContent.trim() || 'PDF Download';
+        const referrer = getReferrerTag();
+        trackEvent('download', label, href, referrer);
+      }
+
+      if (link.hostname && link.hostname !== window.location.hostname) {
+        const label = link.textContent.trim() || link.href;
+        const referrer = getReferrerTag();
+        trackEvent('click', label, href, referrer);
+      }
+    });
+
+    function getReferrerTag() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('ref') || document.referrer || 'Direct';
+    }
   }
 
-  // Track PDF downloads and external link clicks
-  document.addEventListener('click', function(e) {
-    const link = e.target.closest('a');
-    if (!link) return;
-    const href = link.getAttribute('href') || '';
+  // ── consent gate: only track after Accept, never after Decline ──
+  const consent = getCookie(CONSENT_COOKIE);
+  const banner = document.getElementById('analytics-consent-banner');
 
-    // Check if it's a PDF link
-    if (href.match(/\.pdf$/i) || link.hasAttribute('download') || link.classList.contains('pdf-link')) {
-      const label = link.textContent.trim() || 'PDF Download';
-      const referrer = getReferrerTag();
-      trackEvent('download', label, href, referrer);
-    }
-
-    // Track external links (different hostname)
-    if (link.hostname && link.hostname !== window.location.hostname) {
-      const label = link.textContent.trim() || link.href;
-      const referrer = getReferrerTag();
-      trackEvent('click', label, href, referrer);
-    }
-  });
-
-  function getReferrerTag() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('ref') || document.referrer || 'Direct';
+  if (consent === 'accepted') {
+    runTracking();
+  } else if (consent !== 'declined' && banner) {
+    banner.classList.add('visible');
+    const acceptBtn = document.getElementById('acAcceptBtn');
+    const declineBtn = document.getElementById('acDeclineBtn');
+    if (acceptBtn) acceptBtn.addEventListener('click', function() {
+      setConsentCookie('accepted');
+      banner.classList.remove('visible');
+      runTracking();
+    });
+    if (declineBtn) declineBtn.addEventListener('click', function() {
+      setConsentCookie('declined');
+      banner.classList.remove('visible');
+    });
   }
 })();
 </script>
-    <!-- Cookie Consent Banner (self‑hosted, free) -->
-<style>
-    #cookie-banner {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: var(--bg-card, #16161f);
-        border-top: 1px solid var(--border, #252535);
-        color: var(--text, #e8e8f0);
-        padding: 1rem 2rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-        z-index: 10000;
-        font-size: 0.9rem;
-        box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
-        transition: transform 0.3s ease;
-    }
-    #cookie-banner.hidden {
-        transform: translateY(100%);
-    }
-    .cookie-btn {
-        background: var(--accent-gold, #d4a853);
-        color: #000;
-        border: none;
-        padding: 0.6rem 1.4rem;
-        border-radius: 30px;
-        cursor: pointer;
-        font-weight: 600;
-        font-family: var(--font-sans, 'Inter', sans-serif);
-        transition: background 0.3s;
-    }
-    .cookie-btn:hover { background: #c0943a; }
-    .cookie-btn.decline {
-        background: transparent;
-        border: 1px solid var(--border, #252535);
-        color: var(--text, #e8e8f0);
-    }
-    .cookie-btn.decline:hover { background: var(--bg-card-hover, #1c1c28); }
-</style>
 
-<div id="cookie-banner">
-    <span>🍪 This website uses cookies to analyze traffic and improve your experience. See our <a href="#" style="color:var(--accent-gold)">Privacy Policy</a>.</span>
-    <div style="display:flex; gap:0.5rem;">
-        <button class="cookie-btn decline" onclick="setCookieConsent(false)">Decline</button>
-        <button class="cookie-btn" onclick="setCookieConsent(true)">Accept</button>
-    </div>
-</div>
-
-<script>
-    // Check if consent already given
-    (function() {
-        const consent = getCookie('cookie-consent');
-        if (consent === 'accepted') {
-            document.getElementById('cookie-banner').classList.add('hidden');
-            loadGoogleAnalytics();
-        } else if (consent === 'declined') {
-            document.getElementById('cookie-banner').classList.add('hidden');
-        }
-    })();
-
-    function setCookieConsent(accepted) {
-        const value = accepted ? 'accepted' : 'declined';
-        document.cookie = 'cookie-consent=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
-        document.getElementById('cookie-banner').classList.add('hidden');
-        if (accepted) {
-            loadGoogleAnalytics();
-        }
-    }
-
-    function getCookie(name) {
-        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-        return match ? match[2] : null;
-    }
-
-    // Load Google Analytics only after consent (replace with your own GA tag)
-    function loadGoogleAnalytics() {
-        // Google Analytics gtag snippet
-        var script = document.createElement('script');
-        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-D90VNGY0XX'; // 🔴 Your GA4 measurement ID
-        script.async = true;
-        document.head.appendChild(script);
-
-        script.onload = function() {
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-D90VNGY0XX'); // 🔴 Your GA4 measurement ID
-        };
-    }
-</script>
     <!-- ════════════ HEADER ════════════ -->
     <nav class="nav">
         <a href="index.html" class="nav-logo">
