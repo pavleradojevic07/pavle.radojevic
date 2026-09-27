@@ -27,7 +27,7 @@
         /* (all CSS rules identical to previous – no changes needed) */
         :root {
             --bg: #0a0a0f; --bg-secondary: #111118; --bg-card: #16161f; --bg-card-hover: #1c1c28;
-            --text: #e8e8f0; --text-secondary: #a0a0b8; --text-muted: #6a6a80;
+            --text: #e8e8f0; --text-secondary: #a0a0b8; --text-muted: #8f8fa8;
             --accent-basketball: #f07b3b; --accent-academic: #4da6ff; --accent-plates: #3ddc84; --accent-gold: #d4a853;
             --border: #252535; --shadow: 0 4px 24px rgba(0, 0, 0, 0.4); --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.5);
             --radius: 16px; --radius-sm: 10px; --radius-lg: 24px; --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -36,7 +36,7 @@
         }
         [data-theme="light"] {
             --bg: #f5f5f8; --bg-secondary: #ffffff; --bg-card: #ffffff; --bg-card-hover: #f8f8fc;
-            --text: #1a1a2e; --text-secondary: #4a4a60; --text-muted: #7a7a90;
+            --text: #1a1a2e; --text-secondary: #4a4a60; --text-muted: #666680;
             --border: #e0e0ea; --shadow: 0 4px 20px rgba(0, 0, 0, 0.06); --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
         }
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -274,7 +274,7 @@
         #analytics-consent-banner .ac-btn:hover { filter: brightness(1.1); }
     </style>
     <div id="analytics-consent-banner">
-        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location) to see where visitors come from. No data is sold or shared with third parties.</span>
+        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location) to see where visitors come from. No data is sold or shared with third parties. <a href="cookies.html" style="color:inherit; text-decoration:underline;">Learn more</a></span>
         <div style="display:flex; gap:0.5rem;">
             <button class="ac-btn ac-decline" id="acDeclineBtn">Decline</button>
             <button class="ac-btn ac-accept" id="acAcceptBtn">Accept</button>
@@ -421,9 +421,10 @@
             <div class="globe-container" id="globeContainer">
     <div class="globe-search">
         <input type="text" id="globeSearchInput" placeholder="Type country or state..." autocomplete="off"
+        aria-label="Search for a country or state" role="combobox" aria-expanded="false" aria-controls="searchDropdown" aria-autocomplete="list"
         style="background:transparent; border:none; color:var(--text); padding:0.5rem 1rem; font-family:var(--font-sans); font-size:0.9rem; width:220px; outline:none;">
-        <ul id="searchDropdown" style="display:none;"></ul>
-        <button id="globeSearchBtn">🔍 Find</button>
+        <ul id="searchDropdown" role="listbox" aria-label="Country suggestions" style="display:none;"></ul>
+        <button id="globeSearchBtn" aria-label="Search">🔍 Find</button>
     </div>
 </div>
 
@@ -503,7 +504,24 @@
             </a>
         </div>
         <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages</p>
+        <p class="footer-note" style="margin-top:0.6rem;">
+            <a href="privacy.html" style="color:var(--text-muted); text-decoration:underline;">Privacy Policy</a> ·
+            <a href="terms.html" style="color:var(--text-muted); text-decoration:underline;">Terms &amp; Conditions</a> ·
+            <a href="cookies.html" style="color:var(--text-muted); text-decoration:underline;">Cookie Policy</a> ·
+            <button id="cookiePrefsBtn" type="button" style="background:none; border:none; padding:0; margin:0; font:inherit; color:var(--text-muted); text-decoration:underline; cursor:pointer;">Cookie Preferences</button>
+        </p>
     </footer>
+    <script>
+        (function () {
+            var btn = document.getElementById('cookiePrefsBtn');
+            if (btn) {
+                btn.addEventListener('click', function () {
+                    document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax';
+                    location.reload();
+                });
+            }
+        })();
+    </script>
 
     <!-- Modal for fullscreen plate view -->
     <div class="modal-overlay hidden" id="plateModal">
@@ -1140,7 +1158,7 @@
         let html = '';
         plates.forEach((plate, index) => {
             html += `
-            <div class="plate-item" tabindex="0" role="button" aria-label="View plate ${index+1} from ${plate.country}" style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem; padding:0.8rem; background:var(--bg-secondary); border-radius:var(--radius-sm); cursor:pointer;">                    <img src="${plate.image}" style="width:80px; height:50px; object-fit:cover; border-radius:6px;" onerror="this.style.display='none';">
+            <div class="plate-item" tabindex="0" role="button" aria-label="View plate ${index+1} from ${plate.country}" style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem; padding:0.8rem; background:var(--bg-secondary); border-radius:var(--radius-sm); cursor:pointer;">                    <img src="${plate.image}" alt="${plate.country} license plate" style="width:80px; height:50px; object-fit:cover; border-radius:6px;" onerror="this.style.display='none';">
                     <div>
                         <strong>Plate #${index+1}</strong><br>
                         <span style="font-size:0.9rem; color:var(--text-secondary);">${plate.story || ''}</span>
@@ -1178,6 +1196,7 @@
                     <strong>Quick donation offer:</strong>
                     <textarea id="donationText" placeholder="Tell me about your plate…" rows="2" style="width:100%; max-width:300px; padding:0.5rem; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); resize:vertical; margin-top:0.8rem;"></textarea>
                     <button id="donationBtn" style="background:var(--accent-gold); color:#000; border:none; padding:0.5rem 1.5rem; border-radius:20px; cursor:pointer; font-weight:600; margin-top:0.5rem;">Send Offer</button>
+                    <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.6rem;">This opens your own email app with the message pre-filled. Nothing is sent or stored by this website unless you choose to hit send.</p>
                 </div>
             </div>
         `;
@@ -1262,12 +1281,15 @@ searchInput.addEventListener('input', function() {
         const li = document.createElement('li');
         li.textContent = `${country.flag} ${country.name}`;
         li.setAttribute('data-name', country.name);
+        li.setAttribute('role', 'option');
+        li.setAttribute('id', 'search-option-' + index);
         li.addEventListener('click', function() {
             selectSuggestion(country.name);
         });
         searchDropdown.appendChild(li);
     });
     searchDropdown.style.display = 'block';
+    searchInput.setAttribute('aria-expanded', 'true');
     currentFocus = -1;
 });
 
@@ -1299,11 +1321,13 @@ searchInput.addEventListener('keydown', function(e) {
 function updateActive(items) {
     if (!items.length) return;
     // Remove active class from all items
-    Array.from(items).forEach(item => item.classList.remove('active'));
+    Array.from(items).forEach(item => { item.classList.remove('active'); item.removeAttribute('aria-selected'); });
     // Wrap around
     if (currentFocus >= items.length) currentFocus = 0;
     if (currentFocus < 0) currentFocus = items.length - 1;
     items[currentFocus].classList.add('active');
+    items[currentFocus].setAttribute('aria-selected', 'true');
+    searchInput.setAttribute('aria-activedescendant', items[currentFocus].id);
     // Scroll into view
     items[currentFocus].scrollIntoView({ block: 'nearest' });
 }
@@ -1319,6 +1343,8 @@ function closeDropdown() {
     searchDropdown.style.display = 'none';
     searchDropdown.innerHTML = '';
     currentFocus = -1;
+    searchInput.setAttribute('aria-expanded', 'false');
+    searchInput.removeAttribute('aria-activedescendant');
 }
 
 // Hide dropdown when clicking outside

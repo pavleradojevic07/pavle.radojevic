@@ -31,7 +31,7 @@
             --bg-card-hover: #1c1c28;
             --text: #e8e8f0;
             --text-secondary: #a0a0b8;
-            --text-muted: #6a6a80;
+            --text-muted: #8f8fa8;
             --accent-basketball: #f07b3b;
             --accent-academic: #4da6ff;
             --accent-plates: #3ddc84;
@@ -58,7 +58,7 @@
             --bg-card-hover: #f8f8fc;
             --text: #1a1a2e;
             --text-secondary: #4a4a60;
-            --text-muted: #7a7a90;
+            --text-muted: #666680;
             --border: #e0e0ea;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
@@ -402,7 +402,7 @@
         #analytics-consent-banner .ac-btn:hover { filter: brightness(1.1); }
     </style>
     <div id="analytics-consent-banner">
-        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location) to see where visitors come from. No data is sold or shared with third parties.</span>
+        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location) to see where visitors come from. No data is sold or shared with third parties. <a href="cookies.html" style="color:inherit; text-decoration:underline;">Learn more</a></span>
         <div style="display:flex; gap:0.5rem;">
             <button class="ac-btn ac-decline" id="acDeclineBtn">Decline</button>
             <button class="ac-btn ac-accept" id="acAcceptBtn">Accept</button>
@@ -704,7 +704,24 @@
             </a>
         </div>
         <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages</p>
+        <p class="footer-note" style="margin-top:0.6rem;">
+            <a href="privacy.html" style="color:var(--text-muted); text-decoration:underline;">Privacy Policy</a> ·
+            <a href="terms.html" style="color:var(--text-muted); text-decoration:underline;">Terms &amp; Conditions</a> ·
+            <a href="cookies.html" style="color:var(--text-muted); text-decoration:underline;">Cookie Policy</a> ·
+            <button id="cookiePrefsBtn" type="button" style="background:none; border:none; padding:0; margin:0; font:inherit; color:var(--text-muted); text-decoration:underline; cursor:pointer;">Cookie Preferences</button>
+        </p>
     </footer>
+    <script>
+        (function () {
+            var btn = document.getElementById('cookiePrefsBtn');
+            if (btn) {
+                btn.addEventListener('click', function () {
+                    document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax';
+                    location.reload();
+                });
+            }
+        })();
+    </script>
 
     <script>
         // Theme toggle (cookie-based, shared across pages)

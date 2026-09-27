@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — Pavle Radojević</title>
+    <meta name="description" content="Privacy Policy for pavleradojevic07.github.io/pavle.radojevic">
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/webp" href="images/logo-dark.webp">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        (function() {
+            var theme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1") || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <style>
+        :root {
+            --bg: #0a0a0f; --bg-secondary: #111118; --bg-card: #16161f; --bg-card-hover: #1c1c28;
+            --text: #e8e8f0; --text-secondary: #a0a0b8; --text-muted: #8f8fa8;
+            --accent-basketball: #f07b3b; --accent-academic: #4da6ff; --accent-plates: #3ddc84; --accent-gold: #d4a853;
+            --border: #252535; --shadow: 0 4px 24px rgba(0,0,0,0.4); --shadow-lg: 0 12px 48px rgba(0,0,0,0.5);
+            --radius: 16px; --radius-sm: 10px; --radius-lg: 24px; --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-sans: 'Inter', system-ui, sans-serif; --font-display: 'Playfair Display', serif;
+            --font-mono: 'JetBrains Mono', monospace; --nav-height: 70px; --max-width: 820px;
+        }
+        [data-theme="light"] {
+            --bg: #f5f5f8; --bg-secondary: #ffffff; --bg-card: #ffffff; --bg-card-hover: #f8f8fc;
+            --text: #1a1a2e; --text-secondary: #4a4a60; --text-muted: #666680;
+            --border: #e0e0ea; --shadow: 0 4px 20px rgba(0,0,0,0.06); --shadow-lg: 0 12px 40px rgba(0,0,0,0.1);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans); background: var(--bg); color: var(--text);
+            line-height: 1.6; transition: background var(--transition), color var(--transition);
+            -webkit-font-smoothing: antialiased; display:flex; flex-direction:column; min-height:100vh;
+        }
+        .nav {
+            position: fixed; top:0; left:0; right:0; z-index:1000; height:var(--nav-height);
+            background:var(--bg); border-bottom:1px solid var(--border);
+            display:flex; align-items:center; justify-content:space-between;
+            padding:0 2rem; backdrop-filter:blur(20px);
+        }
+        .nav-logo { font-family: var(--font-display); font-weight:700; font-size:1.4rem; letter-spacing:-0.02em; color:var(--text); text-decoration:none; }
+        .logo-dark, .logo-light { height:36px; display:block; }
+        .logo-light { display:none; }
+        [data-theme="light"] .logo-dark { display:none; }
+        [data-theme="light"] .logo-light { display:block; }
+        .nav-links { display:flex; gap:0.25rem; align-items:center; }
+        .nav-link { color:var(--text-secondary); text-decoration:none; font-weight:500; font-size:0.9rem; padding:0.5rem 1rem; border-radius:8px; transition:all var(--transition); }
+        .nav-link:hover { color:var(--text); background:var(--bg-card); }
+        .theme-toggle {
+            background:var(--bg-card); border:1px solid var(--border); color:var(--text);
+            cursor:pointer; width:40px; height:40px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+            transition:all var(--transition); margin-left:0.5rem;
+        }
+        .theme-toggle:hover { background:var(--bg-card-hover); transform:rotate(30deg); }
+        .mobile-menu-btn { display:none; background:none; border:none; color:var(--text); font-size:1.6rem; cursor:pointer; }
+        .page-content { padding-top:var(--nav-height); flex:1; }
+        .section { padding: 3.5rem 2rem 4rem; max-width:var(--max-width); margin:0 auto; }
+        .section-title { font-family: var(--font-display); font-size:2.4rem; margin-bottom:0.4rem; }
+        .updated-note { color:var(--text-muted); font-size:0.85rem; margin-bottom:2.5rem; }
+        .legal-content h2 { font-family:var(--font-display); font-size:1.4rem; margin:2.2rem 0 0.8rem; }
+        .legal-content h2:first-of-type { margin-top:0; }
+        .legal-content p, .legal-content li { color:var(--text-secondary); font-size:0.97rem; }
+        .legal-content ul, .legal-content ol { padding-left:1.3rem; margin:0.6rem 0 0.6rem; }
+        .legal-content li { margin-bottom:0.4rem; }
+        .legal-content a { color:var(--accent-academic); text-decoration:underline; text-underline-offset:3px; }
+        .legal-content strong { color:var(--text); }
+        .todo-flag {
+            background: rgba(212,168,83,0.1); border:1px dashed var(--accent-gold); border-radius:var(--radius-sm);
+            padding:0.9rem 1.1rem; margin:0.9rem 0; font-size:0.88rem; color:var(--text);
+        }
+        .todo-flag strong { color:var(--accent-gold); }
+        .contact-footer { text-align:center; padding:2rem 1rem 2.5rem; border-top:1px solid var(--border); background:var(--bg); }
+        .footer-note { color:var(--text-muted); font-size:0.8rem; }
+        @media (max-width:900px) {
+            .nav-links { display:none; }
+            .nav-links.mobile-open {
+                display:flex; flex-direction:column; position:absolute; top:var(--nav-height); left:0; right:0;
+                background:var(--bg-secondary); padding:1rem; border-bottom:1px solid var(--border); box-shadow:var(--shadow-lg);
+            }
+            .mobile-menu-btn { display:block; }
+            .section { padding: 2.5rem 1.2rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+    <style>
+        #analytics-consent-banner {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--bg-card, #16161f); border-top: 1px solid var(--border, #252535);
+            color: var(--text, #e8e8f0); padding: 0.9rem 1.5rem;
+            display: none; align-items: center; justify-content: center;
+            gap: 1.2rem; flex-wrap: wrap; z-index: 10000; font-size: 0.85rem;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.4); transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        #analytics-consent-banner.visible { display: flex; transform: translateY(0); }
+        #analytics-consent-banner .ac-btn {
+            border: none; padding: 0.5rem 1.2rem; border-radius: 30px;
+            cursor: pointer; font-weight: 600; font-family: var(--font-sans, 'Inter', sans-serif);
+            font-size: 0.85rem; transition: filter 0.2s;
+        }
+        #analytics-consent-banner .ac-accept { background: var(--accent-gold, #d4a853); color: #000; }
+        #analytics-consent-banner .ac-decline { background: transparent; border: 1px solid var(--border, #252535); color: var(--text, #e8e8f0); }
+        #analytics-consent-banner .ac-btn:hover { filter: brightness(1.1); }
+    </style>
+    <div id="analytics-consent-banner">
+        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location) to see where visitors come from. No data is sold or shared with third parties. <a href="cookies.html" style="color:inherit; text-decoration:underline;">Learn more</a></span>
+        <div style="display:flex; gap:0.5rem;">
+            <button class="ac-btn ac-decline" id="acDeclineBtn">Decline</button>
+            <button class="ac-btn ac-accept" id="acAcceptBtn">Accept</button>
+        </div>
+    </div>
+    <script>
+(function() {
+  const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev';
+  const MAX_IDLE_MINUTES = 30;
+  const CONSENT_COOKIE = 'analytics-consent';
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : null;
+  }
+  function setConsentCookie(value) {
+    document.cookie = CONSENT_COOKIE + '=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+  }
+  function runTracking() {
+    if (!sessionStorage.getItem('visitorToken')) {
+      sessionStorage.setItem('visitorToken', crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2));
+    }
+    const visitorToken = sessionStorage.getItem('visitorToken');
+    function getEntryTime() {
+      const stored = sessionStorage.getItem('entryTime');
+      if (!stored) return null;
+      const elapsed = Date.now() - new Date(stored).getTime();
+      if (elapsed > MAX_IDLE_MINUTES * 60 * 1000) { sessionStorage.removeItem('entryTime'); return null; }
+      return stored;
+    }
+    let entryTime = getEntryTime();
+    if (!entryTime) { entryTime = new Date().toISOString(); sessionStorage.setItem('entryTime', entryTime); }
+    const pageData = {
+      browser: navigator.userAgent.includes('Firefox') ? 'Firefox' : navigator.userAgent.includes('Chrome') ? 'Chrome' : navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
+      os: navigator.platform || 'Unknown',
+      device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+      referrer: document.referrer || 'Direct',
+      page: window.location.pathname,
+      entryTime: entryTime,
+      previousPage: sessionStorage.getItem('lastPage') || null,
+      visitorToken: visitorToken
+    };
+    sessionStorage.setItem('lastPage', window.location.pathname);
+    fetch(`${WORKER_URL}/track`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pageData) }).catch(() => {});
+    function trackEvent(type, label, url, referrer = '') {
+      fetch(`${WORKER_URL}/track-event`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, label, url, referrer }) }).catch(() => {});
+    }
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('a');
+      if (!link) return;
+      const href = link.getAttribute('href') || '';
+      if (href.match(/\.pdf$/i) || link.hasAttribute('download') || link.classList.contains('pdf-link')) {
+        trackEvent('download', link.textContent.trim() || 'PDF Download', href, getReferrerTag());
+      }
+      if (link.hostname && link.hostname !== window.location.hostname) {
+        trackEvent('click', link.textContent.trim() || link.href, href, getReferrerTag());
+      }
+    });
+    function getReferrerTag() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('ref') || document.referrer || 'Direct';
+    }
+  }
+  const consent = getCookie(CONSENT_COOKIE);
+  const banner = document.getElementById('analytics-consent-banner');
+  if (consent === 'accepted') { runTracking(); }
+  else if (consent !== 'declined' && banner) {
+    banner.classList.add('visible');
+    const acceptBtn = document.getElementById('acAcceptBtn');
+    const declineBtn = document.getElementById('acDeclineBtn');
+    if (acceptBtn) acceptBtn.addEventListener('click', function() { setConsentCookie('accepted'); banner.classList.remove('visible'); runTracking(); });
+    if (declineBtn) declineBtn.addEventListener('click', function() { setConsentCookie('declined'); banner.classList.remove('visible'); });
+  }
+})();
+</script>
+
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <img src="images/logo-dark.webp" alt="PR Logo" class="logo-dark">
+            <img src="images/logo-light.webp" alt="PR Logo" class="logo-light">
+        </a>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
+        <div class="nav-links" id="navLinks">
+            <a href="basketball.html" class="nav-link">🏀 Basketball</a>
+            <a href="academic.html" class="nav-link">🎓 Academic</a>
+            <a href="plates.html" class="nav-link">🌍 Atlas</a>
+            <a href="visitors.html" class="nav-link">📊 Visitors</a>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        </div>
+    </nav>
+
+    <main class="page-content">
+        <section class="section">
+            <h1 class="section-title">Privacy Policy</h1>
+            <p class="updated-note">Last updated: September 27, 2026 · Applies to pavleradojevic07.github.io/pavle.radojevic</p>
+
+            <div class="legal-content">
+                <h2>1. Who runs this site</h2>
+                <p>This website is a personal, non-commercial portfolio operated by Pavle Radojević, a private individual. It is not a registered company, and no products, subscriptions, or services are sold here. For anything related to this Privacy Policy, you can reach me at <a href="mailto:pavle.radojevic07@gmail.com">pavle.radojevic07@gmail.com</a>.</p>
+
+                <h2>2. Information you choose to give me</h2>
+                <p>Nothing is required to browse this site. If you email me (via the contact link in the footer) or use the "Quick donation offer" box on the License Plate Atlas page, whatever you type only opens your own email app with a pre-filled draft — it is sent directly from your device to my inbox and is not transmitted to or stored by this website first. If you do send that email, I'll have whatever you included (name, email address, message) in my inbox, the same as any other email I receive.</p>
+
+                <h2>3. Information collected automatically</h2>
+                <p>This site uses a first-party analytics tool (a Cloudflare Worker I run myself — not Google Analytics or any ad network) to understand visitor traffic. It only runs <strong>after you accept</strong> the cookie banner. Once accepted, it may collect:</p>
+                <ul>
+                    <li>Browser type, operating system, and device type (mobile/desktop)</li>
+                    <li>Referring page and pages viewed on this site</li>
+                    <li>Approximate location (country/city, derived from your IP address)</li>
+                    <li>Session timing (arrival time, time spent) and a random session identifier stored in your browser's session storage</li>
+                </ul>
+                <p>This data is used only to see which pages and countries visitors come from. It is never sold, and never shared with advertisers or third parties for marketing.</p>
+                <div class="todo-flag"><strong>To confirm:</strong> whether the analytics Worker stores raw IP addresses or only the derived country/city, and how "returning visitor" is calculated — please check the Worker's own code and update this section so it's accurate before publishing.</div>
+
+                <h2>4. Cookies</h2>
+                <p>This site uses a small number of cookies and browser-storage items. See the <a href="cookies.html">Cookie Policy</a> for the full list, what each one does, and how to change your choice at any time.</p>
+
+                <h2>5. Legal basis for processing</h2>
+                <p>Where EU/UK/Serbian data protection law applies, the legal basis for the analytics described above is your consent, given via the cookie banner. You can withdraw that consent at any time — see Section 8.</p>
+
+                <h2>6. Who this data passes through</h2>
+                <p>No visitor data is sold to anyone. A few outside services are involved in simply running the site, and each may process a visitor's IP address as an unavoidable part of how the web works:</p>
+                <ul>
+                    <li><strong>Cloudflare</strong> — hosts the Worker that receives analytics events</li>
+                    <li><strong>GitHub Pages</strong> — hosts the website files themselves</li>
+                    <li><strong>Google Fonts</strong> — delivers the site's typefaces; loading a font from Google's servers exposes your IP address to Google, independent of the cookie banner</li>
+                    <li><strong>unpkg.com</strong> — delivers the Leaflet and Three.js code libraries used on the Visitors and Atlas pages</li>
+                    <li><strong>CARTO / OpenStreetMap</strong> — supplies the map tiles on the Visitors page</li>
+                </ul>
+
+                <h2>7. International transfers</h2>
+                <p>The services above are based in or operate infrastructure in the United States and other countries. Where required, these providers rely on their own compliance mechanisms (such as EU Standard Contractual Clauses) for transferring data outside the EU/UK.</p>
+
+                <h2>8. How long data is kept</h2>
+                <div class="todo-flag"><strong>To confirm:</strong> I don't have access to the Cloudflare Worker's backend, so I can't state an accurate retention period here. Please check the Worker/storage configuration and fill in a real timeframe (e.g. "analytics events are kept for 12 months, then deleted") before this policy goes live.</div>
+
+                <h2>9. Your rights</h2>
+                <p>Depending on where you live (this includes rights under the EU/UK GDPR and Serbia's Law on Personal Data Protection), you may have the right to:</p>
+                <ul>
+                    <li>Ask what data is held about you and get a copy</li>
+                    <li>Ask for inaccurate data to be corrected</li>
+                    <li>Ask for your data to be deleted</li>
+                    <li>Object to, or ask to restrict, further processing</li>
+                    <li>Withdraw consent to analytics at any time (see below)</li>
+                    <li>Lodge a complaint with your local data protection authority</li>
+                </ul>
+                <p>To exercise any of these, email <a href="mailto:pavle.radojevic07@gmail.com">pavle.radojevic07@gmail.com</a>.</p>
+
+                <h2>10. Withdrawing consent</h2>
+                <p>You can change your analytics choice at any time using the <strong>Cookie Preferences</strong> link in the footer of any page, or by clearing this site's cookies in your browser settings.</p>
+
+                <h2>11. Children's privacy</h2>
+                <p>This site is not directed at children and is not knowingly used to collect data from anyone under 16. If you believe a child has provided personal information here, contact me and I'll remove it.</p>
+
+                <h2>12. Changes to this policy</h2>
+                <p>I may update this page from time to time. The "Last updated" date at the top will reflect the latest revision.</p>
+
+                <h2>13. Contact</h2>
+                <p><a href="mailto:pavle.radojevic07@gmail.com">pavle.radojevic07@gmail.com</a></p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="contact-footer">
+        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages</p>
+        <p class="footer-note" style="margin-top:0.6rem;">
+            <a href="privacy.html" style="color:var(--text-muted); text-decoration:underline;">Privacy Policy</a> ·
+            <a href="terms.html" style="color:var(--text-muted); text-decoration:underline;">Terms &amp; Conditions</a> ·
+            <a href="cookies.html" style="color:var(--text-muted); text-decoration:underline;">Cookie Policy</a> ·
+            <button id="cookiePrefsBtn" type="button" style="background:none; border:none; padding:0; margin:0; font:inherit; color:var(--text-muted); text-decoration:underline; cursor:pointer;">Cookie Preferences</button>
+        </p>
+    </footer>
+    <script>
+        (function () {
+            var btn = document.getElementById('cookiePrefsBtn');
+            if (btn) { btn.addEventListener('click', function () { document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax'; location.reload(); }); }
+        })();
+    </script>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+        });
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('mobile-open');
+            mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+        });
+    </script>
+</body>
+</html>

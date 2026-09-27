@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Policy — Pavle Radojević</title>
+    <meta name="description" content="Cookie Policy for pavleradojevic07.github.io/pavle.radojevic">
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/webp" href="images/logo-dark.webp">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        (function() {
+            var theme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1") || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <style>
+        :root {
+            --bg: #0a0a0f; --bg-secondary: #111118; --bg-card: #16161f; --bg-card-hover: #1c1c28;
+            --text: #e8e8f0; --text-secondary: #a0a0b8; --text-muted: #8f8fa8;
+            --accent-basketball: #f07b3b; --accent-academic: #4da6ff; --accent-plates: #3ddc84; --accent-gold: #d4a853;
+            --border: #252535; --shadow: 0 4px 24px rgba(0,0,0,0.4); --shadow-lg: 0 12px 48px rgba(0,0,0,0.5);
+            --radius: 16px; --radius-sm: 10px; --radius-lg: 24px; --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-sans: 'Inter', system-ui, sans-serif; --font-display: 'Playfair Display', serif;
+            --font-mono: 'JetBrains Mono', monospace; --nav-height: 70px; --max-width: 900px;
+        }
+        [data-theme="light"] {
+            --bg: #f5f5f8; --bg-secondary: #ffffff; --bg-card: #ffffff; --bg-card-hover: #f8f8fc;
+            --text: #1a1a2e; --text-secondary: #4a4a60; --text-muted: #666680;
+            --border: #e0e0ea; --shadow: 0 4px 20px rgba(0,0,0,0.06); --shadow-lg: 0 12px 40px rgba(0,0,0,0.1);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans); background: var(--bg); color: var(--text);
+            line-height: 1.6; transition: background var(--transition), color var(--transition);
+            -webkit-font-smoothing: antialiased; display:flex; flex-direction:column; min-height:100vh;
+        }
+        .nav {
+            position: fixed; top:0; left:0; right:0; z-index:1000; height:var(--nav-height);
+            background:var(--bg); border-bottom:1px solid var(--border);
+            display:flex; align-items:center; justify-content:space-between;
+            padding:0 2rem; backdrop-filter:blur(20px);
+        }
+        .nav-logo { font-family: var(--font-display); font-weight:700; font-size:1.4rem; letter-spacing:-0.02em; color:var(--text); text-decoration:none; }
+        .logo-dark, .logo-light { height:36px; display:block; }
+        .logo-light { display:none; }
+        [data-theme="light"] .logo-dark { display:none; }
+        [data-theme="light"] .logo-light { display:block; }
+        .nav-links { display:flex; gap:0.25rem; align-items:center; }
+        .nav-link { color:var(--text-secondary); text-decoration:none; font-weight:500; font-size:0.9rem; padding:0.5rem 1rem; border-radius:8px; transition:all var(--transition); }
+        .nav-link:hover { color:var(--text); background:var(--bg-card); }
+        .theme-toggle {
+            background:var(--bg-card); border:1px solid var(--border); color:var(--text);
+            cursor:pointer; width:40px; height:40px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+            transition:all var(--transition); margin-left:0.5rem;
+        }
+        .theme-toggle:hover { background:var(--bg-card-hover); transform:rotate(30deg); }
+        .mobile-menu-btn { display:none; background:none; border:none; color:var(--text); font-size:1.6rem; cursor:pointer; }
+        .page-content { padding-top:var(--nav-height); flex:1; }
+        .section { padding: 3.5rem 2rem 4rem; max-width:var(--max-width); margin:0 auto; }
+        .section-title { font-family: var(--font-display); font-size:2.4rem; margin-bottom:0.4rem; }
+        .updated-note { color:var(--text-muted); font-size:0.85rem; margin-bottom:2.5rem; }
+        .legal-content h2 { font-family:var(--font-display); font-size:1.4rem; margin:2.2rem 0 0.8rem; }
+        .legal-content h2:first-of-type { margin-top:0; }
+        .legal-content p, .legal-content li { color:var(--text-secondary); font-size:0.97rem; }
+        .legal-content ul { padding-left:1.3rem; margin:0.6rem 0 0.6rem; }
+        .legal-content li { margin-bottom:0.4rem; }
+        .legal-content a { color:var(--accent-academic); text-decoration:underline; text-underline-offset:3px; }
+        .legal-content strong { color:var(--text); }
+        .cookie-table-wrap { overflow-x:auto; margin:1rem 0 1.5rem; border:1px solid var(--border); border-radius:var(--radius-sm); }
+        table.cookie-table { width:100%; border-collapse:collapse; font-size:0.87rem; min-width:640px; }
+        table.cookie-table th, table.cookie-table td { text-align:left; padding:0.7rem 0.9rem; border-bottom:1px solid var(--border); vertical-align:top; }
+        table.cookie-table th { background:var(--bg-card); color:var(--text); font-weight:600; }
+        table.cookie-table td { color:var(--text-secondary); background:var(--bg-secondary); }
+        table.cookie-table tr:last-child td { border-bottom:none; }
+        table.cookie-table code { font-family:var(--font-mono); font-size:0.82rem; color:var(--accent-plates); }
+        .pill { display:inline-block; padding:0.15rem 0.6rem; border-radius:20px; font-size:0.72rem; font-weight:600; }
+        .pill-necessary { background:rgba(61,220,132,0.15); color:var(--accent-plates); }
+        .pill-optional { background:rgba(77,166,255,0.15); color:var(--accent-academic); }
+        .manage-box {
+            background: var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:1.4rem;
+            margin:1.5rem 0; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+        }
+        .manage-box p { margin:0; color:var(--text-secondary); font-size:0.9rem; }
+        #cookiePrefsBtnMain {
+            background:var(--accent-gold); color:#000; border:none; padding:0.6rem 1.4rem; border-radius:30px;
+            cursor:pointer; font-weight:600; font-family:var(--font-sans); font-size:0.9rem; white-space:nowrap;
+        }
+        .contact-footer { text-align:center; padding:2rem 1rem 2.5rem; border-top:1px solid var(--border); background:var(--bg); }
+        .footer-note { color:var(--text-muted); font-size:0.8rem; }
+        @media (max-width:900px) {
+            .nav-links { display:none; }
+            .nav-links.mobile-open {
+                display:flex; flex-direction:column; position:absolute; top:var(--nav-height); left:0; right:0;
+                background:var(--bg-secondary); padding:1rem; border-bottom:1px solid var(--border); box-shadow:var(--shadow-lg);
+            }
+            .mobile-menu-btn { display:block; }
+            .section { padding: 2.5rem 1.2rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+    <style>
+        #analytics-consent-banner {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--bg-card, #16161f); border-top: 1px solid var(--border, #252535);
+            color: var(--text, #e8e8f0); padding: 0.9rem 1.5rem;
+            display: none; align-items: center; justify-content: center;
+            gap: 1.2rem; flex-wrap: wrap; z-index: 10000; font-size: 0.85rem;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.4); transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        #analytics-consent-banner.visible { display: flex; transform: translateY(0); }
+        #analytics-consent-banner .ac-btn {
+            border: none; padding: 0.5rem 1.2rem; border-radius: 30px;
+            cursor: pointer; font-weight: 600; font-family: var(--font-sans, 'Inter', sans-serif);
+            font-size: 0.85rem; transition: filter 0.2s;
+        }
+        #analytics-consent-banner .ac-accept { background: var(--accent-gold, #d4a853); color: #000; }
+        #analytics-consent-banner .ac-decline { background: transparent; border: 1px solid var(--border, #252535); color: var(--text, #e8e8f0); }
+        #analytics-consent-banner .ac-btn:hover { filter: brightness(1.1); }
+    </style>
+    <div id="analytics-consent-banner">
+        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location) to see where visitors come from. No data is sold or shared with third parties. <a href="cookies.html" style="color:inherit; text-decoration:underline;">Learn more</a></span>
+        <div style="display:flex; gap:0.5rem;">
+            <button class="ac-btn ac-decline" id="acDeclineBtn">Decline</button>
+            <button class="ac-btn ac-accept" id="acAcceptBtn">Accept</button>
+        </div>
+    </div>
+    <script>
+(function() {
+  const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev';
+  const MAX_IDLE_MINUTES = 30;
+  const CONSENT_COOKIE = 'analytics-consent';
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : null;
+  }
+  function setConsentCookie(value) {
+    document.cookie = CONSENT_COOKIE + '=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+  }
+  function runTracking() {
+    if (!sessionStorage.getItem('visitorToken')) {
+      sessionStorage.setItem('visitorToken', crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2));
+    }
+    const visitorToken = sessionStorage.getItem('visitorToken');
+    function getEntryTime() {
+      const stored = sessionStorage.getItem('entryTime');
+      if (!stored) return null;
+      const elapsed = Date.now() - new Date(stored).getTime();
+      if (elapsed > MAX_IDLE_MINUTES * 60 * 1000) { sessionStorage.removeItem('entryTime'); return null; }
+      return stored;
+    }
+    let entryTime = getEntryTime();
+    if (!entryTime) { entryTime = new Date().toISOString(); sessionStorage.setItem('entryTime', entryTime); }
+    const pageData = {
+      browser: navigator.userAgent.includes('Firefox') ? 'Firefox' : navigator.userAgent.includes('Chrome') ? 'Chrome' : navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
+      os: navigator.platform || 'Unknown',
+      device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+      referrer: document.referrer || 'Direct',
+      page: window.location.pathname,
+      entryTime: entryTime,
+      previousPage: sessionStorage.getItem('lastPage') || null,
+      visitorToken: visitorToken
+    };
+    sessionStorage.setItem('lastPage', window.location.pathname);
+    fetch(`${WORKER_URL}/track`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pageData) }).catch(() => {});
+    function trackEvent(type, label, url, referrer = '') {
+      fetch(`${WORKER_URL}/track-event`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, label, url, referrer }) }).catch(() => {});
+    }
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('a');
+      if (!link) return;
+      const href = link.getAttribute('href') || '';
+      if (href.match(/\.pdf$/i) || link.hasAttribute('download') || link.classList.contains('pdf-link')) {
+        trackEvent('download', link.textContent.trim() || 'PDF Download', href, getReferrerTag());
+      }
+      if (link.hostname && link.hostname !== window.location.hostname) {
+        trackEvent('click', link.textContent.trim() || link.href, href, getReferrerTag());
+      }
+    });
+    function getReferrerTag() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('ref') || document.referrer || 'Direct';
+    }
+  }
+  const consent = getCookie(CONSENT_COOKIE);
+  const banner = document.getElementById('analytics-consent-banner');
+  if (consent === 'accepted') { runTracking(); }
+  else if (consent !== 'declined' && banner) {
+    banner.classList.add('visible');
+    const acceptBtn = document.getElementById('acAcceptBtn');
+    const declineBtn = document.getElementById('acDeclineBtn');
+    if (acceptBtn) acceptBtn.addEventListener('click', function() { setConsentCookie('accepted'); banner.classList.remove('visible'); runTracking(); });
+    if (declineBtn) declineBtn.addEventListener('click', function() { setConsentCookie('declined'); banner.classList.remove('visible'); });
+  }
+})();
+</script>
+
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <img src="images/logo-dark.webp" alt="PR Logo" class="logo-dark">
+            <img src="images/logo-light.webp" alt="PR Logo" class="logo-light">
+        </a>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
+        <div class="nav-links" id="navLinks">
+            <a href="basketball.html" class="nav-link">🏀 Basketball</a>
+            <a href="academic.html" class="nav-link">🎓 Academic</a>
+            <a href="plates.html" class="nav-link">🌍 Atlas</a>
+            <a href="visitors.html" class="nav-link">📊 Visitors</a>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        </div>
+    </nav>
+
+    <main class="page-content">
+        <section class="section">
+            <h1 class="section-title">Cookie Policy</h1>
+            <p class="updated-note">Last updated: September 27, 2026 · Applies to pavleradojevic07.github.io/pavle.radojevic</p>
+
+            <div class="legal-content">
+                <h2>Do you need to accept anything?</h2>
+                <p>Yes for one category. The two items marked <span class="pill pill-necessary">Necessary</span> below are used no matter what, since the site can't remember your theme or your cookie choice without them. The items marked <span class="pill pill-optional">Optional</span> only run after you click <strong>Accept</strong> on the banner — if you click Decline, none of them run.</p>
+
+                <h2>Cookies &amp; browser storage used here</h2>
+                <div class="cookie-table-wrap">
+                    <table class="cookie-table">
+                        <thead>
+                            <tr><th>Name</th><th>Type</th><th>Purpose</th><th>Duration</th><th>Category</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>theme</code></td>
+                                <td>First-party cookie</td>
+                                <td>Remembers whether you've chosen light or dark mode</td>
+                                <td>1 year (only set once you use the toggle)</td>
+                                <td><span class="pill pill-necessary">Necessary</span></td>
+                            </tr>
+                            <tr>
+                                <td><code>analytics-consent</code></td>
+                                <td>First-party cookie</td>
+                                <td>Remembers your Accept/Decline choice for analytics</td>
+                                <td>1 year</td>
+                                <td><span class="pill pill-necessary">Necessary</span></td>
+                            </tr>
+                            <tr>
+                                <td><code>visitorToken</code></td>
+                                <td>First-party session storage</td>
+                                <td>Anonymous ID that groups your page views within one visit</td>
+                                <td>Cleared when you close the tab</td>
+                                <td><span class="pill pill-optional">Optional</span> — only if Accepted</td>
+                            </tr>
+                            <tr>
+                                <td><code>entryTime</code> / <code>lastPage</code></td>
+                                <td>First-party session storage</td>
+                                <td>Used to calculate session length and the path you took through the site</td>
+                                <td>Session only</td>
+                                <td><span class="pill pill-optional">Optional</span> — only if Accepted</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>Other requests that aren't cookies, but still involve a data transfer</h2>
+                <p>These load automatically when a page opens — separately from the cookie banner above — because the page needs them to render fonts, maps, or 3D graphics. They can see your IP address as a normal side effect of your browser fetching a file from their servers:</p>
+                <ul>
+                    <li><strong>Google Fonts</strong> (fonts.googleapis.com / fonts.gstatic.com) — delivers this site's typefaces</li>
+                    <li><strong>unpkg.com</strong> — delivers the Leaflet.js and Three.js code libraries</li>
+                    <li><strong>CARTO / OpenStreetMap</strong> (basemaps.cartocdn.com) — supplies map tile images on the Visitors page</li>
+                    <li><strong>threejs.org</strong> — supplies the Earth texture image on the Atlas globe</li>
+                </ul>
+                <p>None of these set cookies on this site, and none of them are analytics — but they are a good-practice item worth knowing about. The most common fix, if you want to remove this entirely, is self-hosting the fonts and libraries instead of loading them from a third-party CDN.</p>
+
+                <h2>Manage your choice</h2>
+                <div class="manage-box">
+                    <p>You can change your analytics preference at any time.</p>
+                    <button id="cookiePrefsBtnMain" type="button">Cookie Preferences</button>
+                </div>
+                <p>You can also block or delete cookies at any time through your browser's own settings — see your browser's help pages for instructions.</p>
+
+                <h2>More information</h2>
+                <p>For details on what analytics data is collected and why, see the <a href="privacy.html">Privacy Policy</a>.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="contact-footer">
+        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages</p>
+        <p class="footer-note" style="margin-top:0.6rem;">
+            <a href="privacy.html" style="color:var(--text-muted); text-decoration:underline;">Privacy Policy</a> ·
+            <a href="terms.html" style="color:var(--text-muted); text-decoration:underline;">Terms &amp; Conditions</a> ·
+            <a href="cookies.html" style="color:var(--text-muted); text-decoration:underline;">Cookie Policy</a> ·
+            <button id="cookiePrefsBtn" type="button" style="background:none; border:none; padding:0; margin:0; font:inherit; color:var(--text-muted); text-decoration:underline; cursor:pointer;">Cookie Preferences</button>
+        </p>
+    </footer>
+    <script>
+        (function () {
+            function resetConsent() { document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax'; location.reload(); }
+            var btn = document.getElementById('cookiePrefsBtn');
+            if (btn) { btn.addEventListener('click', resetConsent); }
+            var btnMain = document.getElementById('cookiePrefsBtnMain');
+            if (btnMain) { btnMain.addEventListener('click', resetConsent); }
+        })();
+    </script>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+        });
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('mobile-open');
+            mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+        });
+    </script>
+</body>
+</html>
