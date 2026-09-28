@@ -378,8 +378,93 @@
         [data-theme="light"] .img-dark { display: none; }
         [data-theme="light"] .img-light { display: block; }
     </style>
+<style>
+    /* Light-theme accent colors darkened to meet WCAG AA (4.5:1) when used as text */
+    [data-theme="light"] { --accent-academic: #1a6fc4; --accent-basketball: #c2410c; --accent-plates: #15803d; --accent-gold: #8a6210; }
+    [data-theme="light"] #analytics-consent-banner .ac-accept,
+    [data-theme="light"] #floatingContactToggle,
+    [data-theme="light"] .skip-link,
+    [data-theme="light"] .globe-search button,
+    [data-theme="light"] #donationBtn,
+    [data-theme="light"] #cookiePrefsBtnMain,
+    [data-theme="light"] .confirm-modal-confirm { color: #fff !important; }
+    .skip-link { position: fixed; top: -100px; left: 1rem; z-index: 100000; background: var(--accent-gold, #d4a853); color: #000; padding: 0.7rem 1.4rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-family: var(--font-sans, sans-serif); transition: top 0.2s ease; }
+    .skip-link:focus { top: 1rem; }
+    #main-content:focus { outline: none; }
+    [id] { scroll-margin-top: calc(var(--nav-height, 70px) + 16px); }
+    #scrollProgressBar { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: var(--accent-gold, #d4a853); z-index: 1001; transition: width 0.1s linear; }
+    #backToTopBtn { position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 900; width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-size: 1.2rem; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: var(--shadow); transition: border-color 0.25s ease, transform 0.25s ease, opacity 0.25s ease; opacity: 0; transform: translateY(10px); }
+    #backToTopBtn.visible { display: flex; opacity: 1; transform: translateY(0); }
+    #backToTopBtn:hover { border-color: var(--accent-gold); transform: translateY(-2px); }
+    #floatingContact { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 900; display: flex; flex-direction: column-reverse; align-items: flex-end; gap: 0.6rem; }
+    #floatingContactToggle { width: 52px; height: 52px; border-radius: 50%; border: none; cursor: pointer; background: var(--accent-gold); color: #000; font-size: 1.4rem; box-shadow: var(--shadow-lg); display: flex; align-items: center; justify-content: center; transition: transform 0.2s ease; }
+    #floatingContactToggle:hover { transform: scale(1.06); }
+    #floatingContactPanel { display: none; flex-direction: column; gap: 0.3rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.6rem; box-shadow: var(--shadow-lg); min-width: 160px; }
+    #floatingContactPanel.open { display: flex; }
+    #floatingContactPanel a { display: flex; align-items: center; gap: 0.5rem; color: var(--text); text-decoration: none; font-size: 0.85rem; padding: 0.45rem 0.6rem; border-radius: 6px; transition: background 0.2s; }
+    #floatingContactPanel a:hover { background: var(--bg-card-hover); }
+    #siteSearchTrigger { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all var(--transition, 0.3s); margin-left: 0.5rem; }
+    #siteSearchTrigger:hover { background: var(--bg-card-hover); }
+    #siteSearchOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 20000; align-items: flex-start; justify-content: center; padding-top: 12vh; }
+    #siteSearchOverlay.open { display: flex; }
+    #siteSearchBox { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); width: 92%; max-width: 480px; padding: 1rem; box-shadow: var(--shadow-lg); max-height: 60vh; display: flex; flex-direction: column; }
+    #siteSearchInput { width: 100%; padding: 0.7rem 0.9rem; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-secondary); color: var(--text); font-family: var(--font-sans); font-size: 0.95rem; outline: none; }
+    #siteSearchInput:focus { border-color: var(--accent-gold); }
+    #siteSearchResults { margin-top: 0.7rem; overflow-y: auto; }
+    #siteSearchResults a { display: block; padding: 0.6rem 0.7rem; border-radius: 8px; text-decoration: none; color: var(--text); }
+    #siteSearchResults a:hover { background: var(--bg-card-hover); }
+    #siteSearchResults .result-desc { color: var(--text-muted); font-size: 0.8rem; }
+    #siteSearchEmpty { color: var(--text-muted); font-size: 0.85rem; padding: 0.6rem 0.2rem; }
+    .confirm-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 20000; align-items: center; justify-content: center; }
+    .confirm-modal-overlay.open { display: flex; }
+    .confirm-modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.6rem; max-width: 360px; width: 90%; text-align: center; box-shadow: var(--shadow-lg); }
+    .confirm-modal-box h4 { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 0.6rem; }
+    .confirm-modal-box p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.2rem; }
+    .confirm-modal-actions { display: flex; gap: 0.6rem; justify-content: center; }
+    .confirm-modal-actions button { border: none; padding: 0.55rem 1.3rem; border-radius: 20px; cursor: pointer; font-weight: 600; font-family: var(--font-sans); }
+    .confirm-modal-confirm { background: var(--accent-gold); color: #000; }
+    .confirm-modal-cancel { background: var(--bg-secondary); color: var(--text); border: 1px solid var(--border); }
+    .copy-email-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; border-radius: 20px; padding: 0.35rem 0.8rem; font-size: 0.78rem; margin-left: 0.4rem; font-family: var(--font-sans); transition: all var(--transition, 0.3s); }
+    .copy-email-btn:hover { border-color: var(--accent-gold); color: var(--text); }
+    #donationBtn:hover { filter: brightness(1.1); }
+    #cookiePrefsBtn:hover, #cookiePrefsBtnMain:hover { opacity: 0.75; }
+    .modal-close:hover { border-color: var(--accent-gold); background: var(--bg-card-hover); }
+    .footer-note a:hover { color: var(--text); }
+    .skeleton-pulse { animation: skeletonPulse 1.3s ease-in-out infinite; }
+    @keyframes skeletonPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .stats-grid.loading .stat-value { color: transparent; background: var(--border); border-radius: 6px; display: inline-block; min-width: 2.4ch; animation: skeletonPulse 1.3s ease-in-out infinite; }
+    .loading-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--bg-secondary); color: var(--text-muted); font-size: 0.85rem; z-index: 5; transition: opacity 0.4s ease; border-radius: inherit; }
+    .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+    .loading-spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent-gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 0.6rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .form-msg { font-size: 0.8rem; margin-top: 0.5rem; min-height: 1.1em; }
+    .form-msg-error { color: var(--accent-basketball, #e05a3b); }
+    .form-msg-success { color: var(--accent-plates, #3ddc84); }
+    .faq-list { display: flex; flex-direction: column; gap: 0.8rem; }
+    .faq-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.1rem 1.3rem; cursor: pointer; transition: all var(--transition, 0.3s); }
+    .faq-item:hover { border-color: var(--accent-gold); }
+    .faq-question { font-weight: 600; position: relative; padding-right: 1.6rem; }
+    .faq-question::after { content: '+'; position: absolute; right: 0; top: 0; font-weight: 400; color: var(--text-muted); transition: transform 0.2s; display: inline-block; }
+    .faq-item[aria-expanded="true"] .faq-question::after { transform: rotate(45deg); }
+    .faq-answer { display: none; margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px dashed var(--border); color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+    .faq-item[aria-expanded="true"] .faq-answer { display: block; }
+    .faq-answer-todo { color: var(--accent-gold) !important; }
+    @media print {
+        .nav, .contact-footer, #analytics-consent-banner, #backToTopBtn, #floatingContact, #siteSearchOverlay, .confirm-modal-overlay, #scrollProgressBar, .theme-toggle, .mobile-menu-btn, .skip-link, .globe-container, .map-container, .map-container-wrap { display: none !important; }
+        body { background: #fff !important; color: #000 !important; }
+        .page-content { padding-top: 0 !important; }
+        a { color: #000 !important; text-decoration: underline; }
+        .course-summary, .faq-answer { display: block !important; }
+        * { box-shadow: none !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .skeleton-pulse, .loading-spinner, #backToTopBtn, #floatingContactToggle { animation: none !important; transition: none !important; }
+    }
+</style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div id="scrollProgressBar"></div>
     <!-- Minimal analytics consent banner (Cloudflare tracker only — no Google Analytics) -->
     <style>
         #analytics-consent-banner {
@@ -423,6 +508,24 @@
     document.cookie = CONSENT_COOKIE + '=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
   }
 
+  function getUTMParams() {
+    var params = new URLSearchParams(window.location.search);
+    var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+    var utm = {};
+    var found = false;
+    keys.forEach(function (k) {
+      var v = params.get(k);
+      if (v) { utm[k] = v.slice(0, 100); found = true; }
+    });
+    if (found) {
+      sessionStorage.setItem('utmParams', JSON.stringify(utm));
+      return utm;
+    }
+    try {
+      var stored = sessionStorage.getItem('utmParams');
+      return stored ? JSON.parse(stored) : {};
+    } catch (e) { return {}; }
+  }
   function runTracking() {
     // ── visitor token & entry time ──
     if (!sessionStorage.getItem('visitorToken')) {
@@ -459,7 +562,8 @@
       page: window.location.pathname,
       entryTime: entryTime,
       previousPage: sessionStorage.getItem('lastPage') || null,
-      visitorToken: visitorToken
+      visitorToken: visitorToken,
+      utm: getUTMParams()
     };
 
     sessionStorage.setItem('lastPage', window.location.pathname);
@@ -538,12 +642,42 @@
             <a href="academic.html" class="nav-link academic-link">🎓 Academic</a>
             <a href="plates.html" class="nav-link plates-link">🌍 Atlas</a>
             <a href="visitors.html" class="nav-link">📊 Visitors</a>
+            <button id="siteSearchTrigger" aria-label="Search the site">🔍</button>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
         </div>
     </nav>
 
+    <button id="backToTopBtn" aria-label="Back to top">↑</button>
+
+    <div id="floatingContact">
+        <div id="floatingContactPanel" aria-label="Quick contact options">
+            <a href="mailto:pavle.radojevic07@gmail.com">✉️ Email</a>
+            <a href="https://instagram.com/pavle.radojevic" target="_blank" rel="noopener">📷 Instagram</a>
+            <a href="https://linkedin.com/in/pavle-radojevic-3677b4255/" target="_blank" rel="noopener">💼 LinkedIn</a>
+        </div>
+        <button id="floatingContactToggle" aria-label="Contact options" aria-controls="floatingContactPanel" aria-expanded="false">✉️</button>
+    </div>
+
+    <div id="siteSearchOverlay" role="dialog" aria-modal="true" aria-label="Site search">
+        <div id="siteSearchBox">
+            <input type="text" id="siteSearchInput" placeholder="Search the site…" aria-label="Search the site" autocomplete="off">
+            <div id="siteSearchResults"></div>
+        </div>
+    </div>
+
+    <div class="confirm-modal-overlay" id="cookiePrefsConfirmModal" role="dialog" aria-modal="true">
+        <div class="confirm-modal-box">
+            <h4>Reset cookie preferences?</h4>
+            <p>You'll see the consent banner again on your next page load.</p>
+            <div class="confirm-modal-actions">
+                <button class="confirm-modal-cancel" id="cookiePrefsCancelBtn" type="button">Cancel</button>
+                <button class="confirm-modal-confirm" id="cookiePrefsConfirmBtn" type="button">Reset</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ════════════ PAGE CONTENT ════════════ -->
-    <main class="page-content">
+    <main class="page-content" id="main-content" tabindex="-1">
         <section class="section">
             <h1 class="section-title">Basketball</h1>
 
@@ -594,7 +728,7 @@
             </div>
 
             <!-- Career Achievements -->
-            <h2 style="margin-top:3.5rem; font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Career Achievements</h2>
+            <h2 id="achievements" style="margin-top:3.5rem; font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Career Achievements</h2>
             <div class="achievements-grid">
                 <div class="achievement-card">
                     <div class="achievement-icon">🇷🇸</div>
@@ -629,7 +763,7 @@
             </div>
 
             <!-- Career Highs -->
-            <h2 style="margin-top:3.5rem; font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Career Highs</h2>
+            <h2 id="career-highs" style="margin-top:3.5rem; font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Career Highs</h2>
 <div class="achievements-grid">
     <!-- Points -->
     <div class="achievement-card" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
@@ -667,6 +801,31 @@
                 <!-- 🔴 Replace the # with your actual statistics URL -->
                 <a href="https://mkosz.hu/jatekos/x2425/hun_univn/244313/radojevic-pavle" class="btn-outline">📊 Statistics 2024/25</a>
             </div>
+
+            <!-- FAQ -->
+            <h2 id="faq" style="margin-top:3.5rem; font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">FAQ</h2>
+            <div class="faq-list">
+                <div class="faq-item" tabindex="0" role="button" aria-expanded="false">
+                    <div class="faq-question">What position do you play?</div>
+                    <div class="faq-answer">Power forward / center (PF/C). Height, weight, and nationality are in the profile at the top of this page.</div>
+                </div>
+                <div class="faq-item" tabindex="0" role="button" aria-expanded="false">
+                    <div class="faq-question">How can I get in touch?</div>
+                    <div class="faq-answer">Email is the fastest way: pavle.radojevic07@gmail.com. Instagram, LinkedIn, and YouTube links are in the footer.</div>
+                </div>
+                <div class="faq-item" tabindex="0" role="button" aria-expanded="false">
+                    <div class="faq-question">Where can I see full season stats?</div>
+                    <div class="faq-answer">The "Statistics 2024/25" button in the Highlights &amp; Statistics section above links to the official league stats page.</div>
+                </div>
+                <div class="faq-item" tabindex="0" role="button" aria-expanded="false">
+                    <div class="faq-question">Are you open to transfer or recruitment conversations?</div>
+                    <div class="faq-answer faq-answer-todo">⚠️ Placeholder: replace this with your own answer before publishing.</div>
+                </div>
+                <div class="faq-item" tabindex="0" role="button" aria-expanded="false">
+                    <div class="faq-question">What is your eligibility or graduation timeline?</div>
+                    <div class="faq-answer faq-answer-todo">⚠️ Placeholder: replace this with your own answer before publishing.</div>
+                </div>
+            </div>
         </section>
     </main>
 
@@ -681,6 +840,7 @@
                 </svg>
             Email
             </a>
+            <button type="button" class="copy-email-btn" data-email="pavle.radojevic07@gmail.com" aria-label="Copy email address to clipboard">Copy</button>
             <!-- Instagram -->
             <a href="https://instagram.com/pavle.radojevic" target="_blank" rel="noopener" class="contact-link">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -703,7 +863,7 @@
                 YouTube
             </a>
         </div>
-        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages</p>
+        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages · Content last updated September 27, 2026</p>
         <p class="footer-note" style="margin-top:0.6rem;">
             <a href="privacy.html" style="color:var(--text-muted); text-decoration:underline;">Privacy Policy</a> ·
             <a href="terms.html" style="color:var(--text-muted); text-decoration:underline;">Terms &amp; Conditions</a> ·
@@ -716,8 +876,7 @@
             var btn = document.getElementById('cookiePrefsBtn');
             if (btn) {
                 btn.addEventListener('click', function () {
-                    document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax';
-                    location.reload();
+                    if (window.openCookiePrefsConfirm) window.openCookiePrefsConfirm();
                 });
             }
         })();
@@ -744,5 +903,185 @@
             mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
         });
     </script>
+<script>
+(function () {
+    // Scroll progress + back to top (inert on the home page, which has no vertical scroll)
+    var progressBar = document.getElementById('scrollProgressBar');
+    var backToTopBtn = document.getElementById('backToTopBtn');
+    function onScroll() {
+        var doc = document.documentElement;
+        var scrollTop = doc.scrollTop || document.body.scrollTop;
+        var scrollable = doc.scrollHeight - doc.clientHeight;
+        var pct = scrollable > 0 ? (scrollTop / scrollable) * 100 : 0;
+        if (progressBar) progressBar.style.width = pct + '%';
+        if (backToTopBtn) backToTopBtn.classList.toggle('visible', scrollTop > 400);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', function () {
+            var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+        });
+    }
+
+    // Floating contact
+    var fcToggle = document.getElementById('floatingContactToggle');
+    var fcPanel = document.getElementById('floatingContactPanel');
+    var fcWrap = document.getElementById('floatingContact');
+    function closeFc() {
+        if (!fcPanel || !fcToggle) return;
+        fcPanel.classList.remove('open');
+        fcToggle.setAttribute('aria-expanded', 'false');
+    }
+    if (fcToggle && fcPanel) {
+        fcToggle.addEventListener('click', function () {
+            var open = fcPanel.classList.toggle('open');
+            fcToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+            if (fcWrap && !fcWrap.contains(e.target)) closeFc();
+        });
+    }
+
+    // Keep floating buttons clear of the consent banner
+    var banner = document.getElementById('analytics-consent-banner');
+    function adjustForBanner() {
+        if (!banner || !fcWrap || !backToTopBtn) return;
+        var visible = banner.classList.contains('visible');
+        var offset = visible ? banner.offsetHeight + 16 : 24;
+        fcWrap.style.bottom = offset + 'px';
+        backToTopBtn.style.bottom = offset + 'px';
+    }
+    adjustForBanner();
+    if (banner && window.MutationObserver) {
+        new MutationObserver(adjustForBanner).observe(banner, { attributes: true, attributeFilter: ['class'] });
+    }
+    window.addEventListener('resize', adjustForBanner);
+
+    // Site search
+    var searchTrigger = document.getElementById('siteSearchTrigger');
+    var searchOverlay = document.getElementById('siteSearchOverlay');
+    var searchInputEl = document.getElementById('siteSearchInput');
+    var searchResultsEl = document.getElementById('siteSearchResults');
+    var lastFocus = null;
+    var siteIndex = [
+        { title: 'Home', url: 'index.html', desc: 'Basketball, academics, license plate atlas' },
+        { title: 'Basketball', url: 'basketball.html', desc: 'Player profile, height, weight, position' },
+        { title: 'Playing history', url: 'basketball.html', desc: 'KK Borac Zemun, Honv\u00e9d Academy, EYBL' },
+        { title: 'Career achievements', url: 'basketball.html#achievements', desc: 'National team camp, NB II champion, tournaments' },
+        { title: 'Career highs', url: 'basketball.html#career-highs', desc: 'Points, rebounds, assists, blocks' },
+        { title: 'Basketball FAQ', url: 'basketball.html#faq', desc: 'Contact, stats, recruiting questions' },
+        { title: 'Academic', url: 'academic.html', desc: 'University of Belgrade, Faculty of Mathematics' },
+        { title: 'Courses', url: 'academic.html#courses', desc: 'Programming, linear algebra, mathematical analysis' },
+        { title: 'Languages', url: 'academic.html#languages', desc: 'Serbian, English, Hungarian' },
+        { title: 'License plate atlas', url: 'plates.html', desc: 'Interactive globe and collection stats' },
+        { title: 'Visitor map', url: 'visitors.html', desc: 'Visitor statistics by country' },
+        { title: 'Privacy policy', url: 'privacy.html', desc: 'Data, analytics, your rights' },
+        { title: 'Terms & conditions', url: 'terms.html', desc: 'Use of this site' },
+        { title: 'Cookie policy', url: 'cookies.html', desc: 'Cookies, storage, consent' }
+    ];
+    function escapeHtml(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function renderResults(q) {
+        if (!searchResultsEl) return;
+        var query = q.trim().toLowerCase();
+        var matches = siteIndex.filter(function (item) {
+            return !query || item.title.toLowerCase().indexOf(query) !== -1 || item.desc.toLowerCase().indexOf(query) !== -1;
+        });
+        if (matches.length === 0) {
+            searchResultsEl.innerHTML = '<div id="siteSearchEmpty">No matches. Try a different word.</div>';
+            return;
+        }
+        searchResultsEl.innerHTML = matches.map(function (item) {
+            return '<a href="' + item.url + '"><strong>' + escapeHtml(item.title) + '</strong><div class="result-desc">' + escapeHtml(item.desc) + '</div></a>';
+        }).join('');
+    }
+    function openSearch() {
+        if (!searchOverlay) return;
+        lastFocus = document.activeElement;
+        searchOverlay.classList.add('open');
+        renderResults('');
+        setTimeout(function () { if (searchInputEl) searchInputEl.focus(); }, 30);
+    }
+    function closeSearch() {
+        if (!searchOverlay) return;
+        searchOverlay.classList.remove('open');
+        if (searchInputEl) searchInputEl.value = '';
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+    if (searchTrigger) searchTrigger.addEventListener('click', openSearch);
+    if (searchInputEl) {
+        searchInputEl.addEventListener('input', function () { renderResults(this.value); });
+        searchInputEl.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                var first = searchResultsEl && searchResultsEl.querySelector('a');
+                if (first) window.location.href = first.getAttribute('href');
+            }
+        });
+    }
+    if (searchOverlay) searchOverlay.addEventListener('click', function (e) { if (e.target === searchOverlay) closeSearch(); });
+
+    // Copy email
+    document.querySelectorAll('.copy-email-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var email = btn.getAttribute('data-email');
+            function done() { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1800); }
+            function fallback() {
+                var ta = document.createElement('textarea');
+                ta.value = email; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta); ta.select();
+                try { document.execCommand('copy'); done(); } catch (err) { btn.textContent = 'Press Ctrl+C'; }
+                document.body.removeChild(ta);
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(email).then(done).catch(fallback);
+            } else { fallback(); }
+        });
+    });
+
+    // Cookie preferences confirmation modal
+    var cookieModal = document.getElementById('cookiePrefsConfirmModal');
+    var cookieCancelBtn = document.getElementById('cookiePrefsCancelBtn');
+    var cookieConfirmBtn = document.getElementById('cookiePrefsConfirmBtn');
+    var cookieLastFocus = null;
+    function openCookieModal() {
+        if (!cookieModal) return;
+        cookieLastFocus = document.activeElement;
+        cookieModal.classList.add('open');
+        if (cookieConfirmBtn) cookieConfirmBtn.focus();
+    }
+    function closeCookieModal() {
+        if (!cookieModal) return;
+        cookieModal.classList.remove('open');
+        if (cookieLastFocus && cookieLastFocus.focus) cookieLastFocus.focus();
+    }
+    if (cookieCancelBtn) cookieCancelBtn.addEventListener('click', closeCookieModal);
+    if (cookieModal) cookieModal.addEventListener('click', function (e) { if (e.target === cookieModal) closeCookieModal(); });
+    if (cookieConfirmBtn) cookieConfirmBtn.addEventListener('click', function () {
+        document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax';
+        location.reload();
+    });
+    window.openCookiePrefsConfirm = openCookieModal;
+
+    // FAQ accordion (same interaction pattern as the course cards)
+    document.querySelectorAll('.faq-item').forEach(function (item) {
+        function toggle() { item.setAttribute('aria-expanded', item.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'); }
+        item.addEventListener('click', toggle);
+        item.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); toggle(); }
+        });
+    });
+
+    // Global shortcuts: Ctrl/Cmd+K opens search, Escape closes any open overlay
+    document.addEventListener('keydown', function (e) {
+        if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); openSearch(); }
+        if (e.key === 'Escape') {
+            if (searchOverlay && searchOverlay.classList.contains('open')) closeSearch();
+            if (cookieModal && cookieModal.classList.contains('open')) closeCookieModal();
+            closeFc();
+        }
+    });
+})();
+</script>
 </body>
 </html>
