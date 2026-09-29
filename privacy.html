@@ -358,7 +358,7 @@
                     <li>Campaign tags in the link you arrived from (<code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>, <code>utm_term</code>, <code>utm_content</code>), only if the link contains them. They are remembered for the length of your visit so they can be tied to the pages you view.</li>
                 </ul>
                 <p>This data is used only to see which pages and countries visitors come from. It is never sold, and never shared with advertisers or third parties for marketing.</p>
-                <div class="todo-flag"><strong>To confirm:</strong> whether the analytics Worker stores raw IP addresses or only the derived country/city, and how "returning visitor" is calculated — please check the Worker's own code and update this section so it's accurate before publishing.</div>
+                <p>Your IP address itself is never stored. It is used only for the moment of the request to look up your approximate country/city and to compute a one-way cryptographic hash, which is what's saved — the hash cannot be turned back into your IP address. That hash is what's used to work out whether a visit is "returning" (an address associated with more than one visit) and how many people are viewing the site live.</p>
 
                 <h2>4. Cookies</h2>
                 <p>This site uses a small number of cookies and browser-storage items. See the <a href="cookies.html">Cookie Policy</a> for the full list, what each one does, and how to change your choice at any time.</p>
@@ -380,7 +380,7 @@
                 <p>The services above are based in or operate infrastructure in the United States and other countries. Where required, these providers rely on their own compliance mechanisms (such as EU Standard Contractual Clauses) for transferring data outside the EU/UK.</p>
 
                 <h2>8. How long data is kept</h2>
-                <div class="todo-flag"><strong>To confirm:</strong> I don't have access to the Cloudflare Worker's backend, so I can't state an accurate retention period here. Please check the Worker/storage configuration and fill in a real timeframe (e.g. "analytics events are kept for 12 months, then deleted") before this policy goes live.</div>
+                <p>Analytics events are automatically and permanently deleted after 365 days. A failed-login counter used to slow down password-guessing on the analytics dashboard is kept for 1 day.</p>
 
                 <h2>9. Your rights</h2>
                 <p>Depending on where you live (this includes rights under the EU/UK GDPR and Serbia's Law on Personal Data Protection), you may have the right to:</p>
