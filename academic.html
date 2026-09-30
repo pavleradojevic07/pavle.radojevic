@@ -303,6 +303,60 @@
         border-color: var(--accent-gold);
         box-shadow: var(--shadow);
         }
+
+        /* Collapsible course group (mirrors .faq-item behaviour) */
+        .course-group {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.4rem 1.6rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            margin-bottom: 1.5rem;
+        }
+        .course-group:hover { border-color: var(--accent-academic); }
+        .course-group-header {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 600;
+            position: relative;
+            padding-right: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .course-group-header::after {
+            content: '+';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 400;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            transition: transform 0.2s;
+            display: inline-block;
+            line-height: 1;
+        }
+        .course-group[aria-expanded="true"] .course-group-header::after {
+            transform: translateY(-50%) rotate(45deg);
+        }
+        .course-group-sub {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+        .course-group-body {
+            display: none;
+            margin-top: 1.2rem;
+            padding-top: 1.2rem;
+            border-top: 1px dashed var(--border);
+        }
+        .course-group[aria-expanded="true"] .course-group-body {
+            display: block;
+        }
     </style>
 <style>
     /* Light-theme accent colors darkened to meet WCAG AA (4.5:1) when used as text */
@@ -380,7 +434,7 @@
         body { background: #fff !important; color: #000 !important; }
         .page-content { padding-top: 0 !important; }
         a { color: #000 !important; text-decoration: underline; }
-        .course-summary, .faq-answer { display: block !important; }
+        .course-summary, .faq-answer, .course-group-body { display: block !important; }
         * { box-shadow: none !important; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -607,17 +661,27 @@
 
             <h2 style="font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Academic Background</h2>
             <div class="timeline">
-                <!-- University (now first) -->
+                <!-- University of Primorska (new, current) -->
                 <div class="timeline-item">
-                    <div class="timeline-year">2025 – Present</div>
+                    <div class="timeline-year">2026 – Present</div>
+                    <div class="timeline-title">
+                        <a href="https://www.upr.si/en" target="_blank" rel="noopener" class="school-link">University of Primorska</a> — 
+                        <a href="https://www.famnit.upr.si/" target="_blank" rel="noopener" class="school-link">The Faculty of Mathematics, Natural Sciences and Information Technologies</a>, Koper, Slovenia 🇸🇮
+                    </div>
+                    <div class="timeline-desc">Currently enrolled: <strong>Mathematics</strong> (1st Year).</div>
+                </div>
+
+                <!-- University of Belgrade (updated dates) -->
+                <div class="timeline-item">
+                    <div class="timeline-year">2025 – 2026</div>
                     <div class="timeline-title">
                         <a href="https://www.bg.ac.rs/" target="_blank" rel="noopener" class="school-link">University of Belgrade</a> — 
                         <a href="https://www.matf.bg.ac.rs/" target="_blank" rel="noopener" class="school-link">Faculty of Mathematics</a>, Belgrade, Serbia 🇷🇸
                     </div>
-                    <div class="timeline-desc">Currently enrolled: <strong>Applied Mathematics</strong> (1st Year).</div>
+                    <div class="timeline-desc">Completed: <strong>Applied Mathematics</strong> (1st Year).</div>
                 </div>
 
-                <!-- High School (second) -->
+                <!-- High School -->
                 <div class="timeline-item">
                     <div class="timeline-year">2021 – 2025</div>
                     <div class="timeline-title">
@@ -632,74 +696,68 @@
 
             <h2 id="courses" style="font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Courses</h2>
 
-            <h3 style="font-weight:600; margin-bottom:0.8rem; color:var(--text);">Completed</h3>
-            
-            <div class="courses-grid">
-                <div class="course-card">
-                    <div class="course-name">💡 Programming 2</div>
-                    <span class="course-status status-completed">Completed</span>
-                    <div class="course-summary">Building on Programming 1, this course covers advanced programming techniques in C. Students learn about pointers, dynamic memory allocation, and complex data structures including linked lists, stacks, queues, and trees. The curriculum includes file handling, bitwise operators, and command-line arguments. Students explore algorithms for searching and sorting, both iterative and recursive implementations, and gain understanding of computational complexity and algorithmic undecidability.</div>
+            <!-- Faculty of Mathematics, University of Belgrade — Completed Courses (collapsible) -->
+            <div class="course-group" tabindex="0" role="button" aria-expanded="false">
+                <div class="course-group-header">
+                    🇷🇸 Faculty of Mathematics, University of Belgrade
+                    <span class="course-group-sub">Completed courses · 2025 – 2026</span>
                 </div>
-                <div class="course-card">
-                    <div class="course-name">💻 Programming 1</div>
-                    <span class="course-status status-completed">Completed</span>
-                    <div class="course-summary">This course introduces students to fundamental concepts of procedural programming. Students learn basic programming constructs including data types, control structures, functions, and arrays. The course covers algorithm development, recursion, and elementary data structures, with practical implementation in the C programming language. Students also gain understanding of testing, debugging, and the historical context of computer science.</div>
-                </div>
-                <div class="course-card">
-                    <div class="course-name">🧠 Introduction to Mathematical Logic</div>
-                    <span class="course-status status-completed">Completed</span>
-                    <div class="course-summary">This course provides foundational knowledge in mathematical logic and set theory. Students learn about sets, relations, functions, cardinality, and the concept of countability. The curriculum covers propositional logic with semantics and normal forms, as well as first-order predicate logic with quantifiers. Students understand key theorems including Gödel's completeness theorem and the compactness theorem, preparing them for advanced mathematical courses.</div>
-                </div>
-                <div class="course-card">
-                    <div class="course-name">📐 Elementary Mathematics</div>
-                    <span class="course-status status-completed">Completed</span>
-                    <div class="course-summary">This course aims to standardize students' mathematical knowledge from previous education. It covers algebraic expressions, absolute values, exponentiation, logarithms, and trigonometric functions. Students work with functions, inverse functions, and their graphs, as well as solving various types of equations and inequalities. The content ensures students have mastered the mathematics taught in Serbian primary and secondary schools.</div>
-                </div>
-                <div class="course-card">
-                    <div class="course-name">📊 Linear Algebra</div>
-                    <span class="course-status status-completed">Completed</span>
-                    <div class="course-summary">This course provides advanced knowledge of linear algebra over two semesters. Students learn about vector spaces, linear mappings, bases, dimension, and matrices. The curriculum covers determinants, systems of linear equations, eigenvalues and eigenvectors, and diagonalization. Additional topics include bilinear and quadratic forms, Euclidean vector spaces, orthogonal transformations, and Hermitian spaces. Students gain the ability to solve problems and apply linear algebra in other mathematical contexts.</div>
-                </div>
-                <div class="course-card">
-                    <div class="course-name">🇬🇧 English for Mathematical Purposes</div>
-                    <span class="course-status status-completed">Completed</span>
-                    <div class="course-summary">This course develops students' English language skills with a focus on mathematical contexts. Students improve reading comprehension of technical texts, writing skills for professional communication, and overall language proficiency. The curriculum covers essential English grammar including verb tenses, conditionals, reported speech, and passive voice. Students learn to communicate effectively in English and independently use English-language mathematical literature.</div>
+                <div class="course-group-body">
+                    <div class="courses-grid">
+                        <div class="course-card">
+                            <div class="course-name">💡 Programming 2</div>
+                            <span class="course-status status-completed">Completed</span>
+                            <div class="course-summary">Building on Programming 1, this course covers advanced programming techniques in C. Students learn about pointers, dynamic memory allocation, and complex data structures including linked lists, stacks, queues, and trees. The curriculum includes file handling, bitwise operators, and command-line arguments. Students explore algorithms for searching and sorting, both iterative and recursive implementations, and gain understanding of computational complexity and algorithmic undecidability.</div>
+                        </div>
+                        <div class="course-card">
+                            <div class="course-name">💻 Programming 1</div>
+                            <span class="course-status status-completed">Completed</span>
+                            <div class="course-summary">This course introduces students to fundamental concepts of procedural programming. Students learn basic programming constructs including data types, control structures, functions, and arrays. The course covers algorithm development, recursion, and elementary data structures, with practical implementation in the C programming language. Students also gain understanding of testing, debugging, and the historical context of computer science.</div>
+                        </div>
+                        <div class="course-card">
+                            <div class="course-name">🧠 Introduction to Mathematical Logic</div>
+                            <span class="course-status status-completed">Completed</span>
+                            <div class="course-summary">This course provides foundational knowledge in mathematical logic and set theory. Students learn about sets, relations, functions, cardinality, and the concept of countability. The curriculum covers propositional logic with semantics and normal forms, as well as first-order predicate logic with quantifiers. Students understand key theorems including Gödel's completeness theorem and the compactness theorem, preparing them for advanced mathematical courses.</div>
+                        </div>
+                        <div class="course-card">
+                            <div class="course-name">📐 Elementary Mathematics</div>
+                            <span class="course-status status-completed">Completed</span>
+                            <div class="course-summary">This course aims to standardize students' mathematical knowledge from previous education. It covers algebraic expressions, absolute values, exponentiation, logarithms, and trigonometric functions. Students work with functions, inverse functions, and their graphs, as well as solving various types of equations and inequalities. The content ensures students have mastered the mathematics taught in Serbian primary and secondary schools.</div>
+                        </div>
+                        <div class="course-card">
+                            <div class="course-name">📊 Linear Algebra</div>
+                            <span class="course-status status-completed">Completed</span>
+                            <div class="course-summary">This course provides advanced knowledge of linear algebra over two semesters. Students learn about vector spaces, linear mappings, bases, dimension, and matrices. The curriculum covers determinants, systems of linear equations, eigenvalues and eigenvectors, and diagonalization. Additional topics include bilinear and quadratic forms, Euclidean vector spaces, orthogonal transformations, and Hermitian spaces. Students gain the ability to solve problems and apply linear algebra in other mathematical contexts.</div>
+                        </div>
+                        <div class="course-card">
+                            <div class="course-name">🇬🇧 English for Mathematical Purposes</div>
+                            <span class="course-status status-completed">Completed</span>
+                            <div class="course-summary">This course develops students' English language skills with a focus on mathematical contexts. Students improve reading comprehension of technical texts, writing skills for professional communication, and overall language proficiency. The curriculum covers essential English grammar including verb tenses, conditionals, reported speech, and passive voice. Students learn to communicate effectively in English and independently use English-language mathematical literature.</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <h3 style="font-weight:600; margin:2rem 0 0.8rem; color:var(--text);">Currently Enrolled</h3>
-            <div class="courses-grid">
-                <div class="course-card">
-                    <div class="course-name">📈 Mathematical Analysis 1</div>
-                    <span class="course-status status-ongoing">In Progress</span>
-                    <div class="course-summary">This comprehensive course covers the core concepts of mathematical analysis. Students learn about real numbers, convergence of sequences and series, continuity, differentiability, and integration. Topics include limits, the derivative and its applications, Riemann integration, and improper integrals. The course also covers elementary functions, Taylor polynomials, uniform convergence, and numerical and power series. Students develop skills in applying these fundamental analytical tools.</div>
+            <!-- Languages -->
+            <h2 id="languages" style="font-family:var(--font-display); font-size:2rem; margin:3rem 0 1.5rem;">Languages</h2>
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:1rem;">
+                <div class="lang-card">
+                    <div style="font-size:2rem; margin-bottom:0.5rem;">🇷🇸</div>
+                    <div style="font-weight:600;">Serbian</div>
+                    <div style="color:var(--text-secondary); font-size:0.9rem;">Native</div>
                 </div>
-                
-                <div class="course-card">
-                    <div class="course-name">📏 Analytic Geometry</div>
-                    <span class="course-status status-ongoing">In Progress</span>
-                    <div class="course-summary">This course provides foundational knowledge of analytic geometry in the plane and space. Students learn vector algebra, linear geometry, and quadratic geometry, including points, lines, planes, and second-order curves and surfaces. The curriculum includes coordinate transformations, affine transformations, and elementary spherical geometry. Students develop geometric intuition and the ability to apply coordinate methods in other mathematical courses.</div>
+                <div class="lang-card">
+                    <div style="font-size:2rem; margin-bottom:0.5rem;">🇬🇧</div>
+                    <div style="font-weight:600;">English</div>
+                    <div style="color:var(--text-secondary); font-size:0.9rem;">C1 – IELTS 7.5</div>
+                </div>
+                <div class="lang-card">
+                    <div style="font-size:2rem; margin-bottom:0.5rem;">🇭🇺</div>
+                    <div style="font-weight:600;">Hungarian</div>
+                    <div style="color:var(--text-secondary); font-size:0.9rem;">B2</div>
                 </div>
             </div>
-            <!-- Languages -->
-                        <h2 id="languages" style="font-family:var(--font-display); font-size:2rem; margin:3rem 0 1.5rem;">Languages</h2>
-                        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:1rem;">
-                            <div class="lang-card">
-                                <div style="font-size:2rem; margin-bottom:0.5rem;">🇷🇸</div>
-                                <div style="font-weight:600;">Serbian</div>
-                                <div style="color:var(--text-secondary); font-size:0.9rem;">Native</div>
-                            </div>
-                            <div class="lang-card">
-                                <div style="font-size:2rem; margin-bottom:0.5rem;">🇬🇧</div>
-                                <div style="font-weight:600;">English</div>
-                            <div style="color:var(--text-secondary); font-size:0.9rem;">C1 – IELTS 7.5</div>
-                            </div>
-                            <div class="lang-card">
-                                <div style="font-size:2rem; margin-bottom:0.5rem;">🇭🇺</div>
-                                <div style="font-weight:600;">Hungarian</div>
-                                <div style="color:var(--text-secondary); font-size:0.9rem;">B2</div>
-                        </div>
-                        </div>
+
             <div class="achievement-box">
                 <h3>Achievement & Projects</h3>
                 <p>
@@ -813,6 +871,26 @@
                 }
             });
         });
+
+        // Collapsible course group (Faculty of Mathematics Belgrade)
+        document.querySelectorAll('.course-group').forEach(group => {
+            function toggleGroup() {
+                const isOpen = group.getAttribute('aria-expanded') === 'true';
+                group.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+            }
+            group.addEventListener('click', function(e) {
+                // If the click originated on a course card inside the body, don't collapse the whole group
+                if (e.target.closest('.course-card')) return;
+                toggleGroup();
+            });
+            group.addEventListener('keydown', function(e) {
+                if (e.target.closest('.course-card')) return;
+                if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+                    e.preventDefault();
+                    toggleGroup();
+                }
+            });
+        });
     </script>
 <script>
 (function () {
@@ -879,11 +957,11 @@
     var siteIndex = [
         { title: 'Home', url: 'index.html', desc: 'Basketball, academics, license plate atlas' },
         { title: 'Basketball', url: 'basketball.html', desc: 'Player profile, height, weight, position' },
-        { title: 'Playing history', url: 'basketball.html', desc: 'KK Borac Zemun, Honv\u00e9d Academy, EYBL' },
+        { title: 'Playing history', url: 'basketball.html', desc: 'KK Portorož, KK Borac Zemun, Honv\u00e9d Academy, EYBL' },
         { title: 'Career achievements', url: 'basketball.html#achievements', desc: 'National team camp, NB II champion, tournaments' },
         { title: 'Career highs', url: 'basketball.html#career-highs', desc: 'Points, rebounds, assists, blocks' },
         { title: 'Basketball FAQ', url: 'basketball.html#faq', desc: 'Contact, stats, recruiting questions' },
-        { title: 'Academic', url: 'academic.html', desc: 'University of Belgrade, Faculty of Mathematics' },
+        { title: 'Academic', url: 'academic.html', desc: 'University of Primorska, University of Belgrade' },
         { title: 'Courses', url: 'academic.html#courses', desc: 'Programming, linear algebra, mathematical analysis' },
         { title: 'Languages', url: 'academic.html#languages', desc: 'Serbian, English, Hungarian' },
         { title: 'License plate atlas', url: 'plates.html', desc: 'Interactive globe and collection stats' },
