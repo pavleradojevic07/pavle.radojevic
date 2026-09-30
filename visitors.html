@@ -12,9 +12,7 @@
     <meta property="og:url" content="https://pavleradojevic07.github.io/pavle.radojevic/visitors.html">
     <meta property="og:image" content="https://pavleradojevic07.github.io/pavle.radojevic/images/logo-dark.webp">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fonts/fonts.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script>
         (function() {
@@ -185,12 +183,17 @@
     /* Light-theme accent colors darkened to meet WCAG AA (4.5:1) when used as text */
     [data-theme="light"] { --accent-academic: #1a6fc4; --accent-basketball: #c2410c; --accent-plates: #15803d; --accent-gold: #8a6210; }
     [data-theme="light"] #analytics-consent-banner .ac-accept,
+    [data-theme="light"] #analytics-consent-banner .ac-decline,
     [data-theme="light"] #floatingContactToggle,
     [data-theme="light"] .skip-link,
     [data-theme="light"] .globe-search button,
     [data-theme="light"] #donationBtn,
     [data-theme="light"] #cookiePrefsBtnMain,
     [data-theme="light"] .confirm-modal-confirm { color: #fff !important; }
+    /* Hover-state contrast: white text on the dark-theme accents was below 4.5:1 */
+    .club-link:hover, .btn-outline:hover, .school-link:hover, .pdf-link:hover { color: #000 !important; }
+    [data-theme="light"] .club-link:hover, [data-theme="light"] .btn-outline:hover, [data-theme="light"] .school-link:hover, [data-theme="light"] .pdf-link:hover { color: #fff !important; }
+    [data-theme="light"] .pill-optional { color: #0b4f96; }
     .skip-link { position: fixed; top: -100px; left: 1rem; z-index: 100000; background: var(--accent-gold, #d4a853); color: #000; padding: 0.7rem 1.4rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-family: var(--font-sans, sans-serif); transition: top 0.2s ease; }
     .skip-link:focus { top: 1rem; }
     #main-content:focus { outline: none; }
@@ -262,6 +265,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
         .skeleton-pulse, .loading-spinner, #backToTopBtn, #floatingContactToggle { animation: none !important; transition: none !important; }
+        html { scroll-behavior: auto !important; }
     }
 </style>
 </head>
@@ -286,11 +290,11 @@
             font-size: 0.85rem; transition: filter 0.2s;
         }
         #analytics-consent-banner .ac-accept { background: var(--accent-gold, #d4a853); color: #000; }
-        #analytics-consent-banner .ac-decline { background: transparent; border: 1px solid var(--border, #252535); color: var(--text, #e8e8f0); }
+        #analytics-consent-banner .ac-decline { background: var(--accent-gold, #d4a853); color: #000; }
         #analytics-consent-banner .ac-btn:hover { filter: brightness(1.1); }
     </style>
     <div id="analytics-consent-banner">
-        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location) to see where visitors come from. No data is sold or shared with third parties. <a href="cookies.html" style="color:inherit; text-decoration:underline;">Learn more</a></span>
+        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location, and clicks on outbound links and downloads) to see where visitors come from. No data is sold or shared with third parties. <a href="cookies.html" style="color:inherit; text-decoration:underline;">Learn more</a></span>
         <div style="display:flex; gap:0.5rem;">
             <button class="ac-btn ac-decline" id="acDeclineBtn">Decline</button>
             <button class="ac-btn ac-accept" id="acAcceptBtn">Accept</button>
@@ -309,7 +313,8 @@
   }
 
   function setConsentCookie(value) {
-    document.cookie = CONSENT_COOKIE + '=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+    if (value !== 'accepted') { ['visitorToken','entryTime','lastPage','utmParams'].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} }); }
+    document.cookie = CONSENT_COOKIE + '=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax' + (location.protocol === 'https:' ? ';Secure' : '');
   }
 
   function getUTMParams() {
@@ -437,10 +442,10 @@
 
     <nav class="nav">
         <a href="index.html" class="nav-logo">
-            <img src="images/logo-dark.webp" alt="PR Logo" class="logo-dark">
-            <img src="images/logo-light.webp" alt="PR Logo" class="logo-light">
+            <img src="images/logo-dark.webp" alt="Pavle Radojević — home" class="logo-dark">
+            <img src="images/logo-light.webp" alt="Pavle Radojević — home" class="logo-light">
         </a>
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">☰</button>
         <div class="nav-links" id="navLinks">
             <a href="basketball.html" class="nav-link">🏀 Basketball</a>
             <a href="academic.html" class="nav-link">🎓 Academic</a>
@@ -499,7 +504,7 @@
             </div>
 
             <div class="map-container-wrap" style="position:relative; border-radius:var(--radius-lg);">
-                <div class="map-container" id="mapContainer"></div>
+                <div class="map-container" id="mapContainer" role="region" aria-label="Map of the countries visitors came from"></div>
                 <div id="mapLoadingOverlay" class="loading-overlay" role="status"><span class="loading-spinner"></span>Loading map…</div>
             </div>
 
@@ -541,7 +546,7 @@
                 YouTube
             </a>
         </div>
-        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages · Content last updated September 27, 2026</p>
+        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages · Content last updated October 1, 2026</p>
         <p class="footer-note" style="margin-top:0.6rem;">
             <a href="privacy.html" style="color:var(--text-muted); text-decoration:underline;">Privacy Policy</a> ·
             <a href="terms.html" style="color:var(--text-muted); text-decoration:underline;">Terms &amp; Conditions</a> ·
@@ -631,7 +636,7 @@ function updateUI(data) {
     data.countries.forEach(c => {
         const entry = document.createElement('div');
         entry.className = 'country-entry';
-        entry.innerHTML = `<span class="country-flag">${c.flag}</span><span class="country-name">${c.country}</span><span class="country-visitors">${c.visitors}</span>`;
+        [['country-flag', c.flag], ['country-name', c.country], ['country-visitors', c.visitors]].forEach(function (p) { var s = document.createElement('span'); s.className = p[0]; s.textContent = p[1]; entry.appendChild(s); });
         countryListDiv.appendChild(entry);
     });
 
@@ -667,7 +672,7 @@ function updateUI(data) {
                     layer.on('click', () => {
                         const countryData = data.countries.find(c => c.country === name);
                         if (countryData) {
-                            layer.bindPopup(`<b>${countryData.flag} ${countryData.country}</b><br>Visitors: ${countryData.visitors}`).openPopup();
+                            var pop = document.createElement('div'); var b = document.createElement('b'); b.textContent = countryData.flag + ' ' + countryData.country; pop.appendChild(b); pop.appendChild(document.createElement('br')); pop.appendChild(document.createTextNode('Visitors: ' + countryData.visitors)); layer.bindPopup(pop).openPopup();
                         }
                     });
                 }
@@ -701,13 +706,14 @@ function updateUI(data) {
             const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', next);
             themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
-            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax' + (location.protocol === 'https:' ? ';Secure' : '');
         });
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const navLinks = document.getElementById('navLinks');
         mobileMenuBtn.addEventListener('click', () => {
             navLinks.classList.toggle('mobile-open');
             mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+            mobileMenuBtn.setAttribute('aria-expanded', navLinks.classList.contains('mobile-open') ? 'true' : 'false');
         });
     </script>
 <script>
@@ -775,7 +781,7 @@ function updateUI(data) {
     var siteIndex = [
         { title: 'Home', url: 'index.html', desc: 'Basketball, academics, license plate atlas' },
         { title: 'Basketball', url: 'basketball.html', desc: 'Player profile, height, weight, position' },
-        { title: 'Playing history', url: 'basketball.html', desc: 'KK Portoro\u017e, KK Borac Zemun, Honv\u00e9d Academy' },
+        { title: 'Playing history', url: 'basketball.html', desc: 'KK Portoro\u017e, KK Borac Zemun, Honv\u00e9d Academy, EYBL' },
         { title: 'Career achievements', url: 'basketball.html#achievements', desc: 'National team camp, NB II champion, tournaments' },
         { title: 'Career highs', url: 'basketball.html#career-highs', desc: 'Points, rebounds, assists, blocks' },
         { title: 'Basketball FAQ', url: 'basketball.html#faq', desc: 'Contact, stats, recruiting questions' },
@@ -865,7 +871,8 @@ function updateUI(data) {
     if (cookieCancelBtn) cookieCancelBtn.addEventListener('click', closeCookieModal);
     if (cookieModal) cookieModal.addEventListener('click', function (e) { if (e.target === cookieModal) closeCookieModal(); });
     if (cookieConfirmBtn) cookieConfirmBtn.addEventListener('click', function () {
-        document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax';
+        ['visitorToken','entryTime','lastPage','utmParams'].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} });
+        document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax' + (location.protocol === 'https:' ? '; Secure' : '');
         location.reload();
     });
     window.openCookiePrefsConfirm = openCookieModal;

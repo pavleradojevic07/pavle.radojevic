@@ -14,9 +14,7 @@
     <meta property="og:url" content="https://pavleradojevic07.github.io/pavle.radojevic/plates.html">
     <meta property="og:image" content="https://pavleradojevic07.github.io/pavle.radojevic/images/logo-dark.webp">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fonts/fonts.css">
     <script>
         (function() {
             var theme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1") || 'dark';
@@ -254,14 +252,24 @@
     /* Light-theme accent colors darkened to meet WCAG AA (4.5:1) when used as text */
     [data-theme="light"] { --accent-academic: #1a6fc4; --accent-basketball: #c2410c; --accent-plates: #15803d; --accent-gold: #8a6210; }
     [data-theme="light"] #analytics-consent-banner .ac-accept,
+    [data-theme="light"] #analytics-consent-banner .ac-decline,
     [data-theme="light"] #floatingContactToggle,
     [data-theme="light"] .skip-link,
     [data-theme="light"] .globe-search button,
     [data-theme="light"] #donationBtn,
     [data-theme="light"] #cookiePrefsBtnMain,
     [data-theme="light"] .confirm-modal-confirm { color: #fff !important; }
+    /* Hover-state contrast: white text on the dark-theme accents was below 4.5:1 */
+    .club-link:hover, .btn-outline:hover, .school-link:hover, .pdf-link:hover { color: #000 !important; }
+    [data-theme="light"] .club-link:hover, [data-theme="light"] .btn-outline:hover, [data-theme="light"] .school-link:hover, [data-theme="light"] .pdf-link:hover { color: #fff !important; }
+    [data-theme="light"] .pill-optional { color: #0b4f96; }
     .skip-link { position: fixed; top: -100px; left: 1rem; z-index: 100000; background: var(--accent-gold, #d4a853); color: #000; padding: 0.7rem 1.4rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-family: var(--font-sans, sans-serif); transition: top 0.2s ease; }
     .skip-link:focus { top: 1rem; }
+    .globe-search:focus-within { border-color: var(--accent-plates); box-shadow: 0 0 0 2px var(--accent-plates); }
+    #searchDropdown li { padding: 0.5rem 1rem; cursor: pointer; color: var(--text); }
+    #searchDropdown li:hover, #searchDropdown li.active { background: var(--bg-card-hover); outline: 2px solid var(--accent-plates); outline-offset: -2px; }
+    .globe-rotate-btn { position: absolute; top: 12px; left: 12px; z-index: 10; background: var(--bg-card); color: var(--text); border: 1px solid var(--border); border-radius: 20px; padding: 0.35rem 0.9rem; font: inherit; font-size: 0.8rem; cursor: pointer; }
+    .globe-rotate-btn:hover { border-color: var(--accent-plates); }
     #main-content:focus { outline: none; }
     [id] { scroll-margin-top: calc(var(--nav-height, 70px) + 16px); }
     #scrollProgressBar { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: var(--accent-gold, #d4a853); z-index: 1001; transition: width 0.1s linear; }
@@ -331,6 +339,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
         .skeleton-pulse, .loading-spinner, #backToTopBtn, #floatingContactToggle { animation: none !important; transition: none !important; }
+        html { scroll-behavior: auto !important; }
     }
 </style>
 </head>
@@ -355,11 +364,11 @@
             font-size: 0.85rem; transition: filter 0.2s;
         }
         #analytics-consent-banner .ac-accept { background: var(--accent-gold, #d4a853); color: #000; }
-        #analytics-consent-banner .ac-decline { background: transparent; border: 1px solid var(--border, #252535); color: var(--text, #e8e8f0); }
+        #analytics-consent-banner .ac-decline { background: var(--accent-gold, #d4a853); color: #000; }
         #analytics-consent-banner .ac-btn:hover { filter: brightness(1.1); }
     </style>
     <div id="analytics-consent-banner">
-        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location) to see where visitors come from. No data is sold or shared with third parties. <a href="cookies.html" style="color:inherit; text-decoration:underline;">Learn more</a></span>
+        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location, and clicks on outbound links and downloads) to see where visitors come from. No data is sold or shared with third parties. <a href="cookies.html" style="color:inherit; text-decoration:underline;">Learn more</a></span>
         <div style="display:flex; gap:0.5rem;">
             <button class="ac-btn ac-decline" id="acDeclineBtn">Decline</button>
             <button class="ac-btn ac-accept" id="acAcceptBtn">Accept</button>
@@ -377,7 +386,8 @@
   }
 
   function setConsentCookie(value) {
-    document.cookie = CONSENT_COOKIE + '=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+    if (value !== 'accepted') { ['visitorToken','entryTime','lastPage','utmParams'].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} }); }
+    document.cookie = CONSENT_COOKIE + '=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax' + (location.protocol === 'https:' ? ';Secure' : '');
   }
 
   function getUTMParams() {
@@ -504,10 +514,10 @@
 
     <nav class="nav">
         <a href="index.html" class="nav-logo">
-            <img src="images/logo-dark.webp" alt="PR Logo" class="logo-dark">
-            <img src="images/logo-light.webp" alt="PR Logo" class="logo-light">
+            <img src="images/logo-dark.webp" alt="Pavle Radojević — home" class="logo-dark">
+            <img src="images/logo-light.webp" alt="Pavle Radojević — home" class="logo-light">
         </a>
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">☰</button>
         <div class="nav-links" id="navLinks">
             <a href="basketball.html" class="nav-link">🏀 Basketball</a>
             <a href="academic.html" class="nav-link">🎓 Academic</a>
@@ -554,12 +564,13 @@
 
             <div class="globe-container" id="globeContainer">
     <div id="globeLoadingOverlay" class="loading-overlay" role="status"><span class="loading-spinner"></span>Loading globe…</div>
+    <button type="button" class="globe-rotate-btn" id="globeRotateBtn">Pause rotation</button>
     <div class="globe-search">
         <input type="text" id="globeSearchInput" placeholder="Type country or state..." autocomplete="off"
         aria-label="Search for a country or state" role="combobox" aria-expanded="false" aria-controls="searchDropdown" aria-autocomplete="list"
         style="background:transparent; border:none; color:var(--text); padding:0.5rem 1rem; font-family:var(--font-sans); font-size:0.9rem; width:220px; outline:none;">
         <ul id="searchDropdown" role="listbox" aria-label="Country suggestions" style="display:none;"></ul>
-        <button id="globeSearchBtn" aria-label="Search">🔍 Find</button>
+        <button id="globeSearchBtn"><span aria-hidden="true">🔍</span> Find</button>
     </div>
 </div>
 
@@ -639,7 +650,7 @@
                 YouTube
             </a>
         </div>
-        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages · Content last updated September 27, 2026</p>
+        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages · Content last updated October 1, 2026</p>
         <p class="footer-note" style="margin-top:0.6rem;">
             <a href="privacy.html" style="color:var(--text-muted); text-decoration:underline;">Privacy Policy</a> ·
             <a href="terms.html" style="color:var(--text-muted); text-decoration:underline;">Terms &amp; Conditions</a> ·
@@ -659,7 +670,7 @@
     </script>
 
     <!-- Modal for fullscreen plate view -->
-    <div class="modal-overlay hidden" id="plateModal">
+    <div class="modal-overlay hidden" id="plateModal" role="dialog" aria-modal="true" aria-labelledby="modalPlateCountry">
         <div class="modal-content">
             <img id="modalPlateImage" src="" alt="Plate image" style="display:none;">
             <div class="plate-display" id="modalPlateEmoji" style="font-size:6rem;">🚗</div>
@@ -1029,6 +1040,8 @@
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
+        renderer.domElement.setAttribute('role', 'img');
+        renderer.domElement.setAttribute('aria-label', 'Interactive 3D globe. Countries with a collected license plate are shaded green. Use the search box to find any country.');
 
         scene.add(new THREE.AmbientLight(0x404060, 3.5));
         const dirLight = new THREE.DirectionalLight(0xffffff, 2.5);
@@ -1246,7 +1259,12 @@
         controls.dampingFactor = 0.08;
         controls.minDistance = 1.8;
         controls.maxDistance = 8;
-        controls.autoRotate = true;
+        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        controls.autoRotate = !reduceMotion;
+        const rotateBtn = document.getElementById('globeRotateBtn');
+        function syncRotateBtn() { rotateBtn.textContent = controls.autoRotate ? 'Pause rotation' : 'Resume rotation'; }
+        rotateBtn.addEventListener('click', () => { controls.autoRotate = !controls.autoRotate; syncRotateBtn(); });
+        syncRotateBtn();
         controls.autoRotateSpeed = 0.4;
 
                 // ── COUNTRY PANEL (updated for collected/uncollected) ──
@@ -1329,11 +1347,11 @@
                     <a href="http://www.worldlicenseplates.com/" target="_blank" rel="noopener" style="color:var(--accent-gold);">World License Plates</a>
                 </p>
                 <div style="margin-top:1.5rem; padding:1rem; background:var(--bg-secondary); border-radius:var(--radius-sm);">
-                    <strong>Quick donation offer:</strong>
-                    <textarea id="donationText" aria-label="Describe the plate you would like to donate" aria-describedby="donationFormMsg" placeholder="Tell me about your plate…" rows="2" style="width:100%; max-width:300px; padding:0.5rem; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); resize:vertical; margin-top:0.8rem;"></textarea>
-                    <button id="donationBtn" style="background:var(--accent-gold); color:#000; border:none; padding:0.5rem 1.5rem; border-radius:20px; cursor:pointer; font-weight:600; margin-top:0.5rem;">Send Offer</button>
+                    <label for="donationText"><strong>Quick donation offer:</strong></label>
+                    <textarea id="donationText" aria-describedby="donationFormMsg" placeholder="Tell me about your plate…" rows="2" style="width:100%; max-width:300px; padding:0.5rem; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); resize:vertical; margin-top:0.8rem;"></textarea>
+                    <button id="donationBtn" style="background:var(--accent-gold); color:#000; border:none; padding:0.5rem 1.5rem; border-radius:20px; cursor:pointer; font-weight:600; margin-top:0.5rem;">Email my offer</button>
                     <div id="donationFormMsg" class="form-msg" aria-live="polite"></div>
-                    <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.6rem;">This opens your own email app with the message pre-filled. Nothing is sent or stored by this website unless you choose to hit send.</p>
+                    <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.6rem;">This opens your own email app with the message pre-filled. Nothing is sent or stored by this website unless you choose to hit send. If you do, I use your message and email address only to reply to you; see the <a href="privacy.html" style="color:var(--accent-gold);">Privacy Policy</a>.</p>
                 </div>
             </div>
         `;
@@ -1549,7 +1567,7 @@ document.getElementById('globeSearchBtn').addEventListener('click', () => {
             item.setAttribute('aria-label', `View ${plate.country} plate`);
             const img = document.createElement('img');
             img.src = plate.image;
-            img.alt = plate.country;
+            img.alt = plate.country + ' license plate';
             img.onerror = () => { img.style.display = 'none'; item.innerHTML = `<span style="font-size:3rem;">🚗</span><span class="plate-country-label">${plate.flag} ${plate.country}</span>`; };
             const label = document.createElement('span');
             label.className = 'plate-country-label';
@@ -1569,11 +1587,13 @@ document.getElementById('globeSearchBtn').addEventListener('click', () => {
         // Modal with image
         const plateModal = document.getElementById('plateModal');
         const modalClose = document.getElementById('modalClose');
+        let lastModalTrigger = null;
         function openModal(plate) {
             const modalImg = document.getElementById('modalPlateImage');
             const modalEmoji = document.getElementById('modalPlateEmoji');
             if (plate.image) {
                 modalImg.src = plate.image;
+                modalImg.alt = plate.country + ' license plate';
                 modalImg.style.display = 'block';
                 modalEmoji.style.display = 'none';
             } else {
@@ -1584,10 +1604,14 @@ document.getElementById('globeSearchBtn').addEventListener('click', () => {
             document.getElementById('modalPlateCountry').textContent = `${plate.flag} ${plate.country}`;
             document.getElementById('modalPlateStory').textContent = plate.story;
             plateModal.classList.remove('hidden');
+            lastModalTrigger = document.activeElement;
+            modalClose.focus();
             document.body.style.overflow = 'hidden';
         }
         function closeModal() {
+            if (plateModal.classList.contains('hidden')) return;
             plateModal.classList.add('hidden');
+            if (lastModalTrigger && lastModalTrigger.focus) lastModalTrigger.focus();
             document.body.style.overflow = '';
         }
         modalClose.addEventListener('click', closeModal);
@@ -1681,13 +1705,14 @@ document.getElementById('statContinents').innerHTML = continentHTML.trim() || '�
             const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', next);
             themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
-            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax' + (location.protocol === 'https:' ? ';Secure' : '');
         });
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const navLinks = document.getElementById('navLinks');
         mobileMenuBtn.addEventListener('click', () => {
             navLinks.classList.toggle('mobile-open');
             mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+            mobileMenuBtn.setAttribute('aria-expanded', navLinks.classList.contains('mobile-open') ? 'true' : 'false');
         });
     </script>
 <script>
@@ -1755,7 +1780,7 @@ document.getElementById('statContinents').innerHTML = continentHTML.trim() || '�
     var siteIndex = [
         { title: 'Home', url: 'index.html', desc: 'Basketball, academics, license plate atlas' },
         { title: 'Basketball', url: 'basketball.html', desc: 'Player profile, height, weight, position' },
-        { title: 'Playing history', url: 'basketball.html', desc: 'KK Portoro\u017e, KK Borac Zemun, Honv\u00e9d Academy' },
+        { title: 'Playing history', url: 'basketball.html', desc: 'KK Portoro\u017e, KK Borac Zemun, Honv\u00e9d Academy, EYBL' },
         { title: 'Career achievements', url: 'basketball.html#achievements', desc: 'National team camp, NB II champion, tournaments' },
         { title: 'Career highs', url: 'basketball.html#career-highs', desc: 'Points, rebounds, assists, blocks' },
         { title: 'Basketball FAQ', url: 'basketball.html#faq', desc: 'Contact, stats, recruiting questions' },
@@ -1845,7 +1870,8 @@ document.getElementById('statContinents').innerHTML = continentHTML.trim() || '�
     if (cookieCancelBtn) cookieCancelBtn.addEventListener('click', closeCookieModal);
     if (cookieModal) cookieModal.addEventListener('click', function (e) { if (e.target === cookieModal) closeCookieModal(); });
     if (cookieConfirmBtn) cookieConfirmBtn.addEventListener('click', function () {
-        document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax';
+        ['visitorToken','entryTime','lastPage','utmParams'].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} });
+        document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax' + (location.protocol === 'https:' ? '; Secure' : '');
         location.reload();
     });
     window.openCookiePrefsConfirm = openCookieModal;

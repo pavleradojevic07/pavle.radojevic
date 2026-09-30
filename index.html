@@ -13,9 +13,7 @@
     <meta property="og:url" content="https://pavleradojevic07.github.io/pavle.radojevic/">
     <meta property="og:image" content="https://pavleradojevic07.github.io/pavle.radojevic/images/logo-dark.webp">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fonts/fonts.css">
     <script>
         // Immediately apply saved theme from cookie (no flash)
         (function() {
@@ -84,7 +82,8 @@
             color: var(--text);
             line-height: 1.6;
             transition: background var(--transition-slow), color var(--transition-slow);
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
             -webkit-font-smoothing: antialiased;
             display: flex;
             flex-direction: column;
@@ -181,6 +180,7 @@
 
         /* Hero – horizontal swipe */
 .hero {
+    min-height: 280px;
     flex: 1;                        /* take all remaining space between nav and footer */
     overflow-y: hidden;             /* no vertical scroll */
     overflow-x: auto;               /* horizontal swipe */
@@ -377,12 +377,17 @@
     /* Light-theme accent colors darkened to meet WCAG AA (4.5:1) when used as text */
     [data-theme="light"] { --accent-academic: #1a6fc4; --accent-basketball: #c2410c; --accent-plates: #15803d; --accent-gold: #8a6210; }
     [data-theme="light"] #analytics-consent-banner .ac-accept,
+    [data-theme="light"] #analytics-consent-banner .ac-decline,
     [data-theme="light"] #floatingContactToggle,
     [data-theme="light"] .skip-link,
     [data-theme="light"] .globe-search button,
     [data-theme="light"] #donationBtn,
     [data-theme="light"] #cookiePrefsBtnMain,
     [data-theme="light"] .confirm-modal-confirm { color: #fff !important; }
+    /* Hover-state contrast: white text on the dark-theme accents was below 4.5:1 */
+    .club-link:hover, .btn-outline:hover, .school-link:hover, .pdf-link:hover { color: #000 !important; }
+    [data-theme="light"] .club-link:hover, [data-theme="light"] .btn-outline:hover, [data-theme="light"] .school-link:hover, [data-theme="light"] .pdf-link:hover { color: #fff !important; }
+    [data-theme="light"] .pill-optional { color: #0b4f96; }
     .skip-link { position: fixed; top: -100px; left: 1rem; z-index: 100000; background: var(--accent-gold, #d4a853); color: #000; padding: 0.7rem 1.4rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-family: var(--font-sans, sans-serif); transition: top 0.2s ease; }
     .skip-link:focus { top: 1rem; }
     #main-content:focus { outline: none; }
@@ -454,6 +459,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
         .skeleton-pulse, .loading-spinner, #backToTopBtn, #floatingContactToggle { animation: none !important; transition: none !important; }
+        html { scroll-behavior: auto !important; }
     }
 </style>
 </head>
@@ -478,11 +484,11 @@
             font-size: 0.85rem; transition: filter 0.2s;
         }
         #analytics-consent-banner .ac-accept { background: var(--accent-gold, #d4a853); color: #000; }
-        #analytics-consent-banner .ac-decline { background: transparent; border: 1px solid var(--border, #252535); color: var(--text, #e8e8f0); }
+        #analytics-consent-banner .ac-decline { background: var(--accent-gold, #d4a853); color: #000; }
         #analytics-consent-banner .ac-btn:hover { filter: brightness(1.1); }
     </style>
     <div id="analytics-consent-banner">
-        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location) to see where visitors come from. No data is sold or shared with third parties. <a href="cookies.html" style="color:inherit; text-decoration:underline;">Learn more</a></span>
+        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location, and clicks on outbound links and downloads) to see where visitors come from. No data is sold or shared with third parties. <a href="cookies.html" style="color:inherit; text-decoration:underline;">Learn more</a></span>
         <div style="display:flex; gap:0.5rem;">
             <button class="ac-btn ac-decline" id="acDeclineBtn">Decline</button>
             <button class="ac-btn ac-accept" id="acAcceptBtn">Accept</button>
@@ -500,7 +506,8 @@
   }
 
   function setConsentCookie(value) {
-    document.cookie = CONSENT_COOKIE + '=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+    if (value !== 'accepted') { ['visitorToken','entryTime','lastPage','utmParams'].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} }); }
+    document.cookie = CONSENT_COOKIE + '=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax' + (location.protocol === 'https:' ? ';Secure' : '');
   }
 
   function getUTMParams() {
@@ -628,10 +635,10 @@
 
     <nav class="nav">
         <a href="index.html" class="nav-logo">
-            <img src="images/logo-dark.webp" alt="PR Logo" class="logo-dark">
-            <img src="images/logo-light.webp" alt="PR Logo" class="logo-light">
+            <img src="images/logo-dark.webp" alt="Pavle Radojević — home" class="logo-dark">
+            <img src="images/logo-light.webp" alt="Pavle Radojević — home" class="logo-light">
         </a>
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">☰</button>
         <div class="nav-links" id="navLinks">
             <a href="basketball.html" class="nav-link basketball-link">🏀 Basketball</a>
             <a href="academic.html" class="nav-link academic-link">🎓 Academic</a>
@@ -725,7 +732,7 @@
                 YouTube
             </a>
         </div>
-        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages · Content last updated September 27, 2026</p>
+        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages · Content last updated October 1, 2026</p>
         <p class="footer-note" style="margin-top:0.6rem;">
             <a href="privacy.html" style="color:var(--text-muted); text-decoration:underline;">Privacy Policy</a> ·
             <a href="terms.html" style="color:var(--text-muted); text-decoration:underline;">Terms &amp; Conditions</a> ·
@@ -754,7 +761,7 @@
             const next = current === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', next);
             themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
-            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax' + (location.protocol === 'https:' ? ';Secure' : '');
         });
 
         // Mobile menu
@@ -763,6 +770,7 @@
         mobileMenuBtn.addEventListener('click', () => {
             navLinks.classList.toggle('mobile-open');
             mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+            mobileMenuBtn.setAttribute('aria-expanded', navLinks.classList.contains('mobile-open') ? 'true' : 'false');
         });
     </script>
     <script>
@@ -777,12 +785,12 @@
         function setupLoop() {
             // Clone first panel and append to end
             const firstClone = panels[0].cloneNode(true);
-            firstClone.classList.add('clone');
+            firstClone.classList.add('clone'); firstClone.setAttribute('aria-hidden','true'); firstClone.setAttribute('tabindex','-1');
             hero.querySelector('.hero-panels').appendChild(firstClone);
 
             // Clone last panel and prepend to beginning
             const lastClone = panels[totalPanels - 1].cloneNode(true);
-            lastClone.classList.add('clone');
+            lastClone.classList.add('clone'); lastClone.setAttribute('aria-hidden','true'); lastClone.setAttribute('tabindex','-1');
             hero.querySelector('.hero-panels').prepend(lastClone);
 
             // Set initial scroll position to the first real panel (skip the prepended clone)
@@ -816,6 +824,7 @@
 
         // Keyboard arrows
         document.addEventListener('keydown', (e) => {
+            if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
             if (e.key === 'ArrowLeft') {
                 hero.scrollBy({ left: -hero.clientWidth, behavior: 'smooth' });
             } else if (e.key === 'ArrowRight') {
@@ -889,7 +898,7 @@
     var siteIndex = [
         { title: 'Home', url: 'index.html', desc: 'Basketball, academics, license plate atlas' },
         { title: 'Basketball', url: 'basketball.html', desc: 'Player profile, height, weight, position' },
-        { title: 'Playing history', url: 'basketball.html', desc: 'KK Portoro\u017e, KK Borac Zemun, Honv\u00e9d Academy' },
+        { title: 'Playing history', url: 'basketball.html', desc: 'KK Portoro\u017e, KK Borac Zemun, Honv\u00e9d Academy, EYBL' },
         { title: 'Career achievements', url: 'basketball.html#achievements', desc: 'National team camp, NB II champion, tournaments' },
         { title: 'Career highs', url: 'basketball.html#career-highs', desc: 'Points, rebounds, assists, blocks' },
         { title: 'Basketball FAQ', url: 'basketball.html#faq', desc: 'Contact, stats, recruiting questions' },
@@ -979,7 +988,8 @@
     if (cookieCancelBtn) cookieCancelBtn.addEventListener('click', closeCookieModal);
     if (cookieModal) cookieModal.addEventListener('click', function (e) { if (e.target === cookieModal) closeCookieModal(); });
     if (cookieConfirmBtn) cookieConfirmBtn.addEventListener('click', function () {
-        document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax';
+        ['visitorToken','entryTime','lastPage','utmParams'].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} });
+        document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax' + (location.protocol === 'https:' ? '; Secure' : '');
         location.reload();
     });
     window.openCookiePrefsConfirm = openCookieModal;

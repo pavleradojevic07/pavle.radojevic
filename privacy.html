@@ -7,9 +7,7 @@
     <meta name="description" content="Privacy Policy for pavleradojevic07.github.io/pavle.radojevic">
     <meta name="robots" content="noindex">
     <link rel="icon" type="image/webp" href="images/logo-dark.webp">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fonts/fonts.css">
     <script>
         (function() {
             var theme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1") || 'dark';
@@ -92,12 +90,17 @@
     /* Light-theme accent colors darkened to meet WCAG AA (4.5:1) when used as text */
     [data-theme="light"] { --accent-academic: #1a6fc4; --accent-basketball: #c2410c; --accent-plates: #15803d; --accent-gold: #8a6210; }
     [data-theme="light"] #analytics-consent-banner .ac-accept,
+    [data-theme="light"] #analytics-consent-banner .ac-decline,
     [data-theme="light"] #floatingContactToggle,
     [data-theme="light"] .skip-link,
     [data-theme="light"] .globe-search button,
     [data-theme="light"] #donationBtn,
     [data-theme="light"] #cookiePrefsBtnMain,
     [data-theme="light"] .confirm-modal-confirm { color: #fff !important; }
+    /* Hover-state contrast: white text on the dark-theme accents was below 4.5:1 */
+    .club-link:hover, .btn-outline:hover, .school-link:hover, .pdf-link:hover { color: #000 !important; }
+    [data-theme="light"] .club-link:hover, [data-theme="light"] .btn-outline:hover, [data-theme="light"] .school-link:hover, [data-theme="light"] .pdf-link:hover { color: #fff !important; }
+    [data-theme="light"] .pill-optional { color: #0b4f96; }
     .skip-link { position: fixed; top: -100px; left: 1rem; z-index: 100000; background: var(--accent-gold, #d4a853); color: #000; padding: 0.7rem 1.4rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-family: var(--font-sans, sans-serif); transition: top 0.2s ease; }
     .skip-link:focus { top: 1rem; }
     #main-content:focus { outline: none; }
@@ -169,6 +172,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
         .skeleton-pulse, .loading-spinner, #backToTopBtn, #floatingContactToggle { animation: none !important; transition: none !important; }
+        html { scroll-behavior: auto !important; }
     }
 </style>
 </head>
@@ -192,11 +196,11 @@
             font-size: 0.85rem; transition: filter 0.2s;
         }
         #analytics-consent-banner .ac-accept { background: var(--accent-gold, #d4a853); color: #000; }
-        #analytics-consent-banner .ac-decline { background: transparent; border: 1px solid var(--border, #252535); color: var(--text, #e8e8f0); }
+        #analytics-consent-banner .ac-decline { background: var(--accent-gold, #d4a853); color: #000; }
         #analytics-consent-banner .ac-btn:hover { filter: brightness(1.1); }
     </style>
     <div id="analytics-consent-banner">
-        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location) to see where visitors come from. No data is sold or shared with third parties. <a href="cookies.html" style="color:inherit; text-decoration:underline;">Learn more</a></span>
+        <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location, and clicks on outbound links and downloads) to see where visitors come from. No data is sold or shared with third parties. <a href="cookies.html" style="color:inherit; text-decoration:underline;">Learn more</a></span>
         <div style="display:flex; gap:0.5rem;">
             <button class="ac-btn ac-decline" id="acDeclineBtn">Decline</button>
             <button class="ac-btn ac-accept" id="acAcceptBtn">Accept</button>
@@ -212,7 +216,8 @@
     return match ? match[2] : null;
   }
   function setConsentCookie(value) {
-    document.cookie = CONSENT_COOKIE + '=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+    if (value !== 'accepted') { ['visitorToken','entryTime','lastPage','utmParams'].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} }); }
+    document.cookie = CONSENT_COOKIE + '=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax' + (location.protocol === 'https:' ? ';Secure' : '');
   }
   function getUTMParams() {
     var params = new URLSearchParams(window.location.search);
@@ -293,10 +298,10 @@
 
     <nav class="nav">
         <a href="index.html" class="nav-logo">
-            <img src="images/logo-dark.webp" alt="PR Logo" class="logo-dark">
-            <img src="images/logo-light.webp" alt="PR Logo" class="logo-light">
+            <img src="images/logo-dark.webp" alt="Pavle Radojević — home" class="logo-dark">
+            <img src="images/logo-light.webp" alt="Pavle Radojević — home" class="logo-light">
         </a>
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">☰</button>
         <div class="nav-links" id="navLinks">
             <a href="basketball.html" class="nav-link">🏀 Basketball</a>
             <a href="academic.html" class="nav-link">🎓 Academic</a>
@@ -339,7 +344,7 @@
     <main class="page-content" id="main-content" tabindex="-1">
         <section class="section">
             <h1 class="section-title">Privacy Policy</h1>
-            <p class="updated-note">Last updated: September 27, 2026 · Applies to pavleradojevic07.github.io/pavle.radojevic</p>
+            <p class="updated-note">Last updated: October 1, 2026 · Applies to pavleradojevic07.github.io/pavle.radojevic</p>
 
             <div class="legal-content">
                 <h2>1. Who runs this site</h2>
@@ -356,9 +361,10 @@
                     <li>Approximate location (country/city, derived from your IP address)</li>
                     <li>Session timing (arrival time, time spent) and a random session identifier stored in your browser's session storage</li>
                     <li>Campaign tags in the link you arrived from (<code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>, <code>utm_term</code>, <code>utm_content</code>), only if the link contains them. They are remembered for the length of your visit so they can be tied to the pages you view.</li>
+                    <li>Clicks on outbound links (such as Instagram, LinkedIn, YouTube or club websites) and downloads of the PDF on the Academic page, recorded as the link text, the destination address, and the page you came from</li>
                 </ul>
                 <p>This data is used only to see which pages and countries visitors come from. It is never sold, and never shared with advertisers or third parties for marketing.</p>
-                <p>Your IP address itself is never stored. It is used only for the moment of the request to look up your approximate country/city and to compute a one-way cryptographic hash, which is what's saved — the hash cannot be turned back into your IP address. That hash is what's used to work out whether a visit is "returning" (an address associated with more than one visit) and how many people are viewing the site live.</p>
+                <p>Your IP address itself is never stored. It is used only for the moment of the request to look up your approximate country/city and to compute a one-way cryptographic hash, which is what's saved — the hash is computed with a secret key, so it cannot be turned back into your IP address. Because it can still recognise a returning visitor, it is treated as personal data. That hash is what's used to work out whether a visit is "returning" (an address associated with more than one visit) and how many people are viewing the site live.</p>
 
                 <h2>4. Cookies</h2>
                 <p>This site uses a small number of cookies and browser-storage items. See the <a href="cookies.html">Cookie Policy</a> for the full list, what each one does, and how to change your choice at any time.</p>
@@ -369,10 +375,11 @@
                 <h2>6. Who this data passes through</h2>
                 <p>No visitor data is sold to anyone. A few outside services are involved in simply running the site, and each may process a visitor's IP address as an unavoidable part of how the web works:</p>
                 <ul>
-                    <li><strong>Cloudflare</strong> — hosts the Worker that receives analytics events</li>
+                    <li><strong>Cloudflare</strong> — hosts the Worker that receives analytics events and supplies the aggregate statistics shown on the Visitors page. That page contacts the Worker whenever it is opened, whatever your cookie choice, so Cloudflare sees your IP address for that request like any other web request</li>
                     <li><strong>GitHub Pages</strong> — hosts the website files themselves</li>
-                    <li><strong>Google Fonts</strong> — delivers the site's typefaces; loading a font from Google's servers exposes your IP address to Google, independent of the cookie banner</li>
                     <li><strong>unpkg.com</strong> — delivers the Leaflet and Three.js code libraries used on the Visitors and Atlas pages</li>
+                    <li><strong>threejs.org</strong> — supplies the Earth texture image used on the Atlas globe</li>
+                    <li><strong>GitHub (raw.githubusercontent.com)</strong> — supplies a country-boundary data file loaded on the Visitors page</li>
                     <li><strong>Esri / OpenStreetMap</strong> — supplies the map tiles on the Visitors page</li>
                 </ul>
 
@@ -390,7 +397,7 @@
                     <li>Ask for your data to be deleted</li>
                     <li>Object to, or ask to restrict, further processing</li>
                     <li>Withdraw consent to analytics at any time (see below)</li>
-                    <li>Lodge a complaint with your local data protection authority</li>
+                    <li>Lodge a complaint with a data protection authority — for example the <a href="https://www.ip-rs.si/en/" target="_blank" rel="noopener">Information Commissioner of the Republic of Slovenia</a>, or the authority in your own country</li>
                 </ul>
                 <p>To exercise any of these, email <a href="mailto:pavle.radojevic07@gmail.com">pavle.radojevic07@gmail.com</a>.</p>
 
@@ -433,13 +440,14 @@
             const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', next);
             themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
-            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax' + (location.protocol === 'https:' ? ';Secure' : '');
         });
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const navLinks = document.getElementById('navLinks');
         mobileMenuBtn.addEventListener('click', () => {
             navLinks.classList.toggle('mobile-open');
             mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+            mobileMenuBtn.setAttribute('aria-expanded', navLinks.classList.contains('mobile-open') ? 'true' : 'false');
         });
     </script>
 <script>
@@ -507,7 +515,7 @@
     var siteIndex = [
         { title: 'Home', url: 'index.html', desc: 'Basketball, academics, license plate atlas' },
         { title: 'Basketball', url: 'basketball.html', desc: 'Player profile, height, weight, position' },
-        { title: 'Playing history', url: 'basketball.html', desc: 'KK Portoro\u017e, KK Borac Zemun, Honv\u00e9d Academy' },
+        { title: 'Playing history', url: 'basketball.html', desc: 'KK Portoro\u017e, KK Borac Zemun, Honv\u00e9d Academy, EYBL' },
         { title: 'Career achievements', url: 'basketball.html#achievements', desc: 'National team camp, NB II champion, tournaments' },
         { title: 'Career highs', url: 'basketball.html#career-highs', desc: 'Points, rebounds, assists, blocks' },
         { title: 'Basketball FAQ', url: 'basketball.html#faq', desc: 'Contact, stats, recruiting questions' },
@@ -597,7 +605,8 @@
     if (cookieCancelBtn) cookieCancelBtn.addEventListener('click', closeCookieModal);
     if (cookieModal) cookieModal.addEventListener('click', function (e) { if (e.target === cookieModal) closeCookieModal(); });
     if (cookieConfirmBtn) cookieConfirmBtn.addEventListener('click', function () {
-        document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax';
+        ['visitorToken','entryTime','lastPage','utmParams'].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} });
+        document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax' + (location.protocol === 'https:' ? '; Secure' : '');
         location.reload();
     });
     window.openCookiePrefsConfirm = openCookieModal;
