@@ -576,9 +576,12 @@ const APP_SCRIPT_URL = `https://visitor-tracker.pavle-radojevic3.workers.dev/sta
             attributionControl: true
         });
 
-        const tileAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>';
-        const tilesDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, attribution: tileAttribution });
-        const tilesLight = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, attribution: tileAttribution });
+        // CARTO's free basemap tiles started requiring a registered API key in August 2026
+        // (hence the "API KEY REQUIRED" watermark). Switched to Esri's Gray Canvas basemaps,
+        // which are free and keyless, and match the CARTO dark_all/light_all look closely.
+        const tileAttribution = 'Sources: Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors';
+        const tilesDark = L.tileLayer('https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, attribution: tileAttribution });
+        const tilesLight = L.tileLayer('https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, attribution: tileAttribution });
 
         const currentTheme = document.documentElement.getAttribute('data-theme');
         if (currentTheme === 'dark') { tilesDark.addTo(map); } else { tilesLight.addTo(map); }
@@ -772,12 +775,12 @@ function updateUI(data) {
     var siteIndex = [
         { title: 'Home', url: 'index.html', desc: 'Basketball, academics, license plate atlas' },
         { title: 'Basketball', url: 'basketball.html', desc: 'Player profile, height, weight, position' },
-        { title: 'Playing history', url: 'basketball.html', desc: 'KK Borac Zemun, Honv\u00e9d Academy, EYBL' },
+        { title: 'Playing history', url: 'basketball.html', desc: 'KK Portoro\u017e, KK Borac Zemun, Honv\u00e9d Academy' },
         { title: 'Career achievements', url: 'basketball.html#achievements', desc: 'National team camp, NB II champion, tournaments' },
         { title: 'Career highs', url: 'basketball.html#career-highs', desc: 'Points, rebounds, assists, blocks' },
         { title: 'Basketball FAQ', url: 'basketball.html#faq', desc: 'Contact, stats, recruiting questions' },
-        { title: 'Academic', url: 'academic.html', desc: 'University of Belgrade, Faculty of Mathematics' },
-        { title: 'Courses', url: 'academic.html#courses', desc: 'Programming, linear algebra, mathematical analysis' },
+        { title: 'Academic', url: 'academic.html', desc: 'University of Primorska, FAMNIT, Koper' },
+        { title: 'Courses', url: 'academic.html#courses', desc: 'Completed at University of Belgrade: programming, linear algebra, logic' },
         { title: 'Languages', url: 'academic.html#languages', desc: 'Serbian, English, Hungarian' },
         { title: 'License plate atlas', url: 'plates.html', desc: 'Interactive globe and collection stats' },
         { title: 'Visitor map', url: 'visitors.html', desc: 'Visitor statistics by country' },
