@@ -1,0 +1,105 @@
+/* modern.css — progressive-enhancement layer on top of each page's own styles.
+   Nothing here changes content or layout; every effect is gated by JS or media queries. */
+
+/* ── Per-page accent (drives glows, underlines, focus rings) ── */
+html { --accent-current: var(--accent-gold); }
+html[data-page="basketball"] { --accent-current: var(--accent-basketball); }
+html[data-page="academic"]   { --accent-current: var(--accent-academic); }
+html[data-page="plates"]     { --accent-current: var(--accent-plates); }
+
+/* ── Focus ring (zero specificity, so any explicit page rule still wins) ── */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible { outline: 2px solid var(--accent-current); outline-offset: 3px; }
+
+/* ── Ambient background: soft drifting glow + faint dot grid (Aceternity "grid/aurora" idea) ── */
+body::before, body::after { content: ""; position: fixed; pointer-events: none; z-index: -1; }
+body::before {
+    inset: -20%;
+    background:
+        radial-gradient(40% 34% at 18% 14%, color-mix(in srgb, var(--accent-current) 11%, transparent), transparent 70%),
+        radial-gradient(34% 30% at 86% 82%, color-mix(in srgb, var(--accent-academic) 8%, transparent), transparent 70%);
+}
+body::after {
+    inset: 0;
+    background-image: radial-gradient(color-mix(in srgb, var(--text) 10%, transparent) 1px, transparent 1.3px);
+    background-size: 30px 30px;
+    -webkit-mask-image: linear-gradient(to bottom, #000, transparent 55%);
+    mask-image: linear-gradient(to bottom, #000, transparent 55%);
+    opacity: .55;
+}
+html[data-page="index"] body::before, html[data-page="index"] body::after { display: none; } /* hero covers the page */
+
+/* ── Navigation: glass on scroll + animated underline (Manus / Aceternity navbars) ── */
+.nav { transition: box-shadow .3s, background-color .3s; view-transition-name: site-nav; }
+.nav.scrolled { background: color-mix(in srgb, var(--bg) 80%, transparent); box-shadow: 0 10px 30px -22px rgba(0, 0, 0, .65); }
+.nav-link { position: relative; }
+.nav-link::after { content: ""; position: absolute; left: 1rem; right: 1rem; bottom: .2rem; height: 2px; border-radius: 2px; background: var(--accent-current); transform: scaleX(0); transform-origin: left; transition: transform .3s cubic-bezier(.2, .7, .2, 1); }
+.nav-link:hover::after, .nav-link.active::after { transform: scaleX(1); }
+#scrollProgressBar { background: linear-gradient(90deg, var(--accent-current), var(--accent-gold)); }
+
+/* ── Cards: cursor spotlight (Aceternity "glowing effect" / React Bits "spotlight card") ── */
+:is(.stat-card, .achievement-card, .course-card, .lang-card, .coll-stat, .country-entry, .faq-item, .achievement-box, .manage-box) { position: relative; isolation: isolate; }
+:is(.stat-card, .achievement-card, .course-card, .lang-card, .coll-stat, .country-entry, .faq-item, .achievement-box, .manage-box)::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s;
+    background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--accent-current) 15%, transparent), transparent 70%);
+}
+@media (hover: hover) and (pointer: fine) {
+    :is(.stat-card, .achievement-card, .course-card, .lang-card, .coll-stat, .country-entry, .faq-item, .achievement-box, .manage-box):hover::before { opacity: 1; }
+}
+
+/* ── Buttons: lift, soft glow, press ── */
+.btn-outline, .pdf-link, .contact-link, .copy-email-btn, .globe-search button, #donationBtn { transition: transform .2s, box-shadow .25s, background-color .25s, border-color .25s, color .25s, filter .2s; }
+.btn-outline:hover, .pdf-link:hover, .contact-link:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -14px color-mix(in srgb, var(--accent-current) 70%, transparent); }
+.btn-outline:active, .pdf-link:active, .contact-link:active, .copy-email-btn:active, .globe-search button:active, #donationBtn:active { transform: scale(.97); }
+
+/* ── Section headings: accent bar draws in once seen ── */
+.section > h2::after { content: ""; display: block; width: 2.5rem; height: 3px; margin-top: .55rem; border-radius: 2px; background: var(--accent-current); transform: scaleX(0); transform-origin: left; transition: transform .7s cubic-bezier(.2, .7, .2, 1) .15s; }
+.section > h2.seen::after { transform: scaleX(1); }
+
+/* ── Scroll reveal: classes are added by modern.js only, so no-JS visitors see everything ── */
+.reveal { opacity: 0; transform: translate3d(0, 16px, 0); transition: opacity .6s ease, transform .7s cubic-bezier(.2, .7, .2, 1); transition-delay: var(--d, 0ms); }
+.reveal.in { opacity: 1; transform: none; }
+
+/* ── Index hero: staggered entrance + subtle horizontal parallax ── */
+.panel-content { translate: calc(var(--p, 0) * -48px) 0; }
+.scroll-arrow { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: opacity .3s, transform .2s, background-color .2s; }
+.scroll-arrow:hover { transform: translateY(-50%) scale(1.08); background: rgba(0, 0, 0, .55); }
+
+/* ── Motion (only when the visitor has not asked for reduced motion) ── */
+@media (prefers-reduced-motion: no-preference) {
+    body::before { animation: ambientDrift 38s ease-in-out infinite alternate; will-change: transform; }
+    @keyframes ambientDrift { from { transform: translate3d(-2%, -1%, 0) scale(1); } to { transform: translate3d(3%, 2%, 0) scale(1.08); } }
+
+    /* Title word reveal + one-time sheen (React Bits "split text" / "gradient text") */
+    .w { display: inline-block; animation: wordIn .7s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--i, 0) * 70ms + 80ms); }
+    @keyframes wordIn { from { opacity: 0; transform: translate3d(0, .45em, 0); } to { opacity: 1; transform: none; } }
+    @supports (background-clip: text) {
+        .w {
+            background: linear-gradient(100deg, var(--text) 36%, var(--accent-current) 50%, var(--text) 64%) 100% 0 / 300% 100%;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            animation: wordIn .7s cubic-bezier(.2, .7, .2, 1) both, sheen 2.2s ease both;
+            animation-delay: calc(var(--i, 0) * 70ms + 80ms), calc(var(--i, 0) * 70ms + 500ms);
+        }
+        @keyframes sheen { to { background-position: 0 0; } }
+    }
+
+    .panel-content > * { animation: riseIn .8s cubic-bezier(.2, .7, .2, 1) both; }
+    .panel-content > :nth-child(2) { animation-delay: .12s; }
+    .panel-content > :nth-child(3) { animation-delay: .24s; }
+    @keyframes riseIn { from { opacity: 0; transform: translate3d(0, 18px, 0); } to { opacity: 1; transform: none; } }
+
+    /* Cross-page fade (Chromium/Safari view transitions); older browsers just navigate normally */
+    @view-transition { navigation: auto; }
+    ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .25s; }
+    ::view-transition-group(site-nav) { animation: none; }
+
+    /* Gentle scroll-linked drift on the profile photo (Chromium; ignored elsewhere) */
+    @supports (animation-timeline: view()) {
+        .profile-photo-wrap img { transform: scale(1.08); animation: photoDrift linear both; animation-timeline: view(); animation-range: cover; }
+        @keyframes photoDrift { from { transform: translate3d(0, -14px, 0) scale(1.08); } to { transform: translate3d(0, 14px, 0) scale(1.08); } }
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    .panel-content { translate: none; }
+}
+@media print { body::before, body::after { display: none; } }
