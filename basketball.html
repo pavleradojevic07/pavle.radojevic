@@ -372,9 +372,11 @@
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
         /* Profile photo theme switching */
-        .img-light { display: none; }
-        [data-theme="light"] .img-dark { display: none; }
-        [data-theme="light"] .img-light { display: block; }
+        /* Selectors must be at least as specific as ".profile-photo-wrap img" (which sets display:block),
+           otherwise the hidden image still renders and peeks out below the visible one. */
+        .profile-photo-wrap img.img-light { display: none; }
+        [data-theme="light"] .profile-photo-wrap img.img-dark { display: none; }
+        [data-theme="light"] .profile-photo-wrap img.img-light { display: block; }
     </style>
 <style>
     /* Light-theme accent colors darkened to meet WCAG AA (4.5:1) when used as text */
