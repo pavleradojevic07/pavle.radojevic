@@ -5,12 +5,12 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basketball - Pavle Radojević</title>
-    <meta name="description" content="Basketball profile of Pavle Radojević - player stats, career timeline, achievements.">
+    <title>Basketball — Pavle Radojević</title>
+    <meta name="description" content="Basketball profile of Pavle Radojević — player stats, career timeline, achievements.">
     <link rel="icon" type="image/webp" href="images/logo-dark.webp">
     <meta property="og:type" content="profile">
-    <meta property="og:title" content="Basketball - Pavle Radojević">
-    <meta property="og:description" content="Basketball profile of Pavle Radojević - player stats, career timeline, achievements.">
+    <meta property="og:title" content="Basketball — Pavle Radojević">
+    <meta property="og:description" content="Basketball profile of Pavle Radojević — player stats, career timeline, achievements.">
     <meta property="og:url" content="https://pavleradojevic07.github.io/pavle.radojevic/basketball.html">
     <meta property="og:image" content="https://pavleradojevic07.github.io/pavle.radojevic/images/logo-dark.webp">
     <meta name="twitter:card" content="summary_large_image">
@@ -372,9 +372,11 @@
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
         /* Profile photo theme switching */
-        .img-light { display: none; }
-        [data-theme="light"] .img-dark { display: none; }
-        [data-theme="light"] .img-light { display: block; }
+        /* Selectors must be at least as specific as ".profile-photo-wrap img" (which sets display:block),
+           otherwise the hidden image still renders and peeks out below the visible one. */
+        .profile-photo-wrap img.img-light { display: none; }
+        [data-theme="light"] .profile-photo-wrap img.img-dark { display: none; }
+        [data-theme="light"] .profile-photo-wrap img.img-light { display: block; }
     </style>
 <style>
     /* Light-theme accent colors darkened to meet WCAG AA (4.5:1) when used as text */
@@ -471,7 +473,7 @@
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <div id="scrollProgressBar"></div>
-    <!-- Minimal analytics consent banner (Cloudflare tracker only - no Google Analytics) -->
+    <!-- Minimal analytics consent banner (Cloudflare tracker only — no Google Analytics) -->
     <style>
         #analytics-consent-banner {
             position: fixed; bottom: 0; left: 0; right: 0;
@@ -640,8 +642,8 @@
     <!-- ════════════ HEADER ════════════ -->
     <nav class="nav">
         <a href="index.html" class="nav-logo">
-            <img src="images/logo-dark.webp" alt="Pavle Radojević - home" class="logo-dark">
-            <img src="images/logo-light.webp" alt="Pavle Radojević - home" class="logo-light">
+            <img src="images/logo-dark.webp" alt="Pavle Radojević — home" class="logo-dark">
+            <img src="images/logo-light.webp" alt="Pavle Radojević — home" class="logo-light">
         </a>
         <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">☰</button>
         <div class="nav-links" id="navLinks">
@@ -700,7 +702,7 @@
                         <div class="stat-card"><div class="stat-value">101 kg</div><div class="stat-label">Weight (222 lbs)</div></div>
                         <div class="stat-card"><div class="stat-value">PF / C</div><div class="stat-label">Position</div></div>
                         <div class="stat-card"><div class="stat-value">🇷🇸 Serbia</div><div class="stat-label">Nationality</div></div>
-                        <div class="stat-card"><div class="stat-value" id="ageValue">-</div><div class="stat-label">Age</div></div>
+                        <div class="stat-card"><div class="stat-value" id="ageValue">—</div><div class="stat-label">Age</div></div>
                     </div>
                     <p style="margin-top:1.5rem; color:var(--text-secondary); line-height:1.7;">
                         A versatile forward/center with a strong international background. Known for defensive versatility, high basketball IQ, a strong presence in the paint, and the ability to stretch the floor with reliable outside shooting. Currently competing in the Slovenian 2. SKL (senior) and 1. B SKL (U20) for KK Portorož.
@@ -814,6 +816,7 @@
                 <a href="https://basketball.eurobasket.com/player/Pavle-Radojevic/686578" target="_blank" rel="noopener" class="btn-outline">🏀 Eurobasket Profile</a>
                 <a href="https://www.kzs.si/igralec/108821" target="_blank" rel="noopener" class="btn-outline">🇸🇮 KZS Profile</a>
                 <a href="https://www.sofascore.com/basketball/player/pavle-radojevic/2786761" target="_blank" rel="noopener" class="btn-outline">📊 SofaScore Profile</a>
+                <a href="https://www.proballers.com/basketball/player/317115/pavle-radojevic" target="_blank" rel="noopener" class="btn-outline">📋 Proballers Profile</a>
             </div>
 
             <!-- FAQ -->
@@ -829,7 +832,7 @@
                 </div>
                 <div class="faq-item" tabindex="0" role="button" aria-expanded="false">
                     <div class="faq-question">Where can I see full season stats?</div>
-                    <div class="faq-answer">Use the Eurobasket, KZS (Slovenian Basketball Association), or SofaScore links in the Highlights &amp; Statistics section above.</div>
+                    <div class="faq-answer">Use the Eurobasket, KZS (Slovenian Basketball Association), SofaScore, or Proballers links in the Highlights &amp; Statistics section above.</div>
                 </div>
                 <div class="faq-item" tabindex="0" role="button" aria-expanded="false">
                     <div class="faq-question">What leagues are you currently playing in?</div>
@@ -845,7 +848,7 @@
                 </div>
                 <div class="faq-item" tabindex="0" role="button" aria-expanded="false">
                     <div class="faq-question">What are your career goals in basketball?</div>
-                    <div class="faq-answer">To keep getting better, meet and connect with more people, grow as a person, and learn what it means to be a real team member - adapting to new environments and new teams that share the same goals. Most of all, to compete and play at the highest level possible.</div>
+                    <div class="faq-answer">To keep getting better, meet and connect with more people, grow as a person, and learn what it means to be a real team member — adapting to new environments and new teams that share the same goals. Most of all, to compete and play at the highest level possible.</div>
                 </div>
             </div>
         </section>
@@ -1011,7 +1014,6 @@
         { title: 'Academic', url: 'academic.html', desc: 'University of Primorska, FAMNIT, Koper' },
         { title: 'Courses', url: 'academic.html#courses', desc: 'Completed at University of Belgrade: programming, linear algebra, logic' },
         { title: 'Languages', url: 'academic.html#languages', desc: 'Serbian, English, Hungarian' },
-        { title: 'Activities & leadership', url: 'academic.html#activities', desc: 'GDG on Campus UP core team: events, marketing, tech support' },
         { title: 'License plate atlas', url: 'plates.html', desc: 'Interactive globe and collection stats' },
         { title: 'Visitor map', url: 'visitors.html', desc: 'Visitor statistics by country' },
         { title: 'Privacy policy', url: 'privacy.html', desc: 'Data, analytics, your rights' },
