@@ -947,14 +947,10 @@
     ];
 </script>
 
-    <script type="importmap">
-        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
-    </script>
-    <script type="module">
-        import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-        // ──────────────── YOUR PLATE COLLECTION (with image paths) ────────────────
+    <script>
+    // Plate data, gallery, modal and stats. None of this needs WebGL or three.js, so it runs on its own
+    // and still works if the 3D globe below fails to load.
+    (function () {
         const plateCollection = [
     // Belgium
     { country: 'Belgium', flag: '🇧🇪', image: 'plates images/belgium.webp', capital: 'Brussels', population: '11.7M', language: 'Dutch/French/German', continent: 'Europe', rarity: 'Common', acquired: '2023', story: 'Received as a gift from a Belgian collector.' },
@@ -1032,13 +1028,167 @@
     { country: 'USA-Wyoming', flag: '🇺🇸', image: 'plates images/us plates/wyoming.webp', capital: 'Cheyenne', population: '0.6M', language: 'English', continent: 'North America', rarity: 'Common', acquired: '2024', story: 'Wyoming plate.' }
 ];
 
+        // ── GALLERY (now with images) ──
+        const galleryGrid = document.getElementById('galleryGrid');
+        plateCollection.forEach(plate => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            item.tabIndex = 0;
+            item.setAttribute('role', 'button');
+            item.setAttribute('aria-label', `View ${plate.country} plate`);
+            const img = document.createElement('img');
+            img.src = plate.image;
+            img.alt = plate.country + ' license plate';
+            img.onerror = () => { img.style.display = 'none'; item.innerHTML = `<span style="font-size:3rem;">🚗</span><span class="plate-country-label">${plate.flag} ${plate.country}</span>`; };
+            const label = document.createElement('span');
+            label.className = 'plate-country-label';
+            label.textContent = `${plate.flag} ${plate.country}`;
+            item.appendChild(img);
+            item.appendChild(label);
+            item.addEventListener('click', () => openModal(plate));
+            item.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+                    e.preventDefault();
+                    openModal(plate);
+                }
+            });
+            galleryGrid.appendChild(item);
+        });
+
+        // Modal with image
+        const plateModal = document.getElementById('plateModal');
+        const modalClose = document.getElementById('modalClose');
+        let lastModalTrigger = null;
+        function openModal(plate) {
+            const modalImg = document.getElementById('modalPlateImage');
+            const modalEmoji = document.getElementById('modalPlateEmoji');
+            if (plate.image) {
+                modalImg.src = plate.image;
+                modalImg.alt = plate.country + ' license plate';
+                modalImg.style.display = 'block';
+                modalEmoji.style.display = 'none';
+            } else {
+                modalImg.style.display = 'none';
+                modalEmoji.style.display = 'block';
+                modalEmoji.textContent = '🚗'; // fallback
+            }
+            document.getElementById('modalPlateCountry').textContent = `${plate.flag} ${plate.country}`;
+            document.getElementById('modalPlateStory').textContent = plate.story;
+            plateModal.classList.remove('hidden');
+            lastModalTrigger = document.activeElement;
+            modalClose.focus();
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal() {
+            if (plateModal.classList.contains('hidden')) return;
+            plateModal.classList.add('hidden');
+            if (lastModalTrigger && lastModalTrigger.focus) lastModalTrigger.focus();
+            document.body.style.overflow = '';
+        }
+        modalClose.addEventListener('click', closeModal);
+        plateModal.addEventListener('click', e => { if (e.target === plateModal) closeModal(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+        // Update stats (unique countries)
+        function updateStats() {
+            // Helper: convert plate collection country to real country name
+            function getRealCountry(plate) {
+                if (plate.country.startsWith('USA-')) return 'United States';
+                return plate.country;
+            }
+
+            // Unique real countries collected
+            const uniqueCountries = new Set(plateCollection.map(p => getRealCountry(p)));
+            const collected = uniqueCountries.size;
+
+            // Total possible countries = all non-USA-state entries in allCountries
+            const totalCountries = (window.allCountries || []).filter(c => !c.name.startsWith('USA-')).length;
+            const missing = totalCountries - collected;
+            const percent = Math.round((collected / totalCountries) * 100);
+
+            document.getElementById('statCollected').textContent = collected;
+            document.getElementById('statMissing').textContent = missing;
+            document.getElementById('statPercent').textContent = percent + '%';
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressBar').textContent = percent + '%';
+
+            // Rarest / newest / oldest (based on all plates, not unique countries)
+            const rarityOrder = { 'Extremely Rare': 0, 'Rare': 1, 'Uncommon': 2, 'Common': 3 };
+            if (plateCollection.length > 0) {
+                const rarest = plateCollection.reduce((a, b) => (rarityOrder[a.rarity] || 4) < (rarityOrder[b.rarity] || 4) ? a : b);
+                document.getElementById('statRarest').textContent = rarest.flag + ' ' + getRealCountry(rarest);
+                const newest = plateCollection.reduce((a, b) => parseInt(b.acquired) > parseInt(a.acquired) ? b : a);
+                document.getElementById('statNewest').textContent = newest.flag + ' ' + getRealCountry(newest);
+                const oldest = plateCollection.reduce((a, b) => parseInt(b.acquired) < parseInt(a.acquired) ? b : a);
+                document.getElementById('statOldest').textContent = oldest.flag + ' ' + getRealCountry(oldest);
+            }
+
+            // Continent breakdown (unique real countries per continent)
+            const continentMap = {};
+            plateCollection.forEach(p => {
+                const realCountry = getRealCountry(p);
+                // Get continent from plate (if not present, use 'Unknown')
+                const cont = p.continent || 'Unknown';
+                if (!continentMap[cont]) continentMap[cont] = new Set();
+                continentMap[cont].add(realCountry);
+            });
+
+            const continentOrder = ['Europe', 'Asia', 'North America', 'South America', 'Africa', 'Oceania'];
+            let continentHTML = '';
+            for (const cont of continentOrder) {
+                if (continentMap[cont]) {
+                    continentHTML += `${cont}: ${continentMap[cont].size}<br>`;
+                }
+            }
+document.getElementById('statContinents').innerHTML = continentHTML.trim() || '—';
+        }
+        updateStats();
+        window.plateCollection = plateCollection;
+        window.openModal = openModal;
+    })();
+
+    function showGlobeError(msg) {
+        var el = document.getElementById('globeLoadingOverlay');
+        if (!el) return;
+        el.classList.remove('hidden');
+        el.style.padding = '1rem';
+        el.style.textAlign = 'center';
+        el.textContent = msg;
+    }
+    setTimeout(function () {
+        if (!window.__globeReady) showGlobeError('The 3D globe is taking too long to load. The plate gallery below still works.');
+    }, 15000);
+    </script>
+
+    <script type="importmap">
+        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
+    </script>
+    <script type="module">
+        let THREE, OrbitControls;
+        try {
+            THREE = await import('three');
+            ({ OrbitControls } = await import('three/addons/controls/OrbitControls.js'));
+        } catch (err) {
+            console.error('Globe: could not load three.js', err);
+            showGlobeError('The 3D globe could not load (the three.js library did not download). The plate gallery below still works.');
+            throw err;
+        }
+
+
         // ──────────────── GLOBE SETUP (unchanged) ────────────────
         const container = document.getElementById('globeContainer');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
         camera.position.set(0, 0.5, 3.8);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        let renderer;
+        try {
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        } catch (err) {
+            console.error('Globe: WebGL unavailable', err);
+            showGlobeError('The 3D globe needs WebGL, which this browser has turned off or does not support. The plate gallery below still works.');
+            throw err;
+        }
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
@@ -1559,121 +1709,6 @@ document.getElementById('globeSearchBtn').addEventListener('click', () => {
             return null;
         }
 
-        // ── GALLERY (now with images) ──
-        const galleryGrid = document.getElementById('galleryGrid');
-        plateCollection.forEach(plate => {
-            const item = document.createElement('div');
-            item.className = 'gallery-item';
-            item.tabIndex = 0;
-            item.setAttribute('role', 'button');
-            item.setAttribute('aria-label', `View ${plate.country} plate`);
-            const img = document.createElement('img');
-            img.src = plate.image;
-            img.alt = plate.country + ' license plate';
-            img.onerror = () => { img.style.display = 'none'; item.innerHTML = `<span style="font-size:3rem;">🚗</span><span class="plate-country-label">${plate.flag} ${plate.country}</span>`; };
-            const label = document.createElement('span');
-            label.className = 'plate-country-label';
-            label.textContent = `${plate.flag} ${plate.country}`;
-            item.appendChild(img);
-            item.appendChild(label);
-            item.addEventListener('click', () => openModal(plate));
-            item.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
-                    e.preventDefault();
-                    openModal(plate);
-                }
-            });
-            galleryGrid.appendChild(item);
-        });
-
-        // Modal with image
-        const plateModal = document.getElementById('plateModal');
-        const modalClose = document.getElementById('modalClose');
-        let lastModalTrigger = null;
-        function openModal(plate) {
-            const modalImg = document.getElementById('modalPlateImage');
-            const modalEmoji = document.getElementById('modalPlateEmoji');
-            if (plate.image) {
-                modalImg.src = plate.image;
-                modalImg.alt = plate.country + ' license plate';
-                modalImg.style.display = 'block';
-                modalEmoji.style.display = 'none';
-            } else {
-                modalImg.style.display = 'none';
-                modalEmoji.style.display = 'block';
-                modalEmoji.textContent = '🚗'; // fallback
-            }
-            document.getElementById('modalPlateCountry').textContent = `${plate.flag} ${plate.country}`;
-            document.getElementById('modalPlateStory').textContent = plate.story;
-            plateModal.classList.remove('hidden');
-            lastModalTrigger = document.activeElement;
-            modalClose.focus();
-            document.body.style.overflow = 'hidden';
-        }
-        function closeModal() {
-            if (plateModal.classList.contains('hidden')) return;
-            plateModal.classList.add('hidden');
-            if (lastModalTrigger && lastModalTrigger.focus) lastModalTrigger.focus();
-            document.body.style.overflow = '';
-        }
-        modalClose.addEventListener('click', closeModal);
-        plateModal.addEventListener('click', e => { if (e.target === plateModal) closeModal(); });
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-        // Update stats (unique countries)
-        function updateStats() {
-            // Helper: convert plate collection country to real country name
-            function getRealCountry(plate) {
-                if (plate.country.startsWith('USA-')) return 'United States';
-                return plate.country;
-            }
-
-            // Unique real countries collected
-            const uniqueCountries = new Set(plateCollection.map(p => getRealCountry(p)));
-            const collected = uniqueCountries.size;
-
-            // Total possible countries = all non-USA-state entries in allCountries
-            const totalCountries = (window.allCountries || []).filter(c => !c.name.startsWith('USA-')).length;
-            const missing = totalCountries - collected;
-            const percent = Math.round((collected / totalCountries) * 100);
-
-            document.getElementById('statCollected').textContent = collected;
-            document.getElementById('statMissing').textContent = missing;
-            document.getElementById('statPercent').textContent = percent + '%';
-            document.getElementById('progressBar').style.width = percent + '%';
-            document.getElementById('progressBar').textContent = percent + '%';
-
-            // Rarest / newest / oldest (based on all plates, not unique countries)
-            const rarityOrder = { 'Extremely Rare': 0, 'Rare': 1, 'Uncommon': 2, 'Common': 3 };
-            if (plateCollection.length > 0) {
-                const rarest = plateCollection.reduce((a, b) => (rarityOrder[a.rarity] || 4) < (rarityOrder[b.rarity] || 4) ? a : b);
-                document.getElementById('statRarest').textContent = rarest.flag + ' ' + getRealCountry(rarest);
-                const newest = plateCollection.reduce((a, b) => parseInt(b.acquired) > parseInt(a.acquired) ? b : a);
-                document.getElementById('statNewest').textContent = newest.flag + ' ' + getRealCountry(newest);
-                const oldest = plateCollection.reduce((a, b) => parseInt(b.acquired) < parseInt(a.acquired) ? b : a);
-                document.getElementById('statOldest').textContent = oldest.flag + ' ' + getRealCountry(oldest);
-            }
-
-            // Continent breakdown (unique real countries per continent)
-            const continentMap = {};
-            plateCollection.forEach(p => {
-                const realCountry = getRealCountry(p);
-                // Get continent from plate (if not present, use 'Unknown')
-                const cont = p.continent || 'Unknown';
-                if (!continentMap[cont]) continentMap[cont] = new Set();
-                continentMap[cont].add(realCountry);
-            });
-
-            const continentOrder = ['Europe', 'Asia', 'North America', 'South America', 'Africa', 'Oceania'];
-            let continentHTML = '';
-            for (const cont of continentOrder) {
-                if (continentMap[cont]) {
-                    continentHTML += `${cont}: ${continentMap[cont].size}<br>`;
-                }
-            }
-document.getElementById('statContinents').innerHTML = continentHTML.trim() || '—';
-        }
-        updateStats();
 
         function animate() {
             requestAnimationFrame(animate);
@@ -1690,6 +1725,7 @@ document.getElementById('statContinents').innerHTML = continentHTML.trim() || '�
             renderer.render(scene, camera);
         }
         animate();
+        window.__globeReady = true;
 
         window.addEventListener('resize', () => {
             const w = container.clientWidth, h = container.clientHeight;
