@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visitors — Pavle Radojević</title>
+    <title>Visitors - Pavle Radojević</title>
     <meta name="description" content="Website visitor statistics and interactive map">
     <link rel="icon" type="image/webp" href="images/logo-dark.webp">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Visitors — Pavle Radojević">
+    <meta property="og:title" content="Visitors - Pavle Radojević">
     <meta property="og:description" content="Website visitor statistics and interactive map">
     <meta property="og:url" content="https://pavleradojevic07.github.io/pavle.radojevic/visitors.html">
     <meta property="og:image" content="https://pavleradojevic07.github.io/pavle.radojevic/images/logo-dark.webp">
@@ -274,7 +274,7 @@
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <div id="scrollProgressBar"></div>
-    <!-- Minimal analytics consent banner (Cloudflare tracker only — no Google Analytics) -->
+    <!-- Minimal analytics consent banner (Cloudflare tracker only - no Google Analytics) -->
     <style>
         #analytics-consent-banner {
             position: fixed; bottom: 0; left: 0; right: 0;
@@ -444,8 +444,8 @@
 
     <nav class="nav">
         <a href="index.html" class="nav-logo">
-            <img src="images/logo-dark.webp" alt="Pavle Radojević — home" class="logo-dark">
-            <img src="images/logo-light.webp" alt="Pavle Radojević — home" class="logo-light">
+            <img src="images/logo-dark.webp" alt="Pavle Radojević - home" class="logo-dark">
+            <img src="images/logo-light.webp" alt="Pavle Radojević - home" class="logo-light">
         </a>
         <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">☰</button>
         <div class="nav-links" id="navLinks">
@@ -493,16 +493,16 @@
             <p style="text-align:center; color:var(--text-secondary); margin-bottom:2rem;">Real‑time insights into where my website visitors come from.</p>
 
             <div class="stats-grid loading" id="statsContainer" aria-busy="true">
-                <div class="stat-card"><div class="stat-value" id="totalVisitors">—</div><div class="stat-label">Total Visitors</div></div>
-                <div class="stat-card"><div class="stat-value" id="visitorsToday">—</div><div class="stat-label">Today</div></div>
-                <div class="stat-card"><div class="stat-value" id="countriesCount">—</div><div class="stat-label">Countries</div></div>
-                <div class="stat-card"><div class="stat-value" id="citiesCount">—</div><div class="stat-label">Cities</div></div>
-                <div class="stat-card"><div class="stat-value" id="avgSession">—</div><div class="stat-label">Avg Session</div></div>
-                <div class="stat-card"><div class="stat-value" id="returningVisitors">—</div><div class="stat-label">Returning</div></div>
-                <div class="stat-card"><div class="stat-value" id="liveVisitors">—</div><div class="stat-label">Live</div></div>
+                <div class="stat-card"><div class="stat-value" id="totalVisitors">-</div><div class="stat-label">Total Visitors</div></div>
+                <div class="stat-card"><div class="stat-value" id="visitorsToday">-</div><div class="stat-label">Today</div></div>
+                <div class="stat-card"><div class="stat-value" id="countriesCount">-</div><div class="stat-label">Countries</div></div>
+                <div class="stat-card"><div class="stat-value" id="citiesCount">-</div><div class="stat-label">Cities</div></div>
+                <div class="stat-card"><div class="stat-value" id="avgSession">-</div><div class="stat-label">Avg Session</div></div>
+                <div class="stat-card"><div class="stat-value" id="returningVisitors">-</div><div class="stat-label">Returning</div></div>
+                <div class="stat-card"><div class="stat-value" id="liveVisitors">-</div><div class="stat-label">Live</div></div>
             </div>
             <div class="last-visitor">
-                <strong>Last visitor:</strong> <span id="lastVisitorInfo">—</span>
+                <strong>Last visitor:</strong> <span id="lastVisitorInfo">-</span>
             </div>
 
             <div class="map-container-wrap" style="position:relative; border-radius:var(--radius-lg);">
@@ -629,7 +629,7 @@ function updateUI(data) {
         document.getElementById('lastVisitorInfo').textContent = 
             `${formatted} from ${data.lastVisitor.flag} ${data.lastVisitor.country}`;
     } else {
-        document.getElementById('lastVisitorInfo').textContent = '—';
+        document.getElementById('lastVisitorInfo').textContent = '-';
     }
 
     // Country list (unchanged)
