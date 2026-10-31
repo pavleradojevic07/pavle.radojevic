@@ -372,11 +372,9 @@
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
         /* Profile photo theme switching */
-        /* Selectors must be at least as specific as ".profile-photo-wrap img" (which sets display:block),
-           otherwise the hidden image still renders and peeks out below the visible one. */
-        .profile-photo-wrap img.img-light { display: none; }
-        [data-theme="light"] .profile-photo-wrap img.img-dark { display: none; }
-        [data-theme="light"] .profile-photo-wrap img.img-light { display: block; }
+        .img-light { display: none; }
+        [data-theme="light"] .img-dark { display: none; }
+        [data-theme="light"] .img-light { display: block; }
     </style>
 <style>
     /* Light-theme accent colors darkened to meet WCAG AA (4.5:1) when used as text */
@@ -816,7 +814,6 @@
                 <a href="https://basketball.eurobasket.com/player/Pavle-Radojevic/686578" target="_blank" rel="noopener" class="btn-outline">🏀 Eurobasket Profile</a>
                 <a href="https://www.kzs.si/igralec/108821" target="_blank" rel="noopener" class="btn-outline">🇸🇮 KZS Profile</a>
                 <a href="https://www.sofascore.com/basketball/player/pavle-radojevic/2786761" target="_blank" rel="noopener" class="btn-outline">📊 SofaScore Profile</a>
-                <a href="https://www.proballers.com/basketball/player/317115/pavle-radojevic" target="_blank" rel="noopener" class="btn-outline">📋 Proballers Profile</a>
             </div>
 
             <!-- FAQ -->
@@ -832,7 +829,7 @@
                 </div>
                 <div class="faq-item" tabindex="0" role="button" aria-expanded="false">
                     <div class="faq-question">Where can I see full season stats?</div>
-                    <div class="faq-answer">Use the Eurobasket, KZS (Slovenian Basketball Association), SofaScore, or Proballers links in the Highlights &amp; Statistics section above.</div>
+                    <div class="faq-answer">Use the Eurobasket, KZS (Slovenian Basketball Association), or SofaScore links in the Highlights &amp; Statistics section above.</div>
                 </div>
                 <div class="faq-item" tabindex="0" role="button" aria-expanded="false">
                     <div class="faq-question">What leagues are you currently playing in?</div>
@@ -1014,6 +1011,7 @@
         { title: 'Academic', url: 'academic.html', desc: 'University of Primorska, FAMNIT, Koper' },
         { title: 'Courses', url: 'academic.html#courses', desc: 'Completed at University of Belgrade: programming, linear algebra, logic' },
         { title: 'Languages', url: 'academic.html#languages', desc: 'Serbian, English, Hungarian' },
+        { title: 'Activities & leadership', url: 'academic.html#activities', desc: 'GDG on Campus UP core team: events, marketing, tech support' },
         { title: 'License plate atlas', url: 'plates.html', desc: 'Interactive globe and collection stats' },
         { title: 'Visitor map', url: 'visitors.html', desc: 'Visitor statistics by country' },
         { title: 'Privacy policy', url: 'privacy.html', desc: 'Data, analytics, your rights' },

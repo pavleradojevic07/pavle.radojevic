@@ -6,11 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Academic — Pavle Radojević</title>
-    <meta name="description" content="Academic background of Pavle Radojević – University of Primorska, Faculty of Mathematics, Natural Sciences and Information Technologies">
+    <meta name="description" content="Academic background and activities of Pavle Radojević – University of Primorska (FAMNIT) and core team member of GDG on Campus UP">
     <link rel="icon" type="image/webp" href="images/logo-dark.webp">
     <meta property="og:type" content="profile">
     <meta property="og:title" content="Academic — Pavle Radojević">
-    <meta property="og:description" content="Academic background of Pavle Radojević – University of Primorska, Faculty of Mathematics, Natural Sciences and Information Technologies">
+    <meta property="og:description" content="Academic background and activities of Pavle Radojević – University of Primorska (FAMNIT) and core team member of GDG on Campus UP">
     <meta property="og:url" content="https://pavleradojevic07.github.io/pavle.radojevic/academic.html">
     <meta property="og:image" content="https://pavleradojevic07.github.io/pavle.radojevic/images/logo-dark.webp">
     <meta name="twitter:card" content="summary_large_image">
@@ -328,6 +328,55 @@
         border-color: var(--accent-gold);
         box-shadow: var(--shadow);
         }
+
+        /* Activities & Leadership */
+        .activity-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-academic);
+            border-radius: var(--radius);
+            padding: 1.8rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
+        }
+        .activity-head { display: flex; align-items: center; gap: 1.2rem; }
+        .activity-logo { width: 88px; height: 88px; border-radius: 16px; border: 1px solid var(--border); flex-shrink: 0; display: block; }
+        @media (max-width: 500px) { .activity-logo { width: 64px; height: 64px; } }
+        .activity-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            max-width: 70ch;
+            margin-top: 0.9rem;
+        }
+        .activity-subtitle { font-weight: 600; font-size: 0.95rem; margin: 1.4rem 0 0.7rem; }
+        .activity-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; }
+        .activity-tags li {
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.25rem 0.8rem;
+            border-radius: 20px;
+            background: rgba(77, 166, 255, 0.15);
+            color: var(--accent-academic);
+        }
+        [data-theme="light"] .activity-tags li { color: #0b4f96; }
+        .activity-links { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.4rem; }
+        .activity-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            border: 1px solid var(--accent-academic);
+            color: var(--accent-academic);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.88rem;
+            transition: all var(--transition);
+        }
+        .activity-link:hover { background: var(--accent-academic); color: #000; opacity: 1; }
+        [data-theme="light"] .activity-link:hover { color: #fff; }
+        .activity-note { font-size: 0.78rem; color: var(--text-muted); margin-top: 1.2rem; }
+        @media (max-width: 500px) { .activity-card { padding: 1.2rem; } }
     </style>
 <style>
     /* Light-theme accent colors darkened to meet WCAG AA (4.5:1) when used as text */
@@ -674,6 +723,38 @@
 
             </div>
 
+                        <h2 id="activities" style="font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Activities &amp; Leadership</h2>
+            <div class="activity-card">
+                <div class="activity-head">
+                    <img src="images/gdg-logo.webp" alt="GDG on Campus University of Primorska logo" class="activity-logo" width="88" height="88" loading="lazy">
+                    <div>
+                        <div class="timeline-year">2026 – Present</div>
+                        <div class="timeline-title">
+                            Core Team Member —
+                            <a href="https://gdg.community.dev/gdg-on-campus-university-of-primorska-koper-slovenia/" target="_blank" rel="noopener" class="school-link">GDG on Campus University of Primorska</a>
+                        </div>
+                        <div class="timeline-desc">Student developer community, Koper, Slovenia 🇸🇮</div>
+                    </div>
+                </div>
+                <p>GDG on Campus UP is a student-led developer community at the University of Primorska, part of Google's worldwide Google Developer Groups on Campus network. Founded in 2021, it is open to students from every field and runs workshops, tech talks, hackathons and meetings with industry professionals.</p>
+                <p>As part of the core team, I help organise and run the community's events, support its marketing, provide tech support, and help bring people in the community together.</p>
+                <div class="activity-subtitle">What I do</div>
+                <ul class="activity-tags">
+                    <li>Event organisation</li>
+                    <li>Event support</li>
+                    <li>Marketing and promotion</li>
+                    <li>Tech support</li>
+                    <li>Community and networking</li>
+                </ul>
+                <div class="activity-links">
+                    <a href="https://gdg.community.dev/gdg-on-campus-university-of-primorska-koper-slovenia/" target="_blank" rel="noopener" class="activity-link">Chapter page</a>
+                    <a href="https://www.instagram.com/gdgoncampus.up/" target="_blank" rel="noopener" class="activity-link">Instagram</a>
+                    <a href="https://www.linkedin.com/company/gdgoncampus-up" target="_blank" rel="noopener" class="activity-link">LinkedIn</a>
+                    <a href="https://www.famnit.upr.si/en/famnit-plus-3/student-societies-and-associations/gdg-primorska-google-developers-club-of-the-university-of-primorska/" target="_blank" rel="noopener" class="activity-link">FAMNIT page</a>
+                </div>
+                <div class="activity-note">Logo source: <a href="https://www.linkedin.com/company/gdgoncampus-up" target="_blank" rel="noopener">GDG on Campus UP on LinkedIn</a>. Google and GDG are trademarks of Google LLC. This is a personal website and is not endorsed by Google.</div>
+            </div>
+
             <h2 id="courses" style="font-family:var(--font-display); font-size:2rem; margin-bottom:1.5rem;">Courses</h2>
 
             <div class="courses-accordion">
@@ -783,7 +864,7 @@
                 YouTube
             </a>
         </div>
-        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages · Content last updated October 1, 2026</p>
+        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages · Content last updated October 31, 2026</p>
         <p class="footer-note" style="margin-top:0.6rem;">
             <a href="privacy.html" style="color:var(--text-muted); text-decoration:underline;">Privacy Policy</a> ·
             <a href="terms.html" style="color:var(--text-muted); text-decoration:underline;">Terms &amp; Conditions</a> ·
@@ -933,6 +1014,7 @@
         { title: 'Academic', url: 'academic.html', desc: 'University of Primorska, FAMNIT, Koper' },
         { title: 'Courses', url: 'academic.html#courses', desc: 'Completed at University of Belgrade: programming, linear algebra, logic' },
         { title: 'Languages', url: 'academic.html#languages', desc: 'Serbian, English, Hungarian' },
+        { title: 'Activities & leadership', url: 'academic.html#activities', desc: 'GDG on Campus UP core team: events, marketing, tech support' },
         { title: 'License plate atlas', url: 'plates.html', desc: 'Interactive globe and collection stats' },
         { title: 'Visitor map', url: 'visitors.html', desc: 'Visitor statistics by country' },
         { title: 'Privacy policy', url: 'privacy.html', desc: 'Data, analytics, your rights' },
