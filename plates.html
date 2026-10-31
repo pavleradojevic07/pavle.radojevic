@@ -5,11 +5,11 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>License Plate Atlas - Pavle Radojević</title>
+    <title>License Plate Atlas — Pavle Radojević</title>
     <meta name="description" content="Interactive license plate collection">
     <link rel="icon" type="image/webp" href="images/logo-dark.webp">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="License Plate Atlas - Pavle Radojević">
+    <meta property="og:title" content="License Plate Atlas — Pavle Radojević">
     <meta property="og:description" content="Interactive license plate collection">
     <meta property="og:url" content="https://pavleradojevic07.github.io/pavle.radojevic/plates.html">
     <meta property="og:image" content="https://pavleradojevic07.github.io/pavle.radojevic/images/logo-dark.webp">
@@ -348,7 +348,7 @@
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <div id="scrollProgressBar"></div>
-    <!-- Minimal analytics consent banner (Cloudflare tracker only - no Google Analytics) -->
+    <!-- Minimal analytics consent banner (Cloudflare tracker only — no Google Analytics) -->
     <style>
         #analytics-consent-banner {
             position: fixed; bottom: 0; left: 0; right: 0;
@@ -516,8 +516,8 @@
 
     <nav class="nav">
         <a href="index.html" class="nav-logo">
-            <img src="images/logo-dark.webp" alt="Pavle Radojević - home" class="logo-dark">
-            <img src="images/logo-light.webp" alt="Pavle Radojević - home" class="logo-light">
+            <img src="images/logo-dark.webp" alt="Pavle Radojević — home" class="logo-dark">
+            <img src="images/logo-light.webp" alt="Pavle Radojević — home" class="logo-light">
         </a>
         <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">☰</button>
         <div class="nav-links" id="navLinks">
@@ -605,7 +605,7 @@
                 <div class="coll-stat wide-stat"><div class="cs-value" id="statNewest">-</div><div class="cs-label">Newest Addition</div></div>
                 <div class="coll-stat wide-stat"><div class="cs-value" id="statOldest">-</div><div class="cs-label">Oldest Addition</div></div>
                 <div class="coll-stat" style="grid-column: 1 / -1;">
-                    <div class="cs-value" id="statContinents" style="font-size:1.2rem; line-height:1.4;">-</div>
+                    <div class="cs-value" id="statContinents" style="font-size:1.2rem; line-height:1.4;">—</div>
                     <div class="cs-label">By Continent</div>
                 </div>
             </div>
@@ -1671,7 +1671,7 @@ document.getElementById('globeSearchBtn').addEventListener('click', () => {
                     continentHTML += `${cont}: ${continentMap[cont].size}<br>`;
                 }
             }
-document.getElementById('statContinents').innerHTML = continentHTML.trim() || '-';
+document.getElementById('statContinents').innerHTML = continentHTML.trim() || '—';
         }
         updateStats();
 
@@ -1789,6 +1789,7 @@ document.getElementById('statContinents').innerHTML = continentHTML.trim() || '-
         { title: 'Academic', url: 'academic.html', desc: 'University of Primorska, FAMNIT, Koper' },
         { title: 'Courses', url: 'academic.html#courses', desc: 'Completed at University of Belgrade: programming, linear algebra, logic' },
         { title: 'Languages', url: 'academic.html#languages', desc: 'Serbian, English, Hungarian' },
+        { title: 'Activities & leadership', url: 'academic.html#activities', desc: 'GDG on Campus UP core team: events, marketing, tech support' },
         { title: 'License plate atlas', url: 'plates.html', desc: 'Interactive globe and collection stats' },
         { title: 'Visitor map', url: 'visitors.html', desc: 'Visitor statistics by country' },
         { title: 'Privacy policy', url: 'privacy.html', desc: 'Data, analytics, your rights' },
