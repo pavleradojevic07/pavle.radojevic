@@ -10,10 +10,14 @@
     <meta property="og:title" content="Visitors - Pavle Radojević">
     <meta property="og:description" content="Website visitor statistics and interactive map">
     <meta property="og:url" content="https://pavleradojevic07.github.io/pavle.radojevic/visitors.html">
-    <meta property="og:image" content="https://pavleradojevic07.github.io/pavle.radojevic/images/logo-dark.webp">
+    <meta property="og:image" content="https://pavleradojevic07.github.io/pavle.radojevic/images/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Pavle Radojević: basketball player, mathematics student and license plate collector">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://pavleradojevic07.github.io/pavle.radojevic/images/og-image.png">
     <link rel="stylesheet" href="fonts/fonts.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
     <script>
         (function() {
             var theme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1") || 'dark';
@@ -179,123 +183,16 @@
             .map-container { height: 350px; }
         }
     </style>
-<style>
-    /* Light-theme accent colors darkened to meet WCAG AA (4.5:1) when used as text */
-    [data-theme="light"] { --accent-academic: #1a6fc4; --accent-basketball: #c2410c; --accent-plates: #15803d; --accent-gold: #8a6210; }
-    [data-theme="light"] #analytics-consent-banner .ac-accept,
-    [data-theme="light"] #analytics-consent-banner .ac-decline,
-    [data-theme="light"] #floatingContactToggle,
-    [data-theme="light"] .skip-link,
-    [data-theme="light"] .globe-search button,
-    [data-theme="light"] #donationBtn,
-    [data-theme="light"] #cookiePrefsBtnMain,
-    [data-theme="light"] .confirm-modal-confirm { color: #fff !important; }
-    /* Hover-state contrast: white text on the dark-theme accents was below 4.5:1 */
-    .club-link:hover, .btn-outline:hover, .school-link:hover, .pdf-link:hover { color: #000 !important; }
-    [data-theme="light"] .club-link:hover, [data-theme="light"] .btn-outline:hover, [data-theme="light"] .school-link:hover, [data-theme="light"] .pdf-link:hover { color: #fff !important; }
-    [data-theme="light"] .pill-optional { color: #0b4f96; }
-    .skip-link { position: fixed; top: -100px; left: 1rem; z-index: 100000; background: var(--accent-gold, #d4a853); color: #000; padding: 0.7rem 1.4rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-family: var(--font-sans, sans-serif); transition: top 0.2s ease; }
-    .skip-link:focus { top: 1rem; }
-    #main-content:focus { outline: none; }
-    [id] { scroll-margin-top: calc(var(--nav-height, 70px) + 16px); }
-    #scrollProgressBar { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: var(--accent-gold, #d4a853); z-index: 1001; transition: width 0.1s linear; }
-    #backToTopBtn { position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 900; width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-size: 1.2rem; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: var(--shadow); transition: border-color 0.25s ease, transform 0.25s ease, opacity 0.25s ease; opacity: 0; transform: translateY(10px); }
-    #backToTopBtn.visible { display: flex; opacity: 1; transform: translateY(0); }
-    #backToTopBtn:hover { border-color: var(--accent-gold); transform: translateY(-2px); }
-    #floatingContact { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 900; display: flex; flex-direction: column-reverse; align-items: flex-end; gap: 0.6rem; }
-    #floatingContactToggle { width: 52px; height: 52px; border-radius: 50%; border: none; cursor: pointer; background: var(--accent-gold); color: #000; font-size: 1.4rem; box-shadow: var(--shadow-lg); display: flex; align-items: center; justify-content: center; transition: transform 0.2s ease; }
-    #floatingContactToggle:hover { transform: scale(1.06); }
-    #floatingContactPanel { display: none; flex-direction: column; gap: 0.3rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.6rem; box-shadow: var(--shadow-lg); min-width: 160px; }
-    #floatingContactPanel.open { display: flex; }
-    #floatingContactPanel a { display: flex; align-items: center; gap: 0.5rem; color: var(--text); text-decoration: none; font-size: 0.85rem; padding: 0.45rem 0.6rem; border-radius: 6px; transition: background 0.2s; }
-    #floatingContactPanel a:hover { background: var(--bg-card-hover); }
-    #siteSearchTrigger { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all var(--transition, 0.3s); margin-left: 0.5rem; }
-    #siteSearchTrigger:hover { background: var(--bg-card-hover); }
-    #siteSearchOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 20000; align-items: flex-start; justify-content: center; padding-top: 12vh; }
-    #siteSearchOverlay.open { display: flex; }
-    #siteSearchBox { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); width: 92%; max-width: 480px; padding: 1rem; box-shadow: var(--shadow-lg); max-height: 60vh; display: flex; flex-direction: column; }
-    #siteSearchInput { width: 100%; padding: 0.7rem 0.9rem; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-secondary); color: var(--text); font-family: var(--font-sans); font-size: 0.95rem; outline: none; }
-    #siteSearchInput:focus { border-color: var(--accent-gold); }
-    #siteSearchResults { margin-top: 0.7rem; overflow-y: auto; }
-    #siteSearchResults a { display: block; padding: 0.6rem 0.7rem; border-radius: 8px; text-decoration: none; color: var(--text); }
-    #siteSearchResults a:hover { background: var(--bg-card-hover); }
-    #siteSearchResults .result-desc { color: var(--text-muted); font-size: 0.8rem; }
-    #siteSearchEmpty { color: var(--text-muted); font-size: 0.85rem; padding: 0.6rem 0.2rem; }
-    .confirm-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 20000; align-items: center; justify-content: center; }
-    .confirm-modal-overlay.open { display: flex; }
-    .confirm-modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.6rem; max-width: 360px; width: 90%; text-align: center; box-shadow: var(--shadow-lg); }
-    .confirm-modal-box h4 { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 0.6rem; }
-    .confirm-modal-box p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.2rem; }
-    .confirm-modal-actions { display: flex; gap: 0.6rem; justify-content: center; }
-    .confirm-modal-actions button { border: none; padding: 0.55rem 1.3rem; border-radius: 20px; cursor: pointer; font-weight: 600; font-family: var(--font-sans); }
-    .confirm-modal-confirm { background: var(--accent-gold); color: #000; }
-    .confirm-modal-cancel { background: var(--bg-secondary); color: var(--text); border: 1px solid var(--border); }
-    .copy-email-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; border-radius: 20px; padding: 0.35rem 0.8rem; font-size: 0.78rem; margin-left: 0.4rem; font-family: var(--font-sans); transition: all var(--transition, 0.3s); }
-    .copy-email-btn:hover { border-color: var(--accent-gold); color: var(--text); }
-    #donationBtn:hover { filter: brightness(1.1); }
-    #cookiePrefsBtn:hover, #cookiePrefsBtnMain:hover { opacity: 0.75; }
-    .modal-close:hover { border-color: var(--accent-gold); background: var(--bg-card-hover); }
-    .footer-note a:hover { color: var(--text); }
-    .skeleton-pulse { animation: skeletonPulse 1.3s ease-in-out infinite; }
-    @keyframes skeletonPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-    .stats-grid.loading .stat-value { color: transparent; background: var(--border); border-radius: 6px; display: inline-block; min-width: 2.4ch; animation: skeletonPulse 1.3s ease-in-out infinite; }
-    .loading-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--bg-secondary); color: var(--text-muted); font-size: 0.85rem; z-index: 5; transition: opacity 0.4s ease; border-radius: inherit; }
-    .loading-overlay.hidden { opacity: 0; pointer-events: none; }
-    .loading-spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent-gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 0.6rem; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .form-msg { font-size: 0.8rem; margin-top: 0.5rem; min-height: 1.1em; }
-    .form-msg-error { color: var(--accent-basketball, #e05a3b); }
-    .form-msg-success { color: var(--accent-plates, #3ddc84); }
-    .faq-list { display: flex; flex-direction: column; gap: 0.8rem; }
-    .faq-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.1rem 1.3rem; cursor: pointer; transition: all var(--transition, 0.3s); }
-    .faq-item:hover { border-color: var(--accent-gold); }
-    .faq-question { font-weight: 600; position: relative; padding-right: 1.6rem; }
-    .faq-question::after { content: '+'; position: absolute; right: 0; top: 0; font-weight: 400; color: var(--text-muted); transition: transform 0.2s; display: inline-block; }
-    .faq-item[aria-expanded="true"] .faq-question::after { transform: rotate(45deg); }
-    .faq-answer { display: none; margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px dashed var(--border); color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
-    .faq-item[aria-expanded="true"] .faq-answer { display: block; }
-    .faq-answer-todo { color: var(--accent-gold) !important; }
-    @media print {
-        .nav, .contact-footer, #analytics-consent-banner, #backToTopBtn, #floatingContact, #siteSearchOverlay, .confirm-modal-overlay, #scrollProgressBar, .theme-toggle, .mobile-menu-btn, .skip-link, .globe-container, .map-container, .map-container-wrap { display: none !important; }
-        body { background: #fff !important; color: #000 !important; }
-        .page-content { padding-top: 0 !important; }
-        a { color: #000 !important; text-decoration: underline; }
-        .course-summary, .faq-answer { display: block !important; }
-        * { box-shadow: none !important; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-        .skeleton-pulse, .loading-spinner, #backToTopBtn, #floatingContactToggle { animation: none !important; transition: none !important; }
-        html { scroll-behavior: auto !important; }
-    }
-</style>
+    <link rel="stylesheet" href="assets/site.css">
     <link rel="stylesheet" href="assets/modern.css">
     <link rel="stylesheet" href="fonts/flags.css">
     <script src="assets/modern.js" defer></script>
+    <script src="assets/site.js" defer></script>
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <div id="scrollProgressBar"></div>
     <!-- Minimal analytics consent banner (Cloudflare tracker only - no Google Analytics) -->
-    <style>
-        #analytics-consent-banner {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--bg-card, #16161f); border-top: 1px solid var(--border, #252535);
-            color: var(--text, #e8e8f0); padding: 0.9rem 1.5rem;
-            display: none; align-items: center; justify-content: center;
-            gap: 1.2rem; flex-wrap: wrap; z-index: 10000; font-size: 0.85rem;
-            box-shadow: 0 -4px 24px rgba(0,0,0,0.4); transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-        #analytics-consent-banner.visible { display: flex; transform: translateY(0); }
-        #analytics-consent-banner .ac-btn {
-            border: none; padding: 0.5rem 1.2rem; border-radius: 30px;
-            cursor: pointer; font-weight: 600; font-family: var(--font-sans, 'Inter', sans-serif);
-            font-size: 0.85rem; transition: filter 0.2s;
-        }
-        #analytics-consent-banner .ac-accept { background: var(--accent-gold, #d4a853); color: #000; }
-        #analytics-consent-banner .ac-decline { background: var(--accent-gold, #d4a853); color: #000; }
-        #analytics-consent-banner .ac-btn:hover { filter: brightness(1.1); }
-    </style>
     <div id="analytics-consent-banner">
         <span>This site uses a first-party analytics tracker (page views, browser/device, approximate location, and clicks on outbound links and downloads) to see where visitors come from. No data is sold or shared with third parties. <a href="cookies.html" style="color:inherit; text-decoration:underline;">Learn more</a></span>
         <div style="display:flex; gap:0.5rem;">
@@ -303,144 +200,6 @@
             <button class="ac-btn ac-accept" id="acAcceptBtn">Accept</button>
         </div>
     </div>
-    <!-- ── Tracking script (sends visit to /track) ── -->
-    <script>
-(function() {
-  const WORKER_URL = 'https://visitor-tracker.pavle-radojevic3.workers.dev';
-  const MAX_IDLE_MINUTES = 30;
-  const CONSENT_COOKIE = 'analytics-consent';
-
-  function getCookie(name) {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    return match ? match[2] : null;
-  }
-
-  function setConsentCookie(value) {
-    if (value !== 'accepted') { ['visitorToken','entryTime','lastPage','utmParams'].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} }); }
-    document.cookie = CONSENT_COOKIE + '=' + value + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax' + (location.protocol === 'https:' ? ';Secure' : '');
-  }
-
-  function getUTMParams() {
-    var params = new URLSearchParams(window.location.search);
-    var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
-    var utm = {};
-    var found = false;
-    keys.forEach(function (k) {
-      var v = params.get(k);
-      if (v) { utm[k] = v.slice(0, 100); found = true; }
-    });
-    if (found) {
-      sessionStorage.setItem('utmParams', JSON.stringify(utm));
-      return utm;
-    }
-    try {
-      var stored = sessionStorage.getItem('utmParams');
-      return stored ? JSON.parse(stored) : {};
-    } catch (e) { return {}; }
-  }
-  function runTracking() {
-    // ── visitor token & entry time ──
-    if (!sessionStorage.getItem('visitorToken')) {
-      sessionStorage.setItem('visitorToken',
-        crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2));
-    }
-    const visitorToken = sessionStorage.getItem('visitorToken');
-
-    function getEntryTime() {
-      const stored = sessionStorage.getItem('entryTime');
-      if (!stored) return null;
-      const elapsed = Date.now() - new Date(stored).getTime();
-      if (elapsed > MAX_IDLE_MINUTES * 60 * 1000) {
-        sessionStorage.removeItem('entryTime');
-        return null;
-      }
-      return stored;
-    }
-
-    let entryTime = getEntryTime();
-    if (!entryTime) {
-      entryTime = new Date().toISOString();
-      sessionStorage.setItem('entryTime', entryTime);
-    }
-
-    // ── send page‑view ──
-    const pageData = {
-      browser: navigator.userAgent.includes('Firefox') ? 'Firefox' :
-               navigator.userAgent.includes('Chrome') ? 'Chrome' :
-               navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
-      os: navigator.platform || 'Unknown',
-      device: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
-      referrer: document.referrer || 'Direct',
-      page: window.location.pathname,
-      entryTime: entryTime,
-      previousPage: sessionStorage.getItem('lastPage') || null,
-      visitorToken: visitorToken,
-      utm: getUTMParams()
-    };
-
-    sessionStorage.setItem('lastPage', window.location.pathname);
-
-    fetch(`${WORKER_URL}/track`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(pageData)
-    }).catch(() => {});
-
-    // ── event tracking (downloads & external clicks) ──
-    function trackEvent(type, label, url, referrer = '') {
-      fetch(`${WORKER_URL}/track-event`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, label, url, referrer })
-      }).catch(() => {});
-    }
-
-    document.addEventListener('click', function(e) {
-      const link = e.target.closest('a');
-      if (!link) return;
-      const href = link.getAttribute('href') || '';
-
-      if (href.match(/\.pdf$/i) || link.hasAttribute('download') || link.classList.contains('pdf-link')) {
-        const label = link.textContent.trim() || 'PDF Download';
-        const referrer = getReferrerTag();
-        trackEvent('download', label, href, referrer);
-      }
-
-      if (link.hostname && link.hostname !== window.location.hostname) {
-        const label = link.textContent.trim() || link.href;
-        const referrer = getReferrerTag();
-        trackEvent('click', label, href, referrer);
-      }
-    });
-
-    function getReferrerTag() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('ref') || document.referrer || 'Direct';
-    }
-  }
-
-  // ── consent gate: only track after Accept, never after Decline ──
-  const consent = getCookie(CONSENT_COOKIE);
-  const banner = document.getElementById('analytics-consent-banner');
-
-  if (consent === 'accepted') {
-    runTracking();
-  } else if (consent !== 'declined' && banner) {
-    banner.classList.add('visible');
-    const acceptBtn = document.getElementById('acAcceptBtn');
-    const declineBtn = document.getElementById('acDeclineBtn');
-    if (acceptBtn) acceptBtn.addEventListener('click', function() {
-      setConsentCookie('accepted');
-      banner.classList.remove('visible');
-      runTracking();
-    });
-    if (declineBtn) declineBtn.addEventListener('click', function() {
-      setConsentCookie('declined');
-      banner.classList.remove('visible');
-    });
-  }
-})();
-</script>
 
 
     <nav class="nav">
@@ -549,7 +308,7 @@
                 YouTube
             </a>
         </div>
-        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages · Content last updated October 1, 2026</p>
+        <p class="footer-note">© 2026 Pavle Radojević · Hosted on GitHub Pages · Content last updated November 7, 2026</p>
         <p class="footer-note" style="margin-top:0.6rem;">
             <a href="privacy.html" style="color:var(--text-muted); text-decoration:underline;">Privacy Policy</a> ·
             <a href="terms.html" style="color:var(--text-muted); text-decoration:underline;">Terms &amp; Conditions</a> ·
@@ -557,18 +316,8 @@
             <button id="cookiePrefsBtn" type="button" style="background:none; border:none; padding:0; margin:0; font:inherit; color:var(--text-muted); text-decoration:underline; cursor:pointer;">Cookie Preferences</button>
         </p>
     </footer>
-    <script>
-        (function () {
-            var btn = document.getElementById('cookiePrefsBtn');
-            if (btn) {
-                btn.addEventListener('click', function () {
-                    if (window.openCookiePrefsConfirm) window.openCookiePrefsConfirm();
-                });
-            }
-        })();
-    </script>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="assets/vendor/leaflet/leaflet.js"></script>
     <script>
         // ── Dashboard script (fetches from /statistics.json) ──
 const visitorToken = sessionStorage.getItem('visitorToken') || '';
@@ -645,7 +394,7 @@ function updateUI(data) {
 
     const visitedCountries = new Set(data.countries.map(c => c.country));
 
-    fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson')
+    fetch('countries.geojson')
         .then(response => response.json())
         .then(geoData => {
             const serbia = geoData.features.find(f => f.properties.NAME === 'Serbia' || f.properties.ADMIN === 'Serbia');
@@ -701,205 +450,5 @@ function updateUI(data) {
         observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     </script>
 
-    <script>
-        const themeToggle = document.getElementById('themeToggle');
-        themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
-        themeToggle.addEventListener('click', () => {
-            const html = document.documentElement;
-            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', next);
-            themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
-            document.cookie = 'theme=' + next + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax' + (location.protocol === 'https:' ? ';Secure' : '');
-        });
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const navLinks = document.getElementById('navLinks');
-        mobileMenuBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('mobile-open');
-            mobileMenuBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
-            mobileMenuBtn.setAttribute('aria-expanded', navLinks.classList.contains('mobile-open') ? 'true' : 'false');
-        });
-    </script>
-<script>
-(function () {
-    // Scroll progress + back to top (inert on the home page, which has no vertical scroll)
-    var progressBar = document.getElementById('scrollProgressBar');
-    var backToTopBtn = document.getElementById('backToTopBtn');
-    function onScroll() {
-        var doc = document.documentElement;
-        var scrollTop = doc.scrollTop || document.body.scrollTop;
-        var scrollable = doc.scrollHeight - doc.clientHeight;
-        var pct = scrollable > 0 ? (scrollTop / scrollable) * 100 : 0;
-        if (progressBar) progressBar.style.width = pct + '%';
-        if (backToTopBtn) backToTopBtn.classList.toggle('visible', scrollTop > 400);
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    if (backToTopBtn) {
-        backToTopBtn.addEventListener('click', function () {
-            var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
-        });
-    }
-
-    // Floating contact
-    var fcToggle = document.getElementById('floatingContactToggle');
-    var fcPanel = document.getElementById('floatingContactPanel');
-    var fcWrap = document.getElementById('floatingContact');
-    function closeFc() {
-        if (!fcPanel || !fcToggle) return;
-        fcPanel.classList.remove('open');
-        fcToggle.setAttribute('aria-expanded', 'false');
-    }
-    if (fcToggle && fcPanel) {
-        fcToggle.addEventListener('click', function () {
-            var open = fcPanel.classList.toggle('open');
-            fcToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-        });
-        document.addEventListener('click', function (e) {
-            if (fcWrap && !fcWrap.contains(e.target)) closeFc();
-        });
-    }
-
-    // Keep floating buttons clear of the consent banner
-    var banner = document.getElementById('analytics-consent-banner');
-    function adjustForBanner() {
-        if (!banner || !fcWrap || !backToTopBtn) return;
-        var visible = banner.classList.contains('visible');
-        var offset = visible ? banner.offsetHeight + 16 : 24;
-        fcWrap.style.bottom = offset + 'px';
-        backToTopBtn.style.bottom = offset + 'px';
-    }
-    adjustForBanner();
-    if (banner && window.MutationObserver) {
-        new MutationObserver(adjustForBanner).observe(banner, { attributes: true, attributeFilter: ['class'] });
-    }
-    window.addEventListener('resize', adjustForBanner);
-
-    // Site search
-    var searchTrigger = document.getElementById('siteSearchTrigger');
-    var searchOverlay = document.getElementById('siteSearchOverlay');
-    var searchInputEl = document.getElementById('siteSearchInput');
-    var searchResultsEl = document.getElementById('siteSearchResults');
-    var lastFocus = null;
-    var siteIndex = [
-        { title: 'Home', url: 'index.html', desc: 'Basketball, academics, license plate atlas' },
-        { title: 'Basketball', url: 'basketball.html', desc: 'Player profile, height, weight, position' },
-        { title: 'Playing history', url: 'basketball.html', desc: 'KK Portoro\u017e, KK Borac Zemun, Honv\u00e9d Academy, EYBL' },
-        { title: 'Career achievements', url: 'basketball.html#achievements', desc: 'National team camp, NB II champion, tournaments' },
-        { title: 'Career highs', url: 'basketball.html#career-highs', desc: 'Points, rebounds, assists, blocks' },
-        { title: 'Basketball FAQ', url: 'basketball.html#faq', desc: 'Contact, stats, recruiting questions' },
-        { title: 'Academic', url: 'academic.html', desc: 'University of Primorska, FAMNIT, Koper' },
-        { title: 'Courses', url: 'academic.html#courses', desc: 'Completed at University of Belgrade: programming, linear algebra, logic' },
-        { title: 'Languages', url: 'academic.html#languages', desc: 'Serbian, English, Hungarian' },
-        { title: 'Activities & leadership', url: 'academic.html#activities', desc: 'GDG on Campus UP core team: events, marketing, tech support' },
-        { title: 'License plate atlas', url: 'plates.html', desc: 'Interactive globe and collection stats' },
-        { title: 'Visitor map', url: 'visitors.html', desc: 'Visitor statistics by country' },
-        { title: 'Privacy policy', url: 'privacy.html', desc: 'Data, analytics, your rights' },
-        { title: 'Terms & conditions', url: 'terms.html', desc: 'Use of this site' },
-        { title: 'Cookie policy', url: 'cookies.html', desc: 'Cookies, storage, consent' }
-    ];
-    function escapeHtml(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-    function renderResults(q) {
-        if (!searchResultsEl) return;
-        var query = q.trim().toLowerCase();
-        var matches = siteIndex.filter(function (item) {
-            return !query || item.title.toLowerCase().indexOf(query) !== -1 || item.desc.toLowerCase().indexOf(query) !== -1;
-        });
-        if (matches.length === 0) {
-            searchResultsEl.innerHTML = '<div id="siteSearchEmpty">No matches. Try a different word.</div>';
-            return;
-        }
-        searchResultsEl.innerHTML = matches.map(function (item) {
-            return '<a href="' + item.url + '"><strong>' + escapeHtml(item.title) + '</strong><div class="result-desc">' + escapeHtml(item.desc) + '</div></a>';
-        }).join('');
-    }
-    function openSearch() {
-        if (!searchOverlay) return;
-        lastFocus = document.activeElement;
-        searchOverlay.classList.add('open');
-        renderResults('');
-        setTimeout(function () { if (searchInputEl) searchInputEl.focus(); }, 30);
-    }
-    function closeSearch() {
-        if (!searchOverlay) return;
-        searchOverlay.classList.remove('open');
-        if (searchInputEl) searchInputEl.value = '';
-        if (lastFocus && lastFocus.focus) lastFocus.focus();
-    }
-    if (searchTrigger) searchTrigger.addEventListener('click', openSearch);
-    if (searchInputEl) {
-        searchInputEl.addEventListener('input', function () { renderResults(this.value); });
-        searchInputEl.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-                var first = searchResultsEl && searchResultsEl.querySelector('a');
-                if (first) window.location.href = first.getAttribute('href');
-            }
-        });
-    }
-    if (searchOverlay) searchOverlay.addEventListener('click', function (e) { if (e.target === searchOverlay) closeSearch(); });
-
-    // Copy email
-    document.querySelectorAll('.copy-email-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            var email = btn.getAttribute('data-email');
-            function done() { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1800); }
-            function fallback() {
-                var ta = document.createElement('textarea');
-                ta.value = email; ta.style.position = 'fixed'; ta.style.opacity = '0';
-                document.body.appendChild(ta); ta.select();
-                try { document.execCommand('copy'); done(); } catch (err) { btn.textContent = 'Press Ctrl+C'; }
-                document.body.removeChild(ta);
-            }
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(email).then(done).catch(fallback);
-            } else { fallback(); }
-        });
-    });
-
-    // Cookie preferences confirmation modal
-    var cookieModal = document.getElementById('cookiePrefsConfirmModal');
-    var cookieCancelBtn = document.getElementById('cookiePrefsCancelBtn');
-    var cookieConfirmBtn = document.getElementById('cookiePrefsConfirmBtn');
-    var cookieLastFocus = null;
-    function openCookieModal() {
-        if (!cookieModal) return;
-        cookieLastFocus = document.activeElement;
-        cookieModal.classList.add('open');
-        if (cookieConfirmBtn) cookieConfirmBtn.focus();
-    }
-    function closeCookieModal() {
-        if (!cookieModal) return;
-        cookieModal.classList.remove('open');
-        if (cookieLastFocus && cookieLastFocus.focus) cookieLastFocus.focus();
-    }
-    if (cookieCancelBtn) cookieCancelBtn.addEventListener('click', closeCookieModal);
-    if (cookieModal) cookieModal.addEventListener('click', function (e) { if (e.target === cookieModal) closeCookieModal(); });
-    if (cookieConfirmBtn) cookieConfirmBtn.addEventListener('click', function () {
-        ['visitorToken','entryTime','lastPage','utmParams'].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} });
-        document.cookie = 'analytics-consent=; path=/; max-age=0; SameSite=Lax' + (location.protocol === 'https:' ? '; Secure' : '');
-        location.reload();
-    });
-    window.openCookiePrefsConfirm = openCookieModal;
-
-    // FAQ accordion (same interaction pattern as the course cards)
-    document.querySelectorAll('.faq-item').forEach(function (item) {
-        function toggle() { item.setAttribute('aria-expanded', item.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'); }
-        item.addEventListener('click', toggle);
-        item.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); toggle(); }
-        });
-    });
-
-    // Global shortcuts: Ctrl/Cmd+K opens search, Escape closes any open overlay
-    document.addEventListener('keydown', function (e) {
-        if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); openSearch(); }
-        if (e.key === 'Escape') {
-            if (searchOverlay && searchOverlay.classList.contains('open')) closeSearch();
-            if (cookieModal && cookieModal.classList.contains('open')) closeCookieModal();
-            closeFc();
-        }
-    });
-})();
-</script>
 </body>
 </html>
